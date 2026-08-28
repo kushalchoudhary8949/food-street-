@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Receipt, ShoppingBag } from 'lucide-react';
+import { Home, Search, Receipt, ShoppingBag, Settings } from 'lucide-react';
 import { ActiveTab } from '../types';
 
 interface BottomNavProps {
@@ -8,6 +8,7 @@ interface BottomNavProps {
   activeOrdersCount?: number;
   cartItemsCount?: number;
   onOpenCart?: () => void;
+  showAdmin?: boolean;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -16,6 +17,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   activeOrdersCount = 0,
   cartItemsCount = 0,
   onOpenCart,
+  showAdmin = false,
 }) => {
   return (
     <nav
@@ -127,6 +129,32 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           Orders
         </span>
       </button>
+
+      {/* Admin Tab */}
+      {showAdmin && (
+        <button
+          id="nav-tab-admin"
+          onClick={() => onTabChange('admin')}
+          className="flex flex-col items-center justify-center min-w-[56px] focus:outline-hidden group"
+        >
+          <div
+            className={`w-11 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+              activeTab === 'admin'
+                ? 'bg-[#E11D48] text-white shadow-xs'
+                : 'text-gray-600 group-hover:text-gray-900'
+            }`}
+          >
+            <Settings className="w-4 h-4 stroke-[2.2]" />
+          </div>
+          <span
+            className={`text-[11px] font-bold mt-0.5 tracking-tight transition-colors ${
+              activeTab === 'admin' ? 'text-[#E11D48]' : 'text-gray-600 group-hover:text-gray-900'
+            }`}
+          >
+            Admin
+          </span>
+        </button>
+      )}
     </nav>
   );
 };

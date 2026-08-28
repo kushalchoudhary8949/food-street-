@@ -9,12 +9,22 @@ import { LocationModal } from './components/LocationModal';
 import { BottomNav } from './components/BottomNav';
 import { SearchTab } from './components/SearchTab';
 import { OrdersTab } from './components/OrdersTab';
+import { AdminTab } from './components/AdminTab';
+import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
+import { 
+  subscribeToOrders, 
+  subscribeToStores, 
+  subscribeToCategories, 
+  saveOrderToFirestore, 
+  deleteOrderFromFirestore 
+} from './services/firebase';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS } from './data/mockData';
 import {
   ActiveTab,
   CartItem,
+  Category,
   MenuItem,
   MenuItemAddon,
   Order,
@@ -24,6 +34,104 @@ import {
 } from './types';
 
 export default function App() {
+  // Load initial states from localStorage if available
+  const [stores, setStores] = useState<Store[]>(() => {
+    const saved = localStorage.getItem('food_street_stores');
+    return saved ? JSON.parse(saved) : STORES;
+  });
+  const [categories, setCategories] = useState<Category[]>(() => {
+    const saved = localStorage.getItem('food_street_categories');
+    return saved ? JSON.parse(saved) : CATEGORIES;
+  });
+  const [orders, setOrders] = useState<Order[]>(() => {
+    const saved = localStorage.getItem('food_street_orders');
+    return saved ? JSON.parse(saved) : INITIAL_ORDERS;
+  });
+
+  // Save states to localStorage when they change
+  React.useEffect(() => {
+    localStorage.setItem('food_street_stores', JSON.stringify(stores));
+  }, [stores]);
+
+  React.useEffect(() => {
+    localStorage.setItem('food_street_categories', JSON.stringify(categories));
+  }, [categories]);
+
+  React.useEffect(() => {
+    localStorage.setItem('food_street_orders', JSON.stringify(orders));
+  }, [orders]);
+
+  // Sync state across open tabs in real-time
+  React.useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'food_street_stores' && e.newValue) {
+        setStores(JSON.parse(e.newValue));
+      }
+      if (e.key === 'food_street_categories' && e.newValue) {
+        setCategories(JSON.parse(e.newValue));
+      }
+      if (e.key === 'food_street_orders' && e.newValue) {
+        setOrders(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Real-time Firebase Cloud Database Listeners
+  React.useEffect(() => {
+    const unsubOrders = subscribeToOrders((liveOrders) => {
+      if (liveOrders && liveOrders.length > 0) {
+        setOrders(liveOrders);
+      }
+    });
+
+    const unsubStores = subscribeToStores((liveStores) => {
+      if (liveStores && liveStores.length > 0) {
+        setStores(liveStores);
+      }
+    });
+
+    const unsubCategories = subscribeToCategories((liveCategories) => {
+      if (liveCategories && liveCategories.length > 0) {
+        setCategories(liveCategories);
+      }
+    });
+
+    return () => {
+      unsubOrders();
+      unsubStores();
+      unsubCategories();
+    };
+  }, []);
+
+  // Hash/Path-based Router State
+  const [currentPath, setCurrentPath] = useState(window.location.hash || window.location.pathname);
+
+  React.useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.hash || window.location.pathname);
+    };
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
+
+  const isAdmin = 
+    currentPath.startsWith('/admin') || 
+    currentPath === '#/admin' || 
+    window.location.search.includes('admin=true');
+
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    return Boolean(
+      localStorage.getItem('admin_session_token') ||
+      sessionStorage.getItem('admin_session_token')
+    );
+  });
+
   // App navigation state
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,9 +156,6 @@ export default function App() {
   // Cart state
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
-  // Orders state
-  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
 
   // Notification Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -93,7 +198,7 @@ export default function App() {
     quantity = 1,
     selectedAddons: MenuItemAddon[] = []
   ) => {
-    const store = customizingItemStore || selectedStore || STORES.find(s => s.id === item.storeId) || STORES[0];
+    const store = customizingItemStore || selectedStore || stores.find(s => s.id === item.storeId) || stores[0];
 
     const uniqueId = `${item.id}-${selectedAddons.map(a => a.id).sort().join('_')}`;
 
@@ -211,8 +316,9 @@ export default function App() {
       placedAt: 'Just now',
       estimatedDeliveryTime: 'In ~20 mins',
       deliveryAddress: formattedAddress,
+      customerPhone: currentAddress.phone,
       driverName: 'Alex Mercer',
-      driverPhone: '+1 (555) 789-2345',
+      driverPhone: '9366265129',
       driverRating: 4.9,
       driverPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
       paymentMethod: paymentMethod || 'UPI / Online',
@@ -222,6 +328,9 @@ export default function App() {
     setCartItems([]);
     setIsCartOpen(false);
     setIsStoreModalOpen(false);
+
+    // Save to Firebase Firestore Cloud DB (if configured)
+    saveOrderToFirestore(newOrder);
 
     // Forward receipt directly to WhatsApp (+91 8949508256)
     sendOrderToWhatsApp(newOrder);
@@ -234,6 +343,7 @@ export default function App() {
   // Complete & remove order from list
   const handleCompleteOrder = (orderId: string) => {
     setOrders(prev => prev.filter(o => o.id !== orderId));
+    deleteOrderFromFirestore(orderId);
     showToast('✅ Order completed & removed');
   };
 
@@ -255,7 +365,7 @@ export default function App() {
 
   // Filtered stores for Home screen
   const filteredStores = useMemo(() => {
-    return STORES.filter((store) => {
+    return stores.filter((store) => {
       if (selectedCategory) {
         const matchesCat = categoryKeywords.some(kw => 
           store.cuisines.some(c => c.toLowerCase().includes(kw)) ||
@@ -278,14 +388,14 @@ export default function App() {
       }
       return true;
     });
-  }, [selectedCategory, categoryKeywords, searchQuery]);
+  }, [selectedCategory, categoryKeywords, searchQuery, stores]);
 
   // Filtered dishes for currently selected category
   const categoryMatchedDishes = useMemo(() => {
     if (!selectedCategory) return [];
     const dishes: { item: MenuItem; store: Store }[] = [];
     
-    STORES.forEach((store) => {
+    stores.forEach((store) => {
       store.items.forEach((item) => {
         const isMatch = categoryKeywords.some(kw => 
           item.category.toLowerCase().includes(kw) ||
@@ -299,12 +409,13 @@ export default function App() {
       });
     });
     return dishes;
-  }, [selectedCategory, categoryKeywords]);
+  }, [selectedCategory, categoryKeywords, stores]);
 
   // Calculate cart counts
   const totalCartCount = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
   const totalCartPrice = cartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
-  const activeOrdersCount = orders.filter(o => o.status !== 'delivered').length;
+  // Only track active orders among the customer's top 4 recent orders
+  const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
 
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans">
@@ -317,199 +428,235 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab-based view rendering */}
-        {activeTab === 'home' && (
-          <div className="flex-1 pb-24">
-            {/* Header: Location & Profile Avatar & Search Bar */}
-            <Header
-              currentAddress={currentAddress}
-              onOpenLocationModal={() => setIsLocationModalOpen(true)}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onSearchFocus={() => {}}
-              onAvatarClick={() => setActiveTab('profile')}
-              onOpenCart={() => setIsCartOpen(true)}
-              cartCount={totalCartCount}
-              cartTotal={totalCartPrice}
-            />
-
-            {/* Categories Carousel Row */}
-            <div className="mt-1">
-              <CategoryBar
-                categories={CATEGORIES}
-                selectedCategory={selectedCategory}
-                onSelectCategory={handleSelectCategory}
+        {isAdmin ? (
+          isAdminAuthenticated ? (
+            <div className="flex-1">
+              <AdminTab
+                stores={stores}
+                categories={categories}
+                orders={orders}
+                onUpdateStores={setStores}
+                onUpdateCategories={setCategories}
+                onUpdateOrders={setOrders}
+                onLogout={() => {
+                  localStorage.removeItem('admin_session_token');
+                  sessionStorage.removeItem('admin_session_token');
+                  setIsAdminAuthenticated(false);
+                  showToast('🔒 Logged out of Admin Panel');
+                }}
               />
             </div>
-
-            {/* Top Restaurants Heading */}
-            <div className="px-4 mt-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
-                  {selectedCategory ? `${selectedCategory.toUpperCase()} SPOTS` : 'Featured Restaurants'}
-                </h2>
-                <p className="text-xs text-gray-500">
-                  {filteredStores.length} stores delivering near you
-                </p>
-              </div>
-              {selectedCategory && (
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className="text-xs font-bold text-red-600 hover:text-red-700 underline"
-                >
-                  Clear filter
-                </button>
-              )}
-            </div>
-
-            {/* Stores List */}
-            <div className="px-4 mt-3 space-y-4">
-              {filteredStores.map((store) => (
-                <StoreCard
-                  key={store.id}
-                  store={store}
-                  isFavorite={favorites.includes(store.id)}
-                  onToggleFavorite={(e) => handleToggleFavorite(e, store.id)}
-                  onClick={() => handleOpenStore(store)}
-                />
-              ))}
-
-              {filteredStores.length === 0 && (
-                <div className="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
-                  <p className="text-sm font-bold text-gray-500">No restaurants match your search</p>
-                  <button
-                    onClick={() => {
-                      setSelectedCategory(null);
-                      setSearchQuery('');
-                    }}
-                    className="mt-2 text-xs font-bold text-red-600 hover:underline"
-                  >
-                    Reset all filters
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'search' && (
-          <div className="flex-1">
-            <SearchTab
-              stores={STORES}
-              initialQuery={searchQuery}
-              onSelectStore={handleOpenStore}
-              onSelectMenuItem={(item, store) => {
-                setCustomizingItemStore(store);
-                setCustomizingItem(item);
+          ) : (
+            <AdminLogin
+              onLoginSuccess={() => {
+                setIsAdminAuthenticated(true);
+                showToast('🔓 Welcome to Admin Portal');
+              }}
+              onBackToStore={() => {
+                window.location.hash = '';
+                window.history.pushState(null, '', '/');
+                setCurrentPath('/');
               }}
             />
-          </div>
-        )}
+          )
+        ) : (
+          <>
+            {/* Tab-based view rendering */}
+            {activeTab === 'home' && (
+              <div className="flex-1 pb-24">
+                {/* Header: Location & Profile Avatar & Search Bar */}
+                <Header
+                  currentAddress={currentAddress}
+                  onOpenLocationModal={() => setIsLocationModalOpen(true)}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  onSearchFocus={() => {}}
+                  onAvatarClick={() => setActiveTab('profile')}
+                  onOpenCart={() => setIsCartOpen(true)}
+                  cartCount={totalCartCount}
+                  cartTotal={totalCartPrice}
+                />
 
-        {activeTab === 'orders' && (
-          <div className="flex-1">
-            <OrdersTab
-              orders={orders}
-              stores={STORES}
-              onCompleteOrder={handleCompleteOrder}
-              onExploreFood={() => setActiveTab('home')}
-            />
-          </div>
-        )}
+                {/* Categories Carousel Row */}
+                <div className="mt-1">
+                  <CategoryBar
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={handleSelectCategory}
+                  />
+                </div>
 
-        {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
-        {totalCartCount > 0 && activeTab !== 'orders' && (
-          <div className="fixed bottom-18 left-4 right-4 max-w-md mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl z-30 px-2 animate-in slide-in-from-bottom duration-200">
-            <button
-              id="global-floating-cart-btn"
-              onClick={() => setIsCartOpen(true)}
-              className="w-full py-3.5 px-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between shadow-2xl shadow-red-600/30 active:scale-98 transition-all"
-            >
-              <div className="flex items-center space-x-2.5">
-                <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-black rounded-lg">
-                  {totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}
-                </span>
-                <span className="text-sm font-extrabold text-white">
-                  ₹{totalCartPrice.toFixed(0)}
-                </span>
+                {/* Top Restaurants Heading */}
+                <div className="px-4 mt-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+                      {selectedCategory ? `${selectedCategory.toUpperCase()} SPOTS` : 'Featured Restaurants'}
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                      {filteredStores.length} stores delivering near you
+                    </p>
+                  </div>
+                  {selectedCategory && (
+                    <button
+                      onClick={() => setSelectedCategory(null)}
+                      className="text-xs font-bold text-red-600 hover:text-red-700 underline"
+                    >
+                      Clear filter
+                    </button>
+                  )}
+                </div>
+
+                {/* Stores List */}
+                <div className="px-4 mt-3 space-y-4">
+                  {filteredStores.map((store) => (
+                    <StoreCard
+                      key={store.id}
+                      store={store}
+                      isFavorite={favorites.includes(store.id)}
+                      onToggleFavorite={(e) => handleToggleFavorite(e, store.id)}
+                      onClick={() => handleOpenStore(store)}
+                    />
+                  ))}
+
+                  {filteredStores.length === 0 && (
+                    <div className="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                      <p className="text-sm font-bold text-gray-500">No restaurants match your search</p>
+                      <button
+                        onClick={() => {
+                          setSelectedCategory(null);
+                          setSearchQuery('');
+                        }}
+                        className="mt-2 text-xs font-bold text-red-600 hover:underline"
+                      >
+                        Reset all filters
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <span className="text-xs sm:text-sm font-black flex items-center uppercase tracking-wider">
-                View Cart →
-              </span>
-            </button>
-          </div>
+            )}
+
+            {activeTab === 'search' && (
+              <div className="flex-1">
+                <SearchTab
+                  stores={stores}
+                  initialQuery={searchQuery}
+                  onSelectStore={handleOpenStore}
+                  onSelectMenuItem={(item, store) => {
+                    setCustomizingItemStore(store);
+                    setCustomizingItem(item);
+                  }}
+                />
+              </div>
+            )}
+
+            {activeTab === 'orders' && (
+              <div className="flex-1">
+                <OrdersTab
+                  orders={orders}
+                  stores={stores}
+                  onCompleteOrder={handleCompleteOrder}
+                  onExploreFood={() => setActiveTab('home')}
+                />
+              </div>
+            )}
+
+            {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
+            {totalCartCount > 0 && activeTab !== 'orders' && (
+              <div className="fixed bottom-18 left-4 right-4 max-w-md mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl z-30 px-2 animate-in slide-in-from-bottom duration-200">
+                <button
+                  id="global-floating-cart-btn"
+                  onClick={() => setIsCartOpen(true)}
+                  className="w-full py-3.5 px-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between shadow-2xl shadow-red-600/30 active:scale-98 transition-all"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-black rounded-lg">
+                      {totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}
+                    </span>
+                    <span className="text-sm font-extrabold text-white">
+                      ₹{totalCartPrice.toFixed(0)}
+                    </span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-black flex items-center uppercase tracking-wider">
+                    View Cart →
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* Bottom Navigation */}
+            <BottomNav
+              activeTab={activeTab}
+              onTabChange={(tab) => {
+                setActiveTab(tab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              activeOrdersCount={activeOrdersCount}
+              cartItemsCount={totalCartCount}
+              onOpenCart={() => setIsCartOpen(true)}
+              showAdmin={false}
+            />
+
+            {/* Store Detail Fullscreen Modal */}
+            <StoreDetailModal
+              store={selectedStore}
+              isOpen={isStoreModalOpen}
+              onClose={() => setIsStoreModalOpen(false)}
+              isFavorite={selectedStore ? favorites.includes(selectedStore.id) : false}
+              onToggleFavorite={(storeId) => handleToggleFavorite(undefined, storeId)}
+              cartItems={cartItems}
+              onOpenItemModal={(item) => {
+                setCustomizingItemStore(selectedStore);
+                setCustomizingItem(item);
+              }}
+              onUpdateCartQuantity={handleUpdateCartQuantity}
+              onOpenCart={() => setIsCartOpen(true)}
+            />
+
+            {/* Menu Item Customization Modal */}
+            <MenuItemModal
+              item={customizingItem}
+              onClose={() => {
+                setCustomizingItem(null);
+                setCustomizingItemStore(null);
+              }}
+              onAddToCart={handleAddToCart}
+            />
+
+            {/* Cart Drawer & Checkout */}
+            <CartDrawer
+              isOpen={isCartOpen}
+              onClose={() => setIsCartOpen(false)}
+              cartItems={cartItems}
+              currentAddress={currentAddress}
+              onOpenLocationModal={() => {
+                setIsLocationModalOpen(true);
+              }}
+              onUpdateQuantity={(cartItemId, delta) => handleUpdateCartQuantity(cartItemId, delta)}
+              onClearCart={() => setCartItems([])}
+              onPlaceOrder={handlePlaceOrder}
+            />
+
+            {/* Location Picker Modal */}
+            <LocationModal
+              isOpen={isLocationModalOpen}
+              onClose={() => setIsLocationModalOpen(false)}
+              addresses={addresses}
+              currentAddress={currentAddress}
+              onSelectAddress={(addr) => setCurrentAddress(addr)}
+              onAddAddress={(newAddr) => setAddresses([newAddr, ...addresses])}
+              onDeleteAddress={(addressId) => {
+                const remaining = addresses.filter(a => a.id !== addressId);
+                if (remaining.length === 0) return;
+                setAddresses(remaining);
+                if (currentAddress.id === addressId) {
+                  setCurrentAddress(remaining[0]);
+                }
+                showToast('Address removed');
+              }}
+            />
+          </>
         )}
-
-        {/* Bottom Navigation */}
-        <BottomNav
-          activeTab={activeTab}
-          onTabChange={(tab) => {
-            setActiveTab(tab);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          activeOrdersCount={activeOrdersCount}
-          cartItemsCount={totalCartCount}
-          onOpenCart={() => setIsCartOpen(true)}
-        />
-
-        {/* Store Detail Fullscreen Modal */}
-        <StoreDetailModal
-          store={selectedStore}
-          isOpen={isStoreModalOpen}
-          onClose={() => setIsStoreModalOpen(false)}
-          isFavorite={selectedStore ? favorites.includes(selectedStore.id) : false}
-          onToggleFavorite={(storeId) => handleToggleFavorite(undefined, storeId)}
-          cartItems={cartItems}
-          onOpenItemModal={(item) => {
-            setCustomizingItemStore(selectedStore);
-            setCustomizingItem(item);
-          }}
-          onUpdateCartQuantity={handleUpdateCartQuantity}
-          onOpenCart={() => setIsCartOpen(true)}
-        />
-
-        {/* Menu Item Customization Modal */}
-        <MenuItemModal
-          item={customizingItem}
-          onClose={() => {
-            setCustomizingItem(null);
-            setCustomizingItemStore(null);
-          }}
-          onAddToCart={handleAddToCart}
-        />
-
-        {/* Cart Drawer & Checkout */}
-        <CartDrawer
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-          currentAddress={currentAddress}
-          onOpenLocationModal={() => {
-            setIsLocationModalOpen(true);
-          }}
-          onUpdateQuantity={(cartItemId, delta) => handleUpdateCartQuantity(cartItemId, delta)}
-          onClearCart={() => setCartItems([])}
-          onPlaceOrder={handlePlaceOrder}
-        />
-
-        {/* Location Picker Modal */}
-        <LocationModal
-          isOpen={isLocationModalOpen}
-          onClose={() => setIsLocationModalOpen(false)}
-          addresses={addresses}
-          currentAddress={currentAddress}
-          onSelectAddress={(addr) => setCurrentAddress(addr)}
-          onAddAddress={(newAddr) => setAddresses([newAddr, ...addresses])}
-          onDeleteAddress={(addressId) => {
-            const remaining = addresses.filter(a => a.id !== addressId);
-            if (remaining.length === 0) return;
-            setAddresses(remaining);
-            if (currentAddress.id === addressId) {
-              setCurrentAddress(remaining[0]);
-            }
-            showToast('Address removed');
-          }}
-        />
       </div>
     </div>
   );

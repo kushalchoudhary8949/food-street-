@@ -157,7 +157,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
         {/* Help & Support */}
         <button
-          onClick={() => alert('Customer Support 24/7 is ready to assist. Call 1-800-FOOD-APP')}
+          onClick={() => alert('Customer Support is ready to assist. Contact: +91 7682890864')}
           className="w-full flex items-center justify-between py-2 text-left hover:bg-gray-50 rounded-2xl p-2 transition-colors"
         >
           <div className="flex items-center space-x-3">

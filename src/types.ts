@@ -82,6 +82,7 @@ export interface Order {
   placedAt: string;
   estimatedDeliveryTime: string;
   deliveryAddress: string;
+  customerPhone?: string;
   driverName?: string;
   driverPhone?: string;
   driverRating?: number;
@@ -97,7 +98,8 @@ export interface UserAddress {
   hostelName?: string;
   locality: string;
   city: string;
+  phone: string;
   isDefault: boolean;
 }
 
-export type ActiveTab = 'home' | 'search' | 'orders';
+export type ActiveTab = 'home' | 'search' | 'orders' | 'admin';

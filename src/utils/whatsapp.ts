@@ -39,6 +39,9 @@ ${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *
 
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
+${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
+🛵 *Delivery Partner:* ${order.driverPhone || '9366265129'}
+☎️ *Support & Contact:* 7682890864
 
 ━━━━━━━━━━━━━━━━━━━━
 _Thank you for ordering with us!_`;

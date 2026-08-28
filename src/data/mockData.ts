@@ -4755,30 +4755,13 @@ export const STORES: Store[] = [
 
 export const INITIAL_ADDRESSES: UserAddress[] = [
   {
-    id: 'addr-1',
-    label: 'Hostel',
-    hostelName: 'Tagore Boys Hostel',
-    roomNo: 'B-304',
-    addressLine: 'Campus West Block, North Gate',
-    locality: 'University Road',
-    city: 'Metro City',
+    id: 'addr-none',
+    label: 'Other',
+    addressLine: 'Please add your address to start ordering',
+    locality: 'Tap to add address',
+    city: '',
+    phone: '',
     isDefault: true,
-  },
-  {
-    id: 'addr-2',
-    label: 'Home',
-    addressLine: 'Apt 402, Sunset Heights',
-    locality: 'Palm Grove Avenue, Sector 14',
-    city: 'Metro City',
-    isDefault: false,
-  },
-  {
-    id: 'addr-3',
-    label: 'Work',
-    addressLine: 'Tower B, 7th Floor, Cyber Tech Park',
-    locality: 'Innovation Boulevard',
-    city: 'Metro City',
-    isDefault: false,
   }
 ];
 

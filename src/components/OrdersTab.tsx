@@ -15,19 +15,22 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   onCompleteOrder,
   onExploreFood,
 }) => {
+  // Retain only the latest 4 orders for the customer panel
+  const customerOrders = orders.slice(0, 4);
+
   return (
     <div className="space-y-6 px-4 py-4 pb-28 max-w-2xl mx-auto">
       <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">Your Placed Orders</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Currently active and placed orders</p>
+          <p className="text-xs text-gray-500 mt-0.5">Showing your latest {customerOrders.length} orders (Max 4)</p>
         </div>
         <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
           WhatsApp: 8949508256
         </span>
       </div>
 
-      {orders.length === 0 ? (
+      {customerOrders.length === 0 ? (
         <div className="bg-white rounded-3xl p-10 text-center border border-gray-100 shadow-xs space-y-4">
           <div className="w-16 h-16 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto">
             <ShoppingBag className="w-8 h-8" />
@@ -47,7 +50,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
+          {customerOrders.map((order) => (
             <div
               key={order.id}
               id={`active-order-${order.id}`}

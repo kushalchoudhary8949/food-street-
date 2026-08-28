@@ -9,6 +9,7 @@ import {
   onSnapshot, 
   query, 
   orderBy,
+  getDocs,
   Firestore
 } from 'firebase/firestore';
 import { Order, Store, Category, OrderStatus } from '../types';
@@ -30,6 +31,11 @@ export const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
   messagingSenderId: "925486679911",
   appId: "1:925486679911:web:bf0063ede36696cdb651c2",
 };
+
+// Sanitizes undefined fields so Firestore setDoc never throws an error
+function cleanData<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 // Check environment variables, local storage, or default for config
 export function getStoredFirebaseConfig(): FirebaseConfig {
@@ -99,10 +105,10 @@ export async function saveOrderToFirestore(order: Order): Promise<boolean> {
 
   try {
     const orderDoc = doc(db, 'orders', order.id);
-    await setDoc(orderDoc, {
+    await setDoc(orderDoc, cleanData({
       ...order,
       createdAtTimestamp: Date.now(),
-    });
+    }));
     return true;
   } catch (error) {
     console.error('Error saving order to Firestore:', error);
@@ -175,13 +181,13 @@ export async function saveStoresToFirestore(stores: Store[]): Promise<boolean> {
   if (!db) return false;
 
   try {
-    for (const store of stores) {
-      await setDoc(doc(db, 'stores', store.id), store);
-    }
+    await Promise.all(
+      stores.map(store => setDoc(doc(db, 'stores', store.id), cleanData(store)))
+    );
     return true;
   } catch (error) {
     console.error('Error saving stores to Firestore:', error);
-    return false;
+    throw error;
   }
 }
 
@@ -221,13 +227,13 @@ export async function saveCategoriesToFirestore(categories: Category[]): Promise
   if (!db) return false;
 
   try {
-    for (const cat of categories) {
-      await setDoc(doc(db, 'categories', cat.id), cat);
-    }
+    await Promise.all(
+      categories.map(cat => setDoc(doc(db, 'categories', cat.id), cleanData(cat)))
+    );
     return true;
   } catch (error) {
     console.error('Error saving categories to Firestore:', error);
-    return false;
+    throw error;
   }
 }
 
@@ -257,3 +263,29 @@ export function subscribeToCategories(callback: (categories: Category[]) => void
     return () => {};
   }
 }
+
+// -------------------------------------------------------------
+// Auto-Seed Helper (Seeds Cloud Firestore if collections are empty)
+// -------------------------------------------------------------
+
+export async function autoSeedFirestoreIfEmpty(initialStores: Store[], initialCategories: Category[]): Promise<void> {
+  const db = getFirestoreDB();
+  if (!db) return;
+
+  try {
+    const storesSnapshot = await getDocs(collection(db, 'stores'));
+    if (storesSnapshot.empty && initialStores.length > 0) {
+      console.log('🌱 Firestore stores collection is empty. Auto-seeding initial stores to cloud...');
+      await saveStoresToFirestore(initialStores);
+    }
+
+    const categoriesSnapshot = await getDocs(collection(db, 'categories'));
+    if (categoriesSnapshot.empty && initialCategories.length > 0) {
+      console.log('🌱 Firestore categories collection is empty. Auto-seeding initial categories to cloud...');
+      await saveCategoriesToFirestore(initialCategories);
+    }
+  } catch (err) {
+    console.warn('Auto-seed check note:', err);
+  }
+}
+

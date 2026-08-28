@@ -17,7 +17,8 @@ import {
   subscribeToStores, 
   subscribeToCategories, 
   saveOrderToFirestore, 
-  deleteOrderFromFirestore 
+  deleteOrderFromFirestore,
+  autoSeedFirestoreIfEmpty
 } from './services/firebase';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS } from './data/mockData';
@@ -80,6 +81,9 @@ export default function App() {
 
   // Real-time Firebase Cloud Database Listeners
   React.useEffect(() => {
+    // Auto-seed initial stores & categories to cloud if DB is empty
+    autoSeedFirestoreIfEmpty(STORES, CATEGORIES);
+
     const unsubOrders = subscribeToOrders((liveOrders) => {
       if (liveOrders && liveOrders.length > 0) {
         setOrders(liveOrders);

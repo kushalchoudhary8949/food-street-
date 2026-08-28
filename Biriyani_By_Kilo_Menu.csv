@@ -1,0 +1,45 @@
+﻿Category,Item Name,Item Price,Image URL
+Biriyani,Veg Hyderabadi Biriyani,₹209,veg_hyderabadi_biriyani.jpg
+Biriyani,Paneer Hyderabadi Biriyani,₹269,paneer_hyderabadi_biriyani.jpg
+Biriyani,Soya Chaap Biriyani,₹279,soya_chaap_biriyani.jpg
+Biriyani,Chicken Boneless Biriyani,₹299,chicken_boneless_biriyani.jpg
+Biriyani,Chicken Tikka Biriyani,₹359,chicken_tikka_biriyani.jpg
+Kebab,Veg Galouti Kebab,₹189,veg_galouti_kebab.jpg
+Kebab,Hara Bhara Kebab,₹189,hara_bhara_kebab.jpg
+Kebab,Corn Cheese Stick,₹239,corn_cheese_stick.jpg
+Kebab,Dahi Ke Kebab,₹279,dahi_ke_kebab.jpg
+Kebab,Paneer 65 with Paratha,₹279,paneer_65_with_paratha.jpg
+Kebab,Paneer Tikka,₹299,paneer_tikka.jpg
+Kebab,Chicken Giloti Kebab,₹249,chicken_giloti_kebab.jpg
+Kebab,Chicken Seekh Kebab,₹249,chicken_seekh_kebab.jpg
+Kebab,Chicken Tikka,₹299,chicken_tikka.jpg
+Quick Meals,Dal Makhani with Flavoured Rice / 2 Paratha,₹279,dal_makhani_with_flavoured_rice_2_paratha.jpg
+Quick Meals,Butter Paneer with Flavoured Rice / 2 Paratha,₹299,butter_paneer_with_flavoured_rice_2_paratha.jpg
+Quick Meals,Butter Chicken Boneless with Flavoured Rice / 2 Paratha,₹329,butter_chicken_boneless_with_flavoured_rice_2_paratha.jpg
+Quick Meals,Mutton Nihari with Flavoured Rice / 2 Paratha,₹399,mutton_nihari_with_flavoured_rice_2_paratha.jpg
+Rolls,Paneer Tikka Roll,₹199,paneer_tikka_roll.jpg
+Rolls,Chicken Seekh Roll,₹179,chicken_seekh_roll.jpg
+Rolls,Chicken Tikka Roll,₹199,chicken_tikka_roll.jpg
+Meal for Two,Veg Biryani + Paneer Tikka Roll + Phirni + Any 2 Beverages,₹579,veg_biryani_paneer_tikka_roll_phirni_any_2_beverages.jpg
+Meal for Two,Chicken Boneless Biryani + Chicken Seekh Roll + Phirni + Any 2 Beverages,₹599,chicken_boneless_biryani_chicken_seekh_roll_phirni_any_2_beverages.jpg
+Biryani Combos,Veg Biryani + Any 1 Beverage,₹259,veg_biryani_any_1_beverage.jpg
+Biryani Combos,Veg Biryani + Veg Galouti,₹269,veg_biryani_veg_galouti.jpg
+Biryani Combos,Veg Biryani + Paneer Tikka Roll,₹389,veg_biryani_paneer_tikka_roll.jpg
+Biryani Combos,Chicken Boneless Biryani + Any 1 Beverage,₹349,chicken_boneless_biryani_any_1_beverage.jpg
+Biryani Combos,Chicken Boneless Biryani + Chicken Galouti,₹349,chicken_boneless_biryani_chicken_galouti.jpg
+Biryani Combos,Chicken Boneless Biryani + Chicken Seekh Kebab,₹349,chicken_boneless_biryani_chicken_seekh_kebab.jpg
+Biryani Combos,Chicken Boneless Biryani + Chicken Seekh Roll,₹399,chicken_boneless_biryani_chicken_seekh_roll.jpg
+Roll Combos,Paneer Tikka Roll + Any 1 Beverage,₹229,paneer_tikka_roll_any_1_beverage.jpg
+Roll Combos,Chicken Tikka Roll + Any 1 Beverage,₹229,chicken_tikka_roll_any_1_beverage.jpg
+Dessert,Gulab Jamun,₹49,gulab_jamun.jpg
+Dessert,Phirni,₹99,phirni.jpg
+Beverages,Imli Adraki Lemonade,₹79,imli_adraki_lemonade.jpg
+Beverages,Packaged Drinking Water,MRP,packaged_drinking_water.jpg
+Beverages,Soft Beverages,MRP,soft_beverages.jpg
+Add Ons,Imli Adraki Lemonade,₹59,imli_adraki_lemonade.jpg
+Add Ons,Phirni,₹79,phirni.jpg
+Extras,Mint Chutney,₹19,mint_chutney.jpg
+Extras,Raita,₹49,raita.jpg
+Extras,Salan,₹49,salan.jpg
+Extras,Paratha,₹59,paratha.jpg
+Extras,Rice,₹99,rice.jpg

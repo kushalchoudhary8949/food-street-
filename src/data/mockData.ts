@@ -1,0 +1,5405 @@
+import { Category, Store, UserAddress, Order } from '../types';
+
+export const CATEGORIES: Category[] = [
+  {
+    id: 'cat-1',
+    name: 'Burgers',
+    slug: 'burgers',
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-2',
+    name: 'Pizza',
+    slug: 'pizza',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-3',
+    name: 'Biryani',
+    slug: 'biryani',
+    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-4',
+    name: 'Chicken',
+    slug: 'chicken',
+    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-5',
+    name: 'Rolls',
+    slug: 'rolls',
+    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-6',
+    name: 'Desserts',
+    slug: 'desserts',
+    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-7',
+    name: 'Healthy',
+    slug: 'healthy',
+    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-8',
+    name: 'Ice Cream',
+    slug: 'ice cream',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=300&q=80',
+  },
+  {
+    id: 'cat-9',
+    name: 'South Indian',
+    slug: 'south indian',
+    image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=300&q=80',
+  }
+];
+
+export const STORES: Store[] = [
+  {
+    id: 'store-kfc',
+    name: 'KFC',
+    rating: 4.2,
+    reviewsCount: 1420,
+    deliveryTime: '25-30 mins',
+    deliveryFee: 15,
+    distance: '2.1 km',
+    image: '/images/storeImage/kfc.jpeg',
+    cuisines: ['Crispy Chicken', 'Burgers', 'Fast Food', 'Wings', 'Chicken', 'Snacks'],
+    tags: ['Chicken', 'Burgers', 'Fast Delivery', 'Bestseller'],
+    menuCategories: [
+      "Veg",
+      "Double Chicken Dynamite",
+      "Shawarma Specials",
+      "Epic Savers",
+      "Gold Edition",
+      "Box Meals",
+      "Variety Buckets",
+      "Chicken Buckets",
+      "Burgers",
+      "Snacks",
+      "Rice Bowlz",
+      "Desserts & Beverages"
+],
+    items: [
+      {
+            "id": "kfc-1",
+            "storeId": "store-kfc",
+            "name": "Chana Burger",
+            "price": 69,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-2",
+            "storeId": "store-kfc",
+            "name": "Chana Burger & Pepsi",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-3",
+            "storeId": "store-kfc",
+            "name": "Chana Burger Meal",
+            "price": 139,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-4",
+            "storeId": "store-kfc",
+            "name": "Veg Zinger Meal",
+            "price": 278,
+            "description": "Crunchy, juicy signature KFC favourite. (985 Kcal • 635g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-5",
+            "storeId": "store-kfc",
+            "name": "Veg Rice Bowlz & Pepsi Combo",
+            "price": 219,
+            "description": "Crunchy, juicy signature KFC favourite. (560 Kcal • 635g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-6",
+            "storeId": "store-kfc",
+            "name": "Veg Rice Bowlz",
+            "price": 179,
+            "description": "Crunchy, juicy signature KFC favourite. (408 Kcal • 305g)",
+            "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-7",
+            "storeId": "store-kfc",
+            "name": "Veg Longer Meal",
+            "price": 188,
+            "description": "Crunchy, juicy signature KFC favourite. (625 Kcal • 515g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-8",
+            "storeId": "store-kfc",
+            "name": "Classic Veg Krisper, Fries & Pepsi Combo",
+            "price": 188,
+            "description": "Crunchy, juicy signature KFC favourite. (771 Kcal • 555g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-9",
+            "storeId": "store-kfc",
+            "name": "Spicy Veg Krisper, Fries & Pepsi Combo",
+            "price": 188,
+            "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-10",
+            "storeId": "store-kfc",
+            "name": "Spicy Veg Krisper - With Cheese",
+            "price": 114,
+            "description": "Crunchy, juicy signature KFC favourite. (472 Kcal • 156g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-11",
+            "storeId": "store-kfc",
+            "name": "Classic Veg Krisper - With Cheese",
+            "price": 114,
+            "description": "Crunchy, juicy signature KFC favourite. (532 Kcal • 156g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-12",
+            "storeId": "store-kfc",
+            "name": "Veg Roll",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (447 Kcal • 145g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-13",
+            "storeId": "store-kfc",
+            "name": "Longer Veg Burger",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (259 Kcal • 110g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-14",
+            "storeId": "store-kfc",
+            "name": "Spicy Veg Krisper",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (436 Kcal • 145g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-15",
+            "storeId": "store-kfc",
+            "name": "Classic Veg Krisper",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (496 Kcal • 145g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-16",
+            "storeId": "store-kfc",
+            "name": "Fries + Pepsi",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Veg"
+      },
+      {
+            "id": "kfc-17",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Dynamite",
+            "price": 299,
+            "description": "Crunchy, juicy signature KFC favourite. (720 Kcal • 250g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Double Chicken Dynamite"
+      },
+      {
+            "id": "kfc-18",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Dynamite Combo",
+            "price": 339,
+            "description": "Crunchy, juicy signature KFC favourite. (862 Kcal • 580g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Double Chicken Dynamite"
+      },
+      {
+            "id": "kfc-19",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Dynamite Snack Box",
+            "price": 429,
+            "description": "Crunchy, juicy signature KFC favourite. (1168 Kcal • 670g)",
+            "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Double Chicken Dynamite"
+      },
+      {
+            "id": "kfc-20",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Dynamite Box Meal",
+            "price": 429,
+            "description": "Crunchy, juicy signature KFC favourite. (1335 Kcal • 720g)",
+            "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Double Chicken Dynamite"
+      },
+      {
+            "id": "kfc-21",
+            "storeId": "store-kfc",
+            "name": "2 Shawarmas – Saver Deal",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (904 Kcal • 330g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-22",
+            "storeId": "store-kfc",
+            "name": "2 Shawarma Meals – Value Deal",
+            "price": 399,
+            "description": "Crunchy, juicy signature KFC favourite. (1636 Kcal • 1140g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-23",
+            "storeId": "store-kfc",
+            "name": "Shawarma",
+            "price": 169,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-24",
+            "storeId": "store-kfc",
+            "name": "Shawarma & Pepsi Combo",
+            "price": 209,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-25",
+            "storeId": "store-kfc",
+            "name": "Shawarma Regular Meal",
+            "price": 268,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-26",
+            "storeId": "store-kfc",
+            "name": "Shawarma Snack Box",
+            "price": 299,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-27",
+            "storeId": "store-kfc",
+            "name": "Shawarma Box Meal",
+            "price": 299,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-28",
+            "storeId": "store-kfc",
+            "name": "Shawarma Big Box",
+            "price": 329,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Shawarma Specials"
+      },
+      {
+            "id": "kfc-29",
+            "storeId": "store-kfc",
+            "name": "Epic Savers Bucket",
+            "price": 499,
+            "description": "Crunchy, juicy signature KFC favourite. (479 Kcal • 670g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Epic Savers"
+      },
+      {
+            "id": "kfc-30",
+            "storeId": "store-kfc",
+            "name": "Gold Zinger and Popcorn Meal",
+            "price": 339,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-31",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Chicken Zinger",
+            "price": 269,
+            "description": "Crunchy, juicy signature KFC favourite. (678 Kcal • 250g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-32",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Chicken Zinger & Fries",
+            "price": 299,
+            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 325g)",
+            "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-33",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Chicken Zinger, Fries & Pepsi Meal",
+            "price": 368,
+            "description": "Crunchy, juicy signature KFC favourite. (1044 Kcal • 655g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-34",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – 3pc Boneless Strips",
+            "price": 209,
+            "description": "Crunchy, juicy signature KFC favourite. (387 Kcal • 146g)",
+            "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-35",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Regular Fries",
+            "price": 129,
+            "description": "Crunchy, juicy signature KFC favourite. (362 Kcal • 150g)",
+            "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-36",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Veg Zinger",
+            "price": 209,
+            "description": "Crunchy, juicy signature KFC favourite. (765 Kcal • 250g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-37",
+            "storeId": "store-kfc",
+            "name": "Gold Edition – Veg Zinger, Fries & Pepsi Meal",
+            "price": 308,
+            "description": "Crunchy, juicy signature KFC favourite. (1131 Kcal • 655g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Gold Edition"
+      },
+      {
+            "id": "kfc-38",
+            "storeId": "store-kfc",
+            "name": "All Chicken Box Meal",
+            "price": 189,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Box Meals"
+      },
+      {
+            "id": "kfc-39",
+            "storeId": "store-kfc",
+            "name": "Classic Zinger Box Meal",
+            "price": 319,
+            "description": "Crunchy, juicy signature KFC favourite. (1227 Kcal • 700g)",
+            "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Box Meals"
+      },
+      {
+            "id": "kfc-40",
+            "storeId": "store-kfc",
+            "name": "Tandoori Zinger Box Meal",
+            "price": 329,
+            "description": "Crunchy, juicy signature KFC favourite. (1500 Kcal • 705g)",
+            "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Box Meals"
+      },
+      {
+            "id": "kfc-41",
+            "storeId": "store-kfc",
+            "name": "Epic Feast Grand Bucket",
+            "price": 799,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-42",
+            "storeId": "store-kfc",
+            "name": "All In One Bucket",
+            "price": 549,
+            "description": "Crunchy, juicy signature KFC favourite. (520 Kcal • 1105g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-43",
+            "storeId": "store-kfc",
+            "name": "Ultimate Savings Bucket",
+            "price": 699,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-44",
+            "storeId": "store-kfc",
+            "name": "Big 12",
+            "price": 729,
+            "description": "Crunchy, juicy signature KFC favourite. (579 Kcal • 910g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-45",
+            "storeId": "store-kfc",
+            "name": "Big 8 With 2 Pepsi Zero Sugar",
+            "price": 719,
+            "description": "Crunchy, juicy signature KFC favourite. (608 Kcal • 1490g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-46",
+            "storeId": "store-kfc",
+            "name": "Big 8",
+            "price": 579,
+            "description": "Crunchy, juicy signature KFC favourite. (602 Kcal • 670g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Variety Buckets"
+      },
+      {
+            "id": "kfc-47",
+            "storeId": "store-kfc",
+            "name": "5 Leg Pc & Pepsi Combo",
+            "price": 579,
+            "description": "Crunchy, juicy signature KFC favourite. (1004 Kcal • 1160g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-48",
+            "storeId": "store-kfc",
+            "name": "5 Peri Peri Leg Pc",
+            "price": 479,
+            "description": "Crunchy, juicy signature KFC favourite. (748 Kcal • 500g)",
+            "image": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-49",
+            "storeId": "store-kfc",
+            "name": "8 Pc Bucket",
+            "price": 679,
+            "description": "Crunchy, juicy signature KFC favourite. (160 Kcal • 880g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-50",
+            "storeId": "store-kfc",
+            "name": "6pc Hot & Crispy",
+            "price": 549,
+            "description": "Crunchy, juicy signature KFC favourite. (213 Kcal • 660g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-51",
+            "storeId": "store-kfc",
+            "name": "8 Pc Boneless Meal",
+            "price": 399,
+            "description": "Crunchy, juicy signature KFC favourite. (374 Kcal • 500g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-52",
+            "storeId": "store-kfc",
+            "name": "5pc Smoky Red With 2 Pepsi",
+            "price": 549,
+            "description": "Crunchy, juicy signature KFC favourite. (569 Kcal • 780g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-53",
+            "storeId": "store-kfc",
+            "name": "5pc Smoky Red",
+            "price": 479,
+            "description": "Crunchy, juicy signature KFC favourite. (428 Kcal • 450g)",
+            "image": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-54",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Krisper",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (405 Kcal • 150g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-55",
+            "storeId": "store-kfc",
+            "name": "Spicy Chicken Krisper",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 145g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-56",
+            "storeId": "store-kfc",
+            "name": "Spicy Zinger Burger",
+            "price": 199,
+            "description": "Crunchy, juicy signature KFC favourite. (439 Kcal • 215g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-57",
+            "storeId": "store-kfc",
+            "name": "Spicy Zinger Meal",
+            "price": 298,
+            "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-58",
+            "storeId": "store-kfc",
+            "name": "Zinger Pro Burger",
+            "price": 239,
+            "description": "Crunchy, juicy signature KFC favourite. (529 Kcal • 225g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-59",
+            "storeId": "store-kfc",
+            "name": "Zinger Pro Meal",
+            "price": 338,
+            "description": "Crunchy, juicy signature KFC favourite. (895 Kcal • 630g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-60",
+            "storeId": "store-kfc",
+            "name": "Tandoori Zinger Burger",
+            "price": 199,
+            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 230g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-61",
+            "storeId": "store-kfc",
+            "name": "Tandoori Zinger Meal",
+            "price": 298,
+            "description": "Crunchy, juicy signature KFC favourite. (1268 Kcal • 635g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-62",
+            "storeId": "store-kfc",
+            "name": "American Classic Zinger Burger",
+            "price": 189,
+            "description": "Crunchy, juicy signature KFC favourite. (971 Kcal • 360g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-63",
+            "storeId": "store-kfc",
+            "name": "American Classic Zinger Meal",
+            "price": 278,
+            "description": "Crunchy, juicy signature KFC favourite. (978 Kcal • 630g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-64",
+            "storeId": "store-kfc",
+            "name": "Paneer Zinger Meal",
+            "price": 288,
+            "description": "Crunchy, juicy signature KFC favourite. (1009 Kcal • 620g)",
+            "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-65",
+            "storeId": "store-kfc",
+            "name": "Spicy Chicken Krisper, Popcorn & Pepsi Combo",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (648 Kcal • 235g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-66",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Krisper, Popcorn & Pepsi Combo",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (853 Kcal • 570g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-67",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Krisper, Fries & Pepsi Combo",
+            "price": 198,
+            "description": "Crunchy, juicy signature KFC favourite. (721 Kcal • 780g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-68",
+            "storeId": "store-kfc",
+            "name": "Chicken Longer Burger",
+            "price": 89,
+            "description": "Crunchy, juicy signature KFC favourite. (356 Kcal • 120g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-69",
+            "storeId": "store-kfc",
+            "name": "Chicken Longer Meal",
+            "price": 188,
+            "description": "Crunchy, juicy signature KFC favourite. (723 Kcal • 525g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-70",
+            "storeId": "store-kfc",
+            "name": "Spicy Chicken Krisper, Fries & Pepsi Combo",
+            "price": 198,
+            "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-71",
+            "storeId": "store-kfc",
+            "name": "Spicy Chicken Krisper - With Cheese",
+            "price": 124,
+            "description": "Crunchy, juicy signature KFC favourite. (378 Kcal • 156g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-72",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Krisper - With Cheese",
+            "price": 124,
+            "description": "Crunchy, juicy signature KFC favourite. (441 Kcal • 161g)",
+            "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Burgers"
+      },
+      {
+            "id": "kfc-73",
+            "storeId": "store-kfc",
+            "name": "Regular Popcorn",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (306 Kcal • 90g)",
+            "image": "https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-74",
+            "storeId": "store-kfc",
+            "name": "Medium Popcorn",
+            "price": 149,
+            "description": "Crunchy, juicy signature KFC favourite. (476 Kcal • 140g)",
+            "image": "https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-75",
+            "storeId": "store-kfc",
+            "name": "Large Popcorn",
+            "price": 199,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-76",
+            "storeId": "store-kfc",
+            "name": "4pc Hot Wings",
+            "price": 149,
+            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
+            "image": "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-77",
+            "storeId": "store-kfc",
+            "name": "3 Pc Peri Peri Strips",
+            "price": 149,
+            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
+            "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-78",
+            "storeId": "store-kfc",
+            "name": "6 Peri Peri Strips",
+            "price": 279,
+            "description": "Crunchy, juicy signature KFC favourite. (202 Kcal • 270g)",
+            "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-79",
+            "storeId": "store-kfc",
+            "name": "1 Pc Hot & Crispy",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (320 Kcal • 110g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-80",
+            "storeId": "store-kfc",
+            "name": "2pc Hot & Crispy",
+            "price": 195,
+            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 220g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-81",
+            "storeId": "store-kfc",
+            "name": "4pc Hot & Crispy",
+            "price": 379,
+            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 440g)",
+            "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-82",
+            "storeId": "store-kfc",
+            "name": "1pc Smoky Red",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (171 Kcal • 90g)",
+            "image": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-83",
+            "storeId": "store-kfc",
+            "name": "2pc Smoky Red",
+            "price": 195,
+            "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 180g)",
+            "image": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-84",
+            "storeId": "store-kfc",
+            "name": "Regular Fries",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-85",
+            "storeId": "store-kfc",
+            "name": "Medium Fries",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-86",
+            "storeId": "store-kfc",
+            "name": "Large Fries",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-87",
+            "storeId": "store-kfc",
+            "name": "Plain Rice Bowlz",
+            "price": 129,
+            "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 250g)",
+            "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-88",
+            "storeId": "store-kfc",
+            "name": "Tandoori Chicken Roll",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-89",
+            "storeId": "store-kfc",
+            "name": "Tandoori Chicken Roll Meal",
+            "price": 198,
+            "description": "Crunchy, juicy signature KFC favourite. (621 Kcal • 555g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-90",
+            "storeId": "store-kfc",
+            "name": "Thai Spicy Chicken Roll",
+            "price": 119,
+            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-91",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Roll",
+            "price": 99,
+            "description": "Crunchy, juicy signature KFC favourite. (461 Kcal • 150g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-92",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Roll",
+            "price": 149,
+            "description": "Crunchy, juicy signature KFC favourite. (526 Kcal • 190g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-93",
+            "storeId": "store-kfc",
+            "name": "Double Chicken Roll Meal",
+            "price": 248,
+            "description": "Crunchy, juicy signature KFC favourite. (892 Kcal • 595g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-94",
+            "storeId": "store-kfc",
+            "name": "American Nashville Roll Meal",
+            "price": 198,
+            "description": "Crunchy, juicy signature KFC favourite. (654 Kcal • 600g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-95",
+            "storeId": "store-kfc",
+            "name": "Thai Spicy Chicken Roll Meal",
+            "price": 198,
+            "description": "Crunchy, juicy signature KFC favourite. (591 Kcal • 555g)",
+            "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-96",
+            "storeId": "store-kfc",
+            "name": "Dynamite Spicy Mayo Dip",
+            "price": 29,
+            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 20g)",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-97",
+            "storeId": "store-kfc",
+            "name": "Nashville Hot Pepper Dip",
+            "price": 29,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-98",
+            "storeId": "store-kfc",
+            "name": "Eggless Mayo Dip",
+            "price": 29,
+            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-99",
+            "storeId": "store-kfc",
+            "name": "Tandoori Masala Dip",
+            "price": 29,
+            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-100",
+            "storeId": "store-kfc",
+            "name": "Naagin Sauce – The Original",
+            "price": 29,
+            "description": "Crunchy, juicy signature KFC favourite. (20 Kcal • 20g)",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-101",
+            "storeId": "store-kfc",
+            "name": "Naagin Sauce – The 65 Variant",
+            "price": 29,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Snacks"
+      },
+      {
+            "id": "kfc-102",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Rice Bowlz & Pepsi Combo",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (689 Kcal • 690g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-103",
+            "storeId": "store-kfc",
+            "name": "Popcorn Chicken Rice Bowlz & Pepsi Combo",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (757 Kcal • 670g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-104",
+            "storeId": "store-kfc",
+            "name": "Grilled Chicken Rice Bowlz & Pepsi Combo",
+            "price": 249,
+            "description": "Crunchy, juicy signature KFC favourite. (560 Kcal • 670g)",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-105",
+            "storeId": "store-kfc",
+            "name": "Classic Chicken Rice Bowlz",
+            "price": 199,
+            "description": "Crunchy, juicy signature KFC favourite. (547 Kcal • 360g)",
+            "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-106",
+            "storeId": "store-kfc",
+            "name": "Popcorn Chicken Rice Bowlz",
+            "price": 199,
+            "description": "Crunchy, juicy signature KFC favourite. (615 Kcal • 340g)",
+            "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-107",
+            "storeId": "store-kfc",
+            "name": "Grilled Chicken Rice Bowlz",
+            "price": 199,
+            "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 340g)",
+            "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Rice Bowlz"
+      },
+      {
+            "id": "kfc-108",
+            "storeId": "store-kfc",
+            "name": "Very Berry Strawberry Cup",
+            "price": 67,
+            "description": "Crunchy, juicy signature KFC favourite. (69 Kcal • 60g)",
+            "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-109",
+            "storeId": "store-kfc",
+            "name": "Alphonso Mango",
+            "price": 76,
+            "description": "Crunchy, juicy signature KFC favourite. (72 Kcal • 60g)",
+            "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-110",
+            "storeId": "store-kfc",
+            "name": "Dutch Chocolate Cup",
+            "price": 76,
+            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 59g)",
+            "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-111",
+            "storeId": "store-kfc",
+            "name": "Honey Nut Crunch Cup",
+            "price": 86,
+            "description": "Crunchy, juicy signature KFC favourite. (90 Kcal • 61g)",
+            "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-112",
+            "storeId": "store-kfc",
+            "name": "Redbull Energy Drink",
+            "price": 181,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-113",
+            "storeId": "store-kfc",
+            "name": "Redbull Sugarfree",
+            "price": 181,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-114",
+            "storeId": "store-kfc",
+            "name": "Mojito",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-115",
+            "storeId": "store-kfc",
+            "name": "Pepsi Regular",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-116",
+            "storeId": "store-kfc",
+            "name": "Pepsi Medium",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": false,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-117",
+            "storeId": "store-kfc",
+            "name": "Pepsi Large",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-118",
+            "storeId": "store-kfc",
+            "name": "7Up Regular",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-119",
+            "storeId": "store-kfc",
+            "name": "7Up Medium",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-120",
+            "storeId": "store-kfc",
+            "name": "7Up Large",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-121",
+            "storeId": "store-kfc",
+            "name": "Mirinda Regular",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-122",
+            "storeId": "store-kfc",
+            "name": "Mirinda Medium",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-123",
+            "storeId": "store-kfc",
+            "name": "Mirinda Large",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-124",
+            "storeId": "store-kfc",
+            "name": "Krush Lime",
+            "price": 69,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-125",
+            "storeId": "store-kfc",
+            "name": "Pepsi Zero Sugar Regular",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-126",
+            "storeId": "store-kfc",
+            "name": "Pepsi Zero Sugar Medium",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-127",
+            "storeId": "store-kfc",
+            "name": "Pepsi Zero Sugar Large",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-128",
+            "storeId": "store-kfc",
+            "name": "Mountain Dew R",
+            "price": 79,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-129",
+            "storeId": "store-kfc",
+            "name": "Mountain Dew M",
+            "price": 89,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-130",
+            "storeId": "store-kfc",
+            "name": "Mountain Dew L",
+            "price": 99,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-131",
+            "storeId": "store-kfc",
+            "name": "Coolberg Cranberry",
+            "price": 143,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-132",
+            "storeId": "store-kfc",
+            "name": "Coolberg Peach",
+            "price": 143,
+            "description": "Signature KFC preparation.",
+            "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-133",
+            "storeId": "store-kfc",
+            "name": "Choco Lava Cake",
+            "price": 109,
+            "description": "Crunchy, juicy signature KFC favourite. (343 Kcal • 60g)",
+            "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      },
+      {
+            "id": "kfc-134",
+            "storeId": "store-kfc",
+            "name": "Choco Mud Pie",
+            "price": 119,
+            "description": "Crunchy, juicy signature KFC favourite. (241 Kcal • 93g)",
+            "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+            "isVeg": true,
+            "category": "Desserts & Beverages"
+      }
+]
+    },
+  {
+    id: 'store-pizzahut',
+    name: 'Pizza Hut',
+    rating: 4.5,
+    reviewsCount: 3850,
+    deliveryTime: '25-35 mins',
+    deliveryFee: 15,
+    distance: '2.8 km',
+    image: '/images/storeImage/pizzahut.png',
+    cuisines: ["Pizzas", "Italian", "Wings & Sides", "Pastas", "Garlic Breads", "Desserts"],
+    discountOffer: 'Buy Any Pizza & Get 2 sides @ ₹59 each',
+    tags: ["Pizzas", "Italian", "Wings", "Bestseller", "Combos"],
+    menuCategories: [
+      "Triple Spice Pizzas",
+      "Veg Pizzas",
+      "Non-Veg Pizzas",
+      "Flavour Fun Pizzas",
+      "Melts & Crafted Flatz",
+      "Garlic Bread & Stix",
+      "Wings & Sides",
+      "Pastas",
+      "Meal Deals & Combos",
+      "Dips",
+      "Desserts",
+      "Drinks & Beverages"
+],
+    items: [
+      {
+        id: "ph-american-nashville",
+        storeId: "store-pizzahut",
+        name: "American Nashville",
+        price: 219,
+        description: "Triple spice pizza topped with smoky & spicy American Nashville sauce, mushroom, onion and a crust coated with spicy bhut jolokia chilli. (Toppings: chicken sausage; calorie: 245/251 kcal per 100g (Pan/Thin Crispy))",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Triple Spice Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 180
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-mexican-mango-habanero",
+        storeId: "store-pizzahut",
+        name: "Mexican Mango Habanero",
+        price: 249,
+        description: "Triple spice pizza topped with sweet & spicy Mexican mango habanero sauce, spicy jalapeno, green capsicum and a crust coated with spicy bhut jolokia chilli. (Toppings: herbed chicken; calorie: 243/246 kcal per 100g (Pan/Thin Crispy))",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Triple Spice Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 200
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-korean-red-chilli",
+        storeId: "store-pizzahut",
+        name: "Korean Red Chilli",
+        price: 279,
+        description: "Triple spice pizza topped with super spicy Korean red chilli sauce, spicy paprika, pepper, tomato and a crust coated with spicy bhut jolokia chilli. (Toppings: Schezwan meatball; calorie: 237/240 kcal per 100g (Pan/Thin Crispy))",
+        image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Triple Spice Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 220
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-japanese-wasabi",
+        storeId: "store-pizzahut",
+        name: "Japanese Wasabi",
+        price: 279,
+        description: "Triple spice pizza topped with punchy Japanese wasabi drizzle sauce, spicy paprika, green capsicum, onion and a crust coated with spicy bhut jolokia chilli. (Toppings: chicken meatball; calorie: 245/242 kcal per 100g (Pan/Thin Crispy))",
+        image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Triple Spice Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 220
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-create-your-own-3-in-1-pizza",
+        storeId: "store-pizzahut",
+        name: "Create Your Own 3-in-1 Pizza",
+        price: 279,
+        description: "Choose your toppings/combination from the 3-in-1 pizza option shown. (Non-veg: \u20b9369 personal / \u20b9649 medium)",
+        image: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 220
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-hot-wings-mango-habanero",
+        storeId: "store-pizzahut",
+        name: "Hot Wings - Mango Habanero",
+        price: 235,
+        description: "Hot wings with Mango Habanero flavour. (182 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        isBestseller: true,
+        category: "Wings & Sides",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-hot-wings-nashville",
+        storeId: "store-pizzahut",
+        name: "Hot Wings - Nashville",
+        price: 235,
+        description: "Hot wings with Nashville flavour. (189 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-hot-wings-korean",
+        storeId: "store-pizzahut",
+        name: "Hot Wings - Korean",
+        price: 235,
+        description: "Hot wings with Korean flavour. (182 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-hot-wings-wasabi",
+        storeId: "store-pizzahut",
+        name: "Hot Wings - Wasabi",
+        price: 235,
+        description: "Hot wings with Wasabi flavour. (193 kcal/100g; 6 pc price shown as \u20b9339)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-hot-fries",
+        storeId: "store-pizzahut",
+        name: "Hot Fries",
+        price: 129,
+        description: "Baked fries sprinkled with bhut jolokia chilli seasoning. (204 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-double-dipper",
+        storeId: "store-pizzahut",
+        name: "Double Dipper",
+        price: 50,
+        description: "Choose any 2 dips: Mango Habanero, Nashville, Korean, Wasabi. (Dip calories: 44/56/44/63 kcal per 30g respectively)",
+        image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-spicy-supreme-garlic-bread",
+        storeId: "store-pizzahut",
+        name: "Spicy Supreme Garlic Bread",
+        price: 179,
+        description: "Garlic bread with spicy supreme topping. (346 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Garlic Bread & Stix",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-exotica-veggie-garlic-bread",
+        storeId: "store-pizzahut",
+        name: "Exotica Veggie Garlic Bread",
+        price: 169,
+        description: "Garlic bread with exotic veggie topping. (449 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Garlic Bread & Stix",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-cheese-garlic-bread",
+        storeId: "store-pizzahut",
+        name: "Cheese Garlic Bread",
+        price: 165,
+        description: "Cheese garlic bread. (363 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Garlic Bread & Stix",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-masala-keema-garlic-bread",
+        storeId: "store-pizzahut",
+        name: "Masala Keema Garlic Bread",
+        price: 199,
+        description: "Garlic bread with masala keema. (442 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Garlic Bread & Stix",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-loaded-bread-stix",
+        storeId: "store-pizzahut",
+        name: "Loaded Bread Stix",
+        price: 169,
+        description: "Loaded bread sticks. (320 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Garlic Bread & Stix",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-classic-bread-stix",
+        storeId: "store-pizzahut",
+        name: "Classic Bread Stix",
+        price: 109,
+        description: "Classic bread sticks. (287 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Garlic Bread & Stix",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-extra-dip",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-cheese-dip",
+                            "name": "Cheesy Dip",
+                            "price": 35
+                  }
+        ],
+      },
+      {
+        id: "ph-cheezy-sprinkled-fries",
+        storeId: "store-pizzahut",
+        name: "Cheezy Sprinkled Fries",
+        price: 129,
+        description: "Baked fries with cheezy seasoning. (213 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-sprinkled-fries",
+        storeId: "store-pizzahut",
+        name: "Sprinkled Fries",
+        price: 119,
+        description: "Baked fries with signature Peruvian seasoning. (204 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-cheesy-pocket-2pc",
+        storeId: "store-pizzahut",
+        name: "Cheesy Pocket (2pc)",
+        price: 129,
+        description: "Cheesy pocket, 2 pieces. (276 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-indi-cheesy-pocket-2pc",
+        storeId: "store-pizzahut",
+        name: "Indi Cheesy Pocket (2pc)",
+        price: 109,
+        description: "Indi cheesy pocket, 2 pieces. (276 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+      },
+      {
+        id: "ph-bbq-baked-chicken-wings",
+        storeId: "store-pizzahut",
+        name: "BBQ Baked Chicken Wings",
+        price: 219,
+        description: "Baked chicken wings with BBQ flavour. (Price shown \u20b9219 / \u20b9299; 206 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-spicy-baked-chicken-wings",
+        storeId: "store-pizzahut",
+        name: "Spicy Baked Chicken Wings",
+        price: 219,
+        description: "Baked chicken wings with spicy flavour. (Price shown \u20b9219 / \u20b9299; 189 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Wings & Sides",
+        rating: 4.6,
+        ratingCount: 310,
+        addons: [
+                  {
+                            "id": "ad-ph-dip-schezwan",
+                            "name": "Spicy Schezwan Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-dip-jalapeno",
+                            "name": "Jalape\u00f1o Pepper Dip",
+                            "price": 30
+                  },
+                  {
+                            "id": "ad-ph-double-dipper",
+                            "name": "Double Dipper (2 Signature Dips)",
+                            "price": 50
+                  }
+        ],
+      },
+      {
+        id: "ph-classic-white-sauce-pasta",
+        storeId: "store-pizzahut",
+        name: "Classic White Sauce Pasta",
+        price: 249,
+        description: "Fusilli pasta, creamy white sauce, red bell pepper, olives, onions, capsicum. (176/178 kcal per 100g)",
+        image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Pastas",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-creamy-tomato-mix-sauce",
+        storeId: "store-pizzahut",
+        name: "Creamy Tomato Mix Sauce",
+        price: 199,
+        description: "Fusilli pasta, creamy white sauce, Italian arrabbiata sauce, red bell pepper, onions, capsicum, paprika. (140/146 kcal per 100g)",
+        image: "https://images.unsplash.com/photo-1556760544-74068565f05c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Pastas",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-italian-red-sauce",
+        storeId: "store-pizzahut",
+        name: "Italian Red Sauce",
+        price: 199,
+        description: "Fusilli pasta, Italian arrabbiata sauce, red bell pepper, onions, capsicum. (133/140 kcal per 100g)",
+        image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Pastas",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-veg-mayonnaise-dip",
+        storeId: "store-pizzahut",
+        name: "Veg Mayonnaise Dip",
+        price: 30,
+        description: "Veg mayonnaise dip. (55 kcal/15g)",
+        image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Dips",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-jalape-o-pepper-dip",
+        storeId: "store-pizzahut",
+        name: "Jalape\u00f1o Pepper Dip",
+        price: 30,
+        description: "Jalape\u00f1o pepper dip. (49 kcal/20g)",
+        image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Dips",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-schezwan-dip",
+        storeId: "store-pizzahut",
+        name: "Schezwan Dip",
+        price: 30,
+        description: "Schezwan dip. (18 kcal/15g)",
+        image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Dips",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-masala-guava-pop",
+        storeId: "store-pizzahut",
+        name: "Masala Guava Pop",
+        price: 109,
+        description: "Masala guava beverage. (188 kcal/250ml)",
+        image: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-lemon-mint-mojito",
+        storeId: "store-pizzahut",
+        name: "Lemon Mint Mojito",
+        price: 109,
+        description: "Lemon mint mojito beverage. (133 kcal/220ml)",
+        image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-masala-pop",
+        storeId: "store-pizzahut",
+        name: "Masala Pop",
+        price: 109,
+        description: "Masala pop beverage. (218 kcal/280ml)",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-fresh-lime",
+        storeId: "store-pizzahut",
+        name: "Fresh Lime",
+        price: 109,
+        description: "Fresh lime beverage. (43 kcal/215ml)",
+        image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-masala-lemonade",
+        storeId: "store-pizzahut",
+        name: "Masala Lemonade",
+        price: 109,
+        description: "Masala lemonade. (134 kcal/250ml; pitcher \u20b9389)",
+        image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-masala-pepsi",
+        storeId: "store-pizzahut",
+        name: "Masala Pepsi",
+        price: 109,
+        description: "Masala Pepsi. (127 kcal/250ml; pitcher \u20b9389)",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-masala-mirinda",
+        storeId: "store-pizzahut",
+        name: "Masala Mirinda",
+        price: 109,
+        description: "Masala Mirinda. (157 kcal/250ml; pitcher \u20b9389)",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-pepsi",
+        storeId: "store-pizzahut",
+        name: "Pepsi",
+        price: 99,
+        description: "Pepsi. (108 kcal/250ml; pitcher \u20b9339)",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-7-up",
+        storeId: "store-pizzahut",
+        name: "7 Up",
+        price: 99,
+        description: "7 Up. (115 kcal/250ml)",
+        image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-mirinda",
+        storeId: "store-pizzahut",
+        name: "Mirinda",
+        price: 99,
+        description: "Mirinda. (138 kcal/250ml; pitcher \u20b9339)",
+        image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Drinks & Beverages",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-ebony-ivory-with-brownie",
+        storeId: "store-pizzahut",
+        name: "Ebony & Ivory (with brownie)",
+        price: 149,
+        description: "Chocolate dessert with brownie. (381 kcal/118g)",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Desserts",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-choco-volcano",
+        storeId: "store-pizzahut",
+        name: "Choco Volcano",
+        price: 119,
+        description: "Chocolate volcano dessert. (262 kcal/82g)",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Desserts",
+        rating: 4.8,
+        ratingCount: 850,
+      },
+      {
+        id: "ph-brownie-wn-ie",
+        storeId: "store-pizzahut",
+        name: "Brownie-wn-ie",
+        price: 109,
+        description: "Brownie dessert. (273 kcal/55g)",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Desserts",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-choco-lava-romance",
+        storeId: "store-pizzahut",
+        name: "Choco Lava Romance",
+        price: 99,
+        description: "Chocolate lava dessert. (90 kcal/55g)",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Desserts",
+        rating: 4.8,
+        ratingCount: 850,
+      },
+      {
+        id: "ph-cheezy-cheese-veg",
+        storeId: "store-pizzahut",
+        name: "Cheezy Cheese Veg",
+        price: 229,
+        description: "Onion, green capsicum, red bell pepper, sweet corn, mozzarella cheese, flavourful sauce, cheezy seasoning. (296/268 kcal per 100g)",
+        image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-loaded-veggie-bbq",
+        storeId: "store-pizzahut",
+        name: "Loaded Veggie BBQ",
+        price: 199,
+        description: "Onion, green capsicum, red bell pepper, sweet corn, mushroom, mozzarella cheese, flavourful sauce, barbeque sauce, signature spice seasoning. (255/330 kcal per 100g)",
+        image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-margherita",
+        storeId: "store-pizzahut",
+        name: "Margherita",
+        price: 149,
+        description: "Classic cheese. (Pan 292 kcal/100g; Thin n Crispy 293 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 180
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-schezwan-margherita",
+        storeId: "store-pizzahut",
+        name: "Schezwan Margherita",
+        price: 185,
+        description: "With spicy Schezwan sauce. (Pan 300 kcal/100g; Thin n Crispy 309 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 174
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-double-cheese-margherita",
+        storeId: "store-pizzahut",
+        name: "Double Cheese Margherita",
+        price: 229,
+        description: "Extra cheese on a classic Margherita. The ultimate comfort food!. (Pan 298 kcal/100g; Thin n Crispy 292 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573821663912-569905455b1c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 186
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-corn-cheese",
+        storeId: "store-pizzahut",
+        name: "Corn & Cheese",
+        price: 179,
+        description: "Cheese & sweet corn. (Pan 320 kcal/100g; Thin n Crispy 304 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 160
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-veggie-feast",
+        storeId: "store-pizzahut",
+        name: "Veggie Feast",
+        price: 249,
+        description: "Sweet corn, herbed onion, green capsicum. (Pan 269 kcal/100g; Thin n Crispy 274 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 200
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-spiced-paneer",
+        storeId: "store-pizzahut",
+        name: "Spiced Paneer",
+        price: 319,
+        description: "Spiced paneer, onion, tomato. (Pan 276 kcal/100g; Thin n Crispy 283 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 230
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-mexican-fiesta",
+        storeId: "store-pizzahut",
+        name: "Mexican Fiesta",
+        price: 335,
+        description: "Red & green capsicum, jalape\u00f1o, onion, black olives, sweet corn. (Pan 266 kcal/100g; Thin n Crispy 258 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1528137871618-79d2761e3fd5?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 240
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-country-feast",
+        storeId: "store-pizzahut",
+        name: "Country Feast",
+        price: 335,
+        description: "Sweet corn, tomato, herbed onion, green capsicum. (Pan 244 kcal/100g; Thin n Crispy 282 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 240
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-bold-bbq-veggies",
+        storeId: "store-pizzahut",
+        name: "Bold BBQ Veggies",
+        price: 335,
+        description: "BBQ sauce, mushroom, onion, green capsicum, red paprika. (Pan 242 kcal/100g; Thin n Crispy 266 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 240
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-tandoori-paneer",
+        storeId: "store-pizzahut",
+        name: "Tandoori Paneer",
+        price: 369,
+        description: "Spiced paneer, onion, green capsicum, red paprika, tandoori sauce. (Pan 335 kcal/100g; Thin n Crispy 326 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        isBestseller: true,
+        category: "Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 300
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-veggie-supreme",
+        storeId: "store-pizzahut",
+        name: "Veggie Supreme",
+        price: 369,
+        description: "Onion, green capsicum, mushroom, red paprika, black olives, sweet corn. (Pan 254 kcal/100g; Thin n Crispy 258 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 300
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-mazedar-makhni-paneer",
+        storeId: "store-pizzahut",
+        name: "Mazedar Makhni Paneer",
+        price: 425,
+        description: "Spiced paneer, onion, red capsicum, makhni sauce, buttery spice sprinkle. (Pan 288 kcal/100g; Thin n Crispy 290 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 264
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-ultimate-tandoori-veggie",
+        storeId: "store-pizzahut",
+        name: "Ultimate Tandoori Veggie",
+        price: 399,
+        description: "Green capsicum, onion, mushroom, tomato, jalape\u00f1o, tandoori sauce, mint mayo. (Pan 314 kcal/100g; Thin n Crispy 395 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 280
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chicken-sausage",
+        storeId: "store-pizzahut",
+        name: "Chicken Sausage",
+        price: 219,
+        description: "Cheesy chicken sausage, onion. (Pan 310 kcal/100g; Thin n Crispy 312 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 186
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-sausage-sweet-corn",
+        storeId: "store-pizzahut",
+        name: "Sausage & Sweet Corn",
+        price: 279,
+        description: "Cheesy chicken sausage, sweet corn. (Pan 277 kcal/100g; Thin n Crispy 282 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 216
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-sizzling-schezwan-chicken",
+        storeId: "store-pizzahut",
+        name: "Sizzling Schezwan Chicken",
+        price: 339,
+        description: "Schezwan chicken meatballs, spicy Schezwan sauce. (Pan 277 kcal/100g; Thin n Crispy 286 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 276
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-dhabe-da-keema",
+        storeId: "store-pizzahut",
+        name: "Dhabe Da Keema",
+        price: 369,
+        description: "Dhaba style chicken keema masala, green chilli, onion, mint mayo. (Pan 270 kcal/100g; Thin n Crispy 290 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 280
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chicken-tikka",
+        storeId: "store-pizzahut",
+        name: "Chicken Tikka",
+        price: 419,
+        description: "Chicken tikka, tomato, onion, tandoori sauce. (Pan 275 kcal/100g; Thin n Crispy 283 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        isBestseller: true,
+        category: "Non-Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 270
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chicken-pepperoni",
+        storeId: "store-pizzahut",
+        name: "Chicken Pepperoni",
+        price: 399,
+        description: "Chicken pepperoni, cheese. (Pan 301 kcal/100g; Thin n Crispy 311 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 270
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-murg-malai-chicken",
+        storeId: "store-pizzahut",
+        name: "Murg Malai Chicken",
+        price: 419,
+        description: "Chicken malai tikka, red paprika, herbed onion, green capsicum. (Pan 269 kcal/100g; Thin n Crispy 299 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 270
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chicken-supreme",
+        storeId: "store-pizzahut",
+        name: "Chicken Supreme",
+        price: 439,
+        description: "Herbed chicken, Schezwan chicken meatballs, chicken tikka. (Pan 273 kcal/100g; Thin n Crispy 284 kcal/100g; marked Bestseller; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        isBestseller: true,
+        category: "Non-Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 290
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chicken-tikka-supreme",
+        storeId: "store-pizzahut",
+        name: "Chicken Tikka Supreme",
+        price: 439,
+        description: "Chicken tikka, chicken malai tikka, onion, red paprika. (Pan 267 kcal/100g; Thin n Crispy 274 kcal/100g; Bestseller)",
+        image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        isBestseller: true,
+        category: "Non-Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 290
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-nawabi-murg-makhni",
+        storeId: "store-pizzahut",
+        name: "Nawabi Murg Makhni",
+        price: 449,
+        description: "Chicken malai tikka, chicken keema masala, onion, tomato, makhni sauce, buttery spice sprinkle. (Pan 252 kcal/100g; Thin n Crispy 269 kcal/100g; Bestseller; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        isBestseller: true,
+        category: "Non-Veg Pizzas",
+        rating: 4.8,
+        ratingCount: 850,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 300
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-triple-chicken-feast",
+        storeId: "store-pizzahut",
+        name: "Triple Chicken Feast",
+        price: 449,
+        description: "Schezwan chicken meatballs, herbed chicken, chicken sausage, green capsicum, onion, red paprika. (Pan 262 kcal/100g; Thin n Crispy 277 kcal/100g; price not visibly printed in source)",
+        image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Non-Veg Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-med-upgrade",
+                            "name": "Upgrade to Medium Pizza",
+                            "price": 300
+                  },
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-overloaded-veggies",
+        storeId: "store-pizzahut",
+        name: "Overloaded Veggies",
+        price: 389,
+        description: "Mozzarella cheese, capsicum, onion, corn, tomato, jalape\u00f1o, olives, Texas garlic drizzle. (345 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-paneer-makhni-masala",
+        storeId: "store-pizzahut",
+        name: "Paneer Makhni Masala",
+        price: 389,
+        description: "Mozzarella cheese, masala paneer, onions, green chilli, red bell pepper, makhni sauce, mint sauce drizzle. (273 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-keema-masala",
+        storeId: "store-pizzahut",
+        name: "Keema Masala",
+        price: 429,
+        description: "Mozzarella cheese, chicken keema, onion, red paprika, green capsicum, makhni sauce, mint sauce drizzle. (276 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-tandoori-chicken",
+        storeId: "store-pizzahut",
+        name: "Tandoori Chicken",
+        price: 429,
+        description: "Mozzarella cheese, tikka duo\u2014chicken tikka & chicken malai tikka, duo peppers\u2014green & red, tandoori sauce, mint drizzle. (258 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Melts & Crafted Flatz",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-1-corn-cheese-veggie-feast-spiced-paneer",
+        storeId: "store-pizzahut",
+        name: "Meal for 1 - Corn & Cheese / Veggie Feast / Spiced Paneer",
+        price: 329,
+        originalPrice: 410,
+        description: "1 Personal Pizza + 2 Pc Garlic Bread + 1 Pepsi Glass. (Save up to 31%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-1-tandoori-paneer-veggie-supreme-ultimate-tandoori-veggie",
+        storeId: "store-pizzahut",
+        name: "Meal for 1 - Tandoori Paneer / Veggie Supreme / Ultimate Tandoori Veggie",
+        price: 399,
+        originalPrice: 500,
+        description: "1 Personal Pizza + 2 Pc Garlic Bread + 1 Pepsi Glass. (Save up to 31%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-1-sizzling-schezwan-chicken-dhabe-da-keema",
+        storeId: "store-pizzahut",
+        name: "Meal for 1 - Sizzling Schezwan Chicken / Dhabe Da Keema",
+        price: 379,
+        originalPrice: 470,
+        description: "1 Personal Pizza + 2 Pc Garlic Bread + 1 Pepsi Glass. (Save up to 31%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-1-chicken-tikka-chicken-supreme-chicken-pepperoni",
+        storeId: "store-pizzahut",
+        name: "Meal for 1 - Chicken Tikka / Chicken Supreme / Chicken Pepperoni",
+        price: 419,
+        originalPrice: 520,
+        description: "1 Personal Pizza + 2 Pc Garlic Bread + 1 Pepsi Glass. (Save up to 31%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-2-corn-cheese-veggie-feast-spiced-paneer",
+        storeId: "store-pizzahut",
+        name: "Meal for 2 - Corn & Cheese / Veggie Feast / Spiced Paneer",
+        price: 529,
+        originalPrice: 660,
+        description: "1 Medium Pizza + 2 Pepsi Glass. (Save up to 29%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-2-tandoori-paneer-veggie-supreme-ultimate-tandoori-veggie",
+        storeId: "store-pizzahut",
+        name: "Meal for 2 - Tandoori Paneer / Veggie Supreme / Ultimate Tandoori Veggie",
+        price: 629,
+        originalPrice: 790,
+        description: "1 Medium Pizza + 2 Pepsi Glass. (Save up to 29%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-2-sizzling-schezwan-chicken-dhabe-da-keema",
+        storeId: "store-pizzahut",
+        name: "Meal for 2 - Sizzling Schezwan Chicken / Dhabe Da Keema",
+        price: 589,
+        originalPrice: 740,
+        description: "1 Medium Pizza + 2 Pepsi Glass. (Save up to 29%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-2-chicken-tikka-chicken-supreme-chicken-pepperoni",
+        storeId: "store-pizzahut",
+        name: "Meal for 2 - Chicken Tikka / Chicken Supreme / Chicken Pepperoni",
+        price: 659,
+        originalPrice: 820,
+        description: "1 Medium Pizza + 2 Pepsi Glass. (Save up to 29%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-ultimate-meal-for-2",
+        storeId: "store-pizzahut",
+        name: "Ultimate Meal for 2",
+        price: 849,
+        originalPrice: 1060,
+        description: "Any 2 Beverages, Any 1 Veg Appetizer, 1 Choco Volcano, Any 1 Medium Pan Pizza. (Original/struck price \u20b9949 shown)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-4-veg-pizza-choices",
+        storeId: "store-pizzahut",
+        name: "Meal for 4 - Veg pizza choices",
+        price: 999,
+        originalPrice: 1250,
+        description: "2 Medium Pizza + 4 Pepsi Glass. Choose from Tandoori Paneer / Mexican Fiesta / Country Feast / Bold BBQ Veggies / Spiced Paneer / Veggie Feast. (Save up to 42%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-meal-for-4-non-veg-pizza-choices",
+        storeId: "store-pizzahut",
+        name: "Meal for 4 - Non-veg pizza choices",
+        price: 1099,
+        originalPrice: 1370,
+        description: "2 Medium Pizza + 4 Pepsi Glass. Choose from Chicken Tikka / Chicken Pepperoni / Murg Malai Chicken / Sizzling Schezwan Chicken / Dhabe Da Keema. (Save up to 42%)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-ultimate-meal-for-4",
+        storeId: "store-pizzahut",
+        name: "Ultimate Meal for 4",
+        price: 1599,
+        originalPrice: 2000,
+        description: "Any 4 Beverages, Any 2 Veg Appetizer, 2 Choco Volcano, Any 2 Medium Pan Pizzas. (Original/struck price \u20b91699 shown)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+      {
+        id: "ph-classic-corn",
+        storeId: "store-pizzahut",
+        name: "Classic Corn",
+        price: 105,
+        description: "Corn pizza. (319 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-classic-onion-capsicum",
+        storeId: "store-pizzahut",
+        name: "Classic Onion Capsicum",
+        price: 115,
+        description: "Onion and capsicum pizza. (307 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-spicy-sweet-corn-onion-green-chilli",
+        storeId: "store-pizzahut",
+        name: "Spicy Sweet Corn, Onion & Green Chilli",
+        price: 149,
+        description: "Sweet corn, onion and green chilli pizza. (327 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chatpata-tomato-onion-chilli",
+        storeId: "store-pizzahut",
+        name: "Chatpata Tomato Onion & Chilli",
+        price: 159,
+        description: "Tomato, onion and chilli pizza. (328 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-cheesy-spicy-delight",
+        storeId: "store-pizzahut",
+        name: "Cheesy Spicy Delight",
+        price: 179,
+        description: "Cheesy spicy pizza. (367 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1573821663912-569905455b1c?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chilli-paneer-sizzle",
+        storeId: "store-pizzahut",
+        name: "Chilli Paneer Sizzle",
+        price: 205,
+        description: "Chilli paneer pizza. (298 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=80",
+        isVeg: true,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-classic-chicken-pepperoni-onion",
+        storeId: "store-pizzahut",
+        name: "Classic Chicken Pepperoni & Onion",
+        price: 159,
+        description: "Chicken pepperoni and onion pizza. (332 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-classic-herbed-chicken-capsicum",
+        storeId: "store-pizzahut",
+        name: "Classic Herbed Chicken & Capsicum",
+        price: 179,
+        description: "Herbed chicken and capsicum pizza. (331 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-chatpata-chicken-feast",
+        storeId: "store-pizzahut",
+        name: "Chatpata Chicken Feast",
+        price: 229,
+        description: "Chicken feast pizza. (294 kcal/100g)",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Flavour Fun Pizzas",
+        rating: 4.5,
+        ratingCount: 420,
+        addons: [
+                  {
+                            "id": "ad-ph-cheese-crust",
+                            "name": "Ultimate Cheese Stuffed Crust",
+                            "price": 79
+                  },
+                  {
+                            "id": "ad-ph-extra-cheese",
+                            "name": "Extra 100% Mozzarella Cheese",
+                            "price": 50
+                  },
+                  {
+                            "id": "ad-ph-dip-mayo",
+                            "name": "Creamy Veg Mayo Dip",
+                            "price": 30
+                  }
+        ],
+      },
+      {
+        id: "ph-pizza-pasta-melts-choose-any-2",
+        storeId: "store-pizzahut",
+        name: "Pizza / Pasta / Melts \u2014 Choose Any 2",
+        price: 59,
+        description: "Buy a Pizza / Pasta / Melts and choose any 2 eligible items for \u20b959 each. (Header offer shown on page 1; eligibility/terms apply)",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
+        isVeg: false,
+        category: "Meal Deals & Combos",
+        rating: 4.6,
+        ratingCount: 240,
+      },
+    ]
+  },
+  {
+    id: 'store-bbk',
+    name: 'Biryani By Kilo',
+    rating: 4.7,
+    reviewsCount: 3410,
+    deliveryTime: '45-50 mins',
+    deliveryFee: 15,
+    distance: '4.2 km',
+    image: '/images/storeImage/biryani by kilooo.jpeg',
+    cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Chicken', 'Desserts'],
+    tags: ['Biryani', 'Mughlai', 'Kebabs', 'Chicken', 'Desserts'],
+    menuCategories: [
+      "Biriyani",
+      "Kebab",
+      "Quick Meals",
+      "Rolls",
+      "Meal for Two",
+      "Biryani Combos",
+      "Roll Combos",
+      "Dessert",
+      "Beverages",
+      "Add Ons",
+      "Extras"
+],
+    items: [
+      {
+            "id": "bbk-1",
+            "storeId": "store-bbk",
+            "name": "Veg Hyderabadi Biriyani",
+            "price": 209,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_hyderabadi_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-2",
+            "storeId": "store-bbk",
+            "name": "Paneer Hyderabadi Biriyani",
+            "price": 269,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_hyderabadi_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-3",
+            "storeId": "store-bbk",
+            "name": "Soya Chaap Biriyani",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/soya_chaap_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-4",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biriyani",
+            "price": 299,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biriyani.jpg",
+            "isVeg": false,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-5",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Biriyani",
+            "price": 359,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_biriyani.jpg",
+            "isVeg": false,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-6",
+            "storeId": "store-bbk",
+            "name": "Veg Galouti Kebab",
+            "price": 189,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_galouti_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-7",
+            "storeId": "store-bbk",
+            "name": "Hara Bhara Kebab",
+            "price": 189,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/hara_bhara_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-8",
+            "storeId": "store-bbk",
+            "name": "Corn Cheese Stick",
+            "price": 239,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/corn_cheese_stick.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-9",
+            "storeId": "store-bbk",
+            "name": "Dahi Ke Kebab",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/dahi_ke_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-10",
+            "storeId": "store-bbk",
+            "name": "Paneer 65 with Paratha",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_65_with_paratha.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-11",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka",
+            "price": 299,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-12",
+            "storeId": "store-bbk",
+            "name": "Chicken Giloti Kebab",
+            "price": 249,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_giloti_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-13",
+            "storeId": "store-bbk",
+            "name": "Chicken Seekh Kebab",
+            "price": 249,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-14",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka",
+            "price": 299,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-15",
+            "storeId": "store-bbk",
+            "name": "Dal Makhani with Flavoured Rice / 2 Paratha",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/dal_makhani_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": true,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-16",
+            "storeId": "store-bbk",
+            "name": "Butter Paneer with Flavoured Rice / 2 Paratha",
+            "price": 299,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/butter_paneer_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": true,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-17",
+            "storeId": "store-bbk",
+            "name": "Butter Chicken Boneless with Flavoured Rice / 2 Paratha",
+            "price": 329,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/butter_chicken_boneless_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": false,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-18",
+            "storeId": "store-bbk",
+            "name": "Mutton Nihari with Flavoured Rice / 2 Paratha",
+            "price": 399,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/mutton_nihari_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": false,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-19",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka Roll",
+            "price": 199,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-20",
+            "storeId": "store-bbk",
+            "name": "Chicken Seekh Roll",
+            "price": 179,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_seekh_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-21",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Roll",
+            "price": 199,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-22",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Paneer Tikka Roll + Phirni + Any 2 Beverages",
+            "price": 579,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll_phirni_any_2_beverages.jpg",
+            "isVeg": true,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "bbk-23",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Roll + Phirni + Any 2 Beverages",
+            "price": 599,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll_phirni_any_2_beverages.jpg",
+            "isVeg": false,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "bbk-24",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Any 1 Beverage",
+            "price": 259,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_any_1_beverage.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-25",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Veg Galouti",
+            "price": 269,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_veg_galouti.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-26",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Paneer Tikka Roll",
+            "price": 389,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-27",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Any 1 Beverage",
+            "price": 349,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_any_1_beverage.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-28",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Galouti",
+            "price": 349,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_galouti.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-29",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Kebab",
+            "price": 349,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-30",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Roll",
+            "price": 399,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-31",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka Roll + Any 1 Beverage",
+            "price": 229,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka_roll_any_1_beverage.jpg",
+            "isVeg": true,
+            "category": "Roll Combos"
+      },
+      {
+            "id": "bbk-32",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Roll + Any 1 Beverage",
+            "price": 229,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_roll_any_1_beverage.jpg",
+            "isVeg": false,
+            "category": "Roll Combos"
+      },
+      {
+            "id": "bbk-33",
+            "storeId": "store-bbk",
+            "name": "Gulab Jamun",
+            "price": 49,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/gulab_jamun.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "bbk-34",
+            "storeId": "store-bbk",
+            "name": "Phirni",
+            "price": 99,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/phirni.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "bbk-35",
+            "storeId": "store-bbk",
+            "name": "Imli Adraki Lemonade",
+            "price": 79,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-36",
+            "storeId": "store-bbk",
+            "name": "Packaged Drinking Water",
+            "price": 20,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/packaged_drinking_water.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-37",
+            "storeId": "store-bbk",
+            "name": "Soft Beverages",
+            "price": 60,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/soft_beverages.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-38",
+            "storeId": "store-bbk",
+            "name": "Imli Adraki Lemonade",
+            "price": 59,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
+            "isVeg": true,
+            "category": "Add Ons"
+      },
+      {
+            "id": "bbk-39",
+            "storeId": "store-bbk",
+            "name": "Phirni",
+            "price": 79,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/phirni.jpg",
+            "isVeg": true,
+            "category": "Add Ons"
+      },
+      {
+            "id": "bbk-40",
+            "storeId": "store-bbk",
+            "name": "Mint Chutney",
+            "price": 19,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/mint_chutney.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-41",
+            "storeId": "store-bbk",
+            "name": "Raita",
+            "price": 49,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/raita.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-42",
+            "storeId": "store-bbk",
+            "name": "Salan",
+            "price": 49,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/salan.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-43",
+            "storeId": "store-bbk",
+            "name": "Paratha",
+            "price": 59,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paratha.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-44",
+            "storeId": "store-bbk",
+            "name": "Rice",
+            "price": 99,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/rice.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      }
+]
+    },
+  {
+    id: 'store-goila',
+    name: 'Goila Butter Chicken',
+    rating: 4.6,
+    reviewsCount: 1940,
+    deliveryTime: '35-45 mins',
+    deliveryFee: 15,
+    distance: '2.8 km',
+    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=1000&q=85',
+    cuisines: ['North Indian', 'Chicken', 'Curries', 'Rolls', 'Kathi Rolls', 'Naan & Breads', 'Thalis'],
+    tags: ['North Indian', 'Chicken', 'Rolls', 'Curries', 'Thalis'],
+    menuCategories: [
+      "Curries",
+      "Kebabs",
+      "Breads",
+      "Rice",
+      "Rolls",
+      "Beverages",
+      "Dessert",
+      "Meal for Two",
+      "Kebab & Naan Meal",
+      "GBC Curry Naan Meal",
+      "GBC Curry Rice Bowl"
+],
+    items: [
+      {
+            "id": "goila-1",
+            "storeId": "store-goila",
+            "name": "24/7 Dal Makhani",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/24_7_dal_makhani.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-2",
+            "storeId": "store-goila",
+            "name": "Goila Butter Paneer",
+            "price": 299,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_paneer.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-3",
+            "storeId": "store-goila",
+            "name": "Soya Makhani Wala",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/soya_makhani_wala.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-4",
+            "storeId": "store-goila",
+            "name": "Desi Egg Curry",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/desi_egg_curry.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-5",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken with Bone",
+            "price": 349,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_with_bone.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-6",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Masala",
+            "price": 359,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_masala.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-7",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken Boneless",
+            "price": 369,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_boneless.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-8",
+            "storeId": "store-goila",
+            "name": "Tandoori Soya Chaap",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/tandoori_soya_chaap.jpg",
+            "isVeg": true,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-9",
+            "storeId": "store-goila",
+            "name": "Classic Paneer Tikka",
+            "price": 289,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/classic_paneer_tikka.jpg",
+            "isVeg": true,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-10",
+            "storeId": "store-goila",
+            "name": "Murgh Galouti Kebab",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/murgh_galouti_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-11",
+            "storeId": "store-goila",
+            "name": "Classic Chicken Tikka",
+            "price": 299,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/classic_chicken_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-12",
+            "storeId": "store-goila",
+            "name": "Chicken Makhmali Seekh Kebab",
+            "price": 229,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_makhmali_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-13",
+            "storeId": "store-goila",
+            "name": "Delhi Tandoori Chicken",
+            "price": 329,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/delhi_tandoori_chicken.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-14",
+            "storeId": "store-goila",
+            "name": "Murgh Malai Tikka",
+            "price": 329,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/murgh_malai_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-15",
+            "storeId": "store-goila",
+            "name": "Tandoori Roti (Plain/Butter)",
+            "price": 39,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/tandoori_roti_plain_butter.jpg",
+            "isVeg": true,
+            "category": "Breads",
+            "addons": [
+                  {
+                        "id": "ad-g-butter",
+                        "name": "Butter",
+                        "price": 10
+                  }
+            ]
+      },
+      {
+            "id": "goila-16",
+            "storeId": "store-goila",
+            "name": "Naan (Plain/Butter/Garlic)",
+            "price": 69,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/naan_plain_butter_garlic.jpg",
+            "isVeg": true,
+            "category": "Breads",
+            "addons": [
+                  {
+                        "id": "ad-g-naanbutter",
+                        "name": "Butter",
+                        "price": 10
+                  },
+                  {
+                        "id": "ad-g-naangarlic",
+                        "name": "Garlic",
+                        "price": 10
+                  }
+            ]
+      },
+      {
+            "id": "goila-17",
+            "storeId": "store-goila",
+            "name": "Lachha Paratha",
+            "price": 69,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/lachha_paratha.jpg",
+            "isVeg": true,
+            "category": "Breads"
+      },
+      {
+            "id": "goila-18",
+            "storeId": "store-goila",
+            "name": "Steam Rice",
+            "price": 99,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/steam_rice.jpg",
+            "isVeg": true,
+            "category": "Rice"
+      },
+      {
+            "id": "goila-19",
+            "storeId": "store-goila",
+            "name": "Jeera Rice",
+            "price": 109,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/jeera_rice.jpg",
+            "isVeg": true,
+            "category": "Rice"
+      },
+      {
+            "id": "goila-20",
+            "storeId": "store-goila",
+            "name": "Malai Soya Roll",
+            "price": 179,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/malai_soya_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-21",
+            "storeId": "store-goila",
+            "name": "Butter Paneer Roll",
+            "price": 189,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_paneer_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-22",
+            "storeId": "store-goila",
+            "name": "Butter Chicken Roll",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_chicken_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-23",
+            "storeId": "store-goila",
+            "name": "Malai Chicken Tikka Roll",
+            "price": 229,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/malai_chicken_tikka_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-24",
+            "storeId": "store-goila",
+            "name": "Butter Milk",
+            "price": 99,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_milk.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "goila-25",
+            "storeId": "store-goila",
+            "name": "Sweet Lassi",
+            "price": 99,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/sweet_lassi.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "goila-26",
+            "storeId": "store-goila",
+            "name": "Red Bull / Water Bottle / Soft Beverages",
+            "price": 60,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/red_bull_water_bottle_soft_beverages.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "goila-27",
+            "storeId": "store-goila",
+            "name": "Gulab Jamun with Rabri",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/gulab_jamun_with_rabri.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "goila-28",
+            "storeId": "store-goila",
+            "name": "Butter Paneer Meal",
+            "price": 589,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_paneer_meal.jpg",
+            "isVeg": true,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "goila-29",
+            "storeId": "store-goila",
+            "name": "Butter Chicken Meal",
+            "price": 599,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_chicken_meal.jpg",
+            "isVeg": false,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "goila-30",
+            "storeId": "store-goila",
+            "name": "Soya Tikka Meal",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/soya_tikka_meal.jpg",
+            "isVeg": true,
+            "category": "Kebab & Naan Meal"
+      },
+      {
+            "id": "goila-31",
+            "storeId": "store-goila",
+            "name": "Paneer Tikka Shashlik Meal",
+            "price": 269,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/paneer_tikka_shashlik_meal.jpg",
+            "isVeg": true,
+            "category": "Kebab & Naan Meal"
+      },
+      {
+            "id": "goila-32",
+            "storeId": "store-goila",
+            "name": "Murgh Galouti Meal",
+            "price": 229,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/murgh_galouti_meal.jpg",
+            "isVeg": false,
+            "category": "Kebab & Naan Meal"
+      },
+      {
+            "id": "goila-33",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Meal",
+            "price": 269,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_meal.jpg",
+            "isVeg": false,
+            "category": "Kebab & Naan Meal"
+      },
+      {
+            "id": "goila-34",
+            "storeId": "store-goila",
+            "name": "Chicken Malai Tikka Meal",
+            "price": 289,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_malai_tikka_meal.jpg",
+            "isVeg": false,
+            "category": "Kebab & Naan Meal"
+      },
+      {
+            "id": "goila-35",
+            "storeId": "store-goila",
+            "name": "Soya Makhani Wala Meal",
+            "price": 179,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/soya_makhani_wala_meal.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Naan Meal"
+      },
+      {
+            "id": "goila-36",
+            "storeId": "store-goila",
+            "name": "Goila Butter Paneer Meal",
+            "price": 229,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_paneer_meal.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Naan Meal"
+      },
+      {
+            "id": "goila-37",
+            "storeId": "store-goila",
+            "name": "Desi Egg Curry Meal",
+            "price": 189,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/desi_egg_curry_meal.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Naan Meal"
+      },
+      {
+            "id": "goila-38",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Masala Meal",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_masala_meal.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Naan Meal"
+      },
+      {
+            "id": "goila-39",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken Meal",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_meal.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Naan Meal"
+      },
+      {
+            "id": "goila-40",
+            "storeId": "store-goila",
+            "name": "Dal Makhani Rice Bowl",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/dal_makhani_rice_bowl.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-41",
+            "storeId": "store-goila",
+            "name": "Butter Paneer Rice Bowl",
+            "price": 229,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_paneer_rice_bowl.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-42",
+            "storeId": "store-goila",
+            "name": "Desi Egg Curry Rice Bowl",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/desi_egg_curry_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-43",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Masala Rice Bowl",
+            "price": 249,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_masala_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-44",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken Rice Bowl",
+            "price": 269,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      }
+]
+    },
+  {
+    id: 'store-baskinrobbins',
+    name: 'Baskin Robbins',
+    rating: 4.8,
+    reviewsCount: 3120,
+    deliveryTime: '20-25 mins',
+    deliveryFee: 15,
+    distance: '1.8 km',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1000&q=85',
+    cuisines: ['Ice Cream', 'Celebration Cakes', 'Desserts', 'Cake Toppers'],
+    discountOffer: 'Premium Celebration Cakes from ₹699',
+    tags: ['Celebration Cakes', 'Desserts', 'Gifting', 'Premium', 'Trending'],
+    menuCategories: ['Celebration Cakes', 'Cake Toppers', 'Party Candles'],
+    items: [
+      // ── Celebration Cakes ──
+      {
+        id: 'br-biscoff',
+        storeId: 'store-baskinrobbins',
+        name: 'Biscoff',
+        price: 849,
+        description: 'Indulgent Biscoff-flavoured ice cream cake with caramelized cookie crumble layers and a rich Biscoff drizzle. Perfect for any celebration.',
+        image: '/images/Baskin Robbins/Biscoff.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.9,
+        ratingCount: 920,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-pistachio-caramel',
+        storeId: 'store-baskinrobbins',
+        name: 'Pistachio & Caramel',
+        price: 749,
+        description: 'Creamy pistachio ice cream layered with salted caramel swirls and crushed pistachio bits. A premium, nutty delight.',
+        image: '/images/Baskin Robbins/Pistachio & Caramel.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 780,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-blueberry-cheesecake',
+        storeId: 'store-baskinrobbins',
+        name: 'Blueberry Cheesecake',
+        price: 749,
+        description: 'Luscious blueberry cheesecake-flavoured ice cream cake with a tangy blueberry ribbon and creamy cheesecake base.',
+        image: '/images/Baskin Robbins/Blueberry Cheesecake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.7,
+        ratingCount: 650,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-red-velvet-fantasy',
+        storeId: 'store-baskinrobbins',
+        name: 'Red Velvet Fantasy',
+        price: 749,
+        description: 'Rich red velvet ice cream cake with velvety cream cheese swirls and delicate red velvet cake pieces.',
+        image: '/images/Baskin Robbins/Red Velvet Fantasy.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 870,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-alphonso-mango',
+        storeId: 'store-baskinrobbins',
+        name: 'Alphonso Mango',
+        price: 699,
+        description: 'Made with genuine Ratnagiri Alphonso mango pulp for an intensely rich and tropical ice cream cake experience.',
+        image: '/images/Baskin Robbins/Alphonso Mango cake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.9,
+        ratingCount: 740,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-black-forest',
+        storeId: 'store-baskinrobbins',
+        name: 'Black Forest',
+        price: 699,
+        description: 'Classic Black Forest ice cream cake with layers of chocolate, cherry and whipped cream – a timeless favourite.',
+        image: '/images/Baskin Robbins/Black Forest.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.7,
+        ratingCount: 690,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-chocolate-truffle',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Truffle',
+        price: 699,
+        description: 'Decadent triple chocolate truffle ice cream cake with dark chocolate ganache and chocolate shavings.',
+        image: '/images/Baskin Robbins/Chocolate Truffle.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 960,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-cotton-candy',
+        storeId: 'store-baskinrobbins',
+        name: 'Cotton Candy',
+        price: 699,
+        description: 'Whimsical cotton candy-flavoured ice cream cake in vibrant pink and blue swirls – a fun-filled treat for all ages.',
+        image: '/images/Baskin Robbins/Cotton Candy.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.6,
+        ratingCount: 520,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-pineapple',
+        storeId: 'store-baskinrobbins',
+        name: 'Pineapple',
+        price: 699,
+        description: 'Refreshing pineapple-flavoured ice cream cake with tangy pineapple chunks and a creamy base.',
+        image: '/images/Baskin Robbins/Pineapple cake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.6,
+        ratingCount: 480,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      // ── Cake Toppers ──
+      {
+        id: 'br-topper-happy-birthday',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Happy Birthday',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Happy Birthday" – the perfect finishing touch for your celebration cake.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Birthday.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 320,
+      },
+      {
+        id: 'br-topper-happy-anniversary',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Happy Anniversary',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Happy Anniversary" – add a sweet personal touch to your cake.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Anniversary.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 280,
+      },
+      {
+        id: 'br-topper-congratulations',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Congratulations',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Congratulations" – celebrate every milestone in style.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Congratulations.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 250,
+      },
+      // ── Party Candles ──
+      {
+        id: 'br-number-candle',
+        storeId: 'store-baskinrobbins',
+        name: 'Number Candle',
+        price: 25,
+        description: 'Choose your age number candle to complete the birthday celebration. Available in all numbers (0-9).',
+        image: '/images/Baskin Robbins/Number Candle.jpg',
+        isVeg: true,
+        category: 'Party Candles',
+        rating: 4.4,
+        ratingCount: 410,
+      },
+      {
+        id: 'br-heart-candles',
+        storeId: 'store-baskinrobbins',
+        name: 'Heart Candles',
+        price: 65,
+        description: 'Set of 4 adorable heart-shaped candles – perfect for anniversaries, Valentine\'s Day, or any romantic celebration.',
+        image: '/images/Baskin Robbins/Heart Candles.jpg',
+        isVeg: true,
+        category: 'Party Candles',
+        rating: 4.6,
+        ratingCount: 350,
+      }
+    ]
+  },
+  {
+    id: 'store-vengo',
+    name: 'Vengo',
+    rating: 4.6,
+    reviewsCount: 2310,
+    deliveryTime: '20-30 mins',
+    deliveryFee: 15,
+    distance: '2.3 km',
+    image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1000&q=85',
+    cuisines: ['South Indian', 'Crispy Dosas', 'Healthy', 'Idli & Vada', 'Pure Veg', 'North Indian', 'Thalis', 'Desserts', 'Indo-Chinese'],
+    discountOffer: 'FREE Delivery above ₹199',
+    tags: ['South Indian', 'Pure Veg', 'Healthy', 'Authentic Taste', 'Special Dosas', 'Desserts'],
+    menuCategories: [
+      'Special Dosas',
+      'Idli, Vada & More',
+      'Main Course',
+      'Breads',
+      'Thali, Snacks & Indo-Chinese',
+      'Value Combos & Accompaniments',
+      'Tiffin Combo',
+      'Beverages',
+      'Desserts'
+    ],
+    items: [
+      // 1. Special Dosas
+      {
+        id: 'vengo-plain-dosa',
+        storeId: 'store-vengo',
+        name: 'Plain Dosa',
+        price: 139,
+        description: 'Crispy golden roasted crepe made from fermented rice and lentil batter. Served with sambar and chutneys.',
+        image: '/images/vengo/plain_dosa.jpeg',
+        isVeg: true,
+        category: 'Special Dosas',
+        rating: 4.6,
+        ratingCount: 380,
+      },
+      {
+        id: 'vengo-masala-dosa',
+        storeId: 'store-vengo',
+        name: 'Masala Dosa',
+        price: 189,
+        description: 'Classic golden crispy dosa filled with mildly spiced mashed potato masala and fresh herbs.',
+        image: '/images/vengo/masala_dosa.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Special Dosas',
+        rating: 4.9,
+        ratingCount: 1420,
+        addons: [
+          { id: 'ad-vengo-podi', name: 'Gunpowder Podi with Ghee', price: 25 },
+          { id: 'ad-vengo-chutney', name: 'Extra Coconut Chutney', price: 20 },
+        ]
+      },
+      {
+        id: 'vengo-butter-masala-dosa',
+        storeId: 'store-vengo',
+        name: 'Butter Masala Dosa',
+        price: 209,
+        description: 'Crisp dosa generously smeared with fresh butter, stuffed with authentic spiced potato masala.',
+        image: '/images/vengo/butter_masala_dosa.jpeg',
+        isVeg: true,
+        category: 'Special Dosas',
+        rating: 4.8,
+        ratingCount: 650,
+      },
+      {
+        id: 'vengo-mysore-masala-dosa',
+        storeId: 'store-vengo',
+        name: 'Mysore Masala Dosa',
+        price: 209,
+        description: 'Crisp dosa layered with spicy red garlic-chutney paste and stuffed with seasoned potato filling.',
+        image: '/images/vengo/mysore_masala_dosa.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Special Dosas',
+        rating: 4.9,
+        ratingCount: 910,
+      },
+      {
+        id: 'vengo-ghee-roast-masala-dosa',
+        storeId: 'store-vengo',
+        name: 'Ghee Roast Masala Dosa',
+        price: 209,
+        description: 'Crispy dosa roasted in pure aromatic desi ghee with fragrant potato masala, served with 3 chutneys & sambar.',
+        image: '/images/vengo/ghee_roast_masala_dosa.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Special Dosas',
+        rating: 4.9,
+        ratingCount: 1180,
+      },
+      {
+        id: 'vengo-paneer-dosa',
+        storeId: 'store-vengo',
+        name: 'Paneer Dosa',
+        price: 249,
+        description: 'Crispy golden dosa generously filled with grated spiced cottage cheese, onions and coriander.',
+        image: '/images/vengo/paneer_dosa.jpeg',
+        isVeg: true,
+        category: 'Special Dosas',
+        rating: 4.7,
+        ratingCount: 430,
+      },
+
+      // 2. Idli, Vada & More
+      {
+        id: 'vengo-medu-vada',
+        storeId: 'store-vengo',
+        name: 'Medu Vada',
+        price: 149,
+        description: 'Crispy deep-fried lentil doughnuts with ginger, curry leaves and crushed black pepper.',
+        image: '/images/vengo/medu_vada.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Idli, Vada & More',
+        rating: 4.8,
+        ratingCount: 760,
+      },
+      {
+        id: 'vengo-rice-idli',
+        storeId: 'store-vengo',
+        name: 'Rice Idli',
+        price: 139,
+        description: 'Piping hot, fluffy and soft steamed fermented rice and black lentil cakes served with sambar.',
+        image: '/images/vengo/rice_idli.jpeg',
+        isVeg: true,
+        category: 'Idli, Vada & More',
+        rating: 4.7,
+        ratingCount: 520,
+      },
+      {
+        id: 'vengo-onion-utthapam',
+        storeId: 'store-vengo',
+        name: 'Onion Utthapam',
+        price: 199,
+        description: 'Thick and soft pancake topped with generously sauteed chopped red onions and green chillies.',
+        image: '/images/vengo/onion_utthapam.jpeg',
+        isVeg: true,
+        category: 'Idli, Vada & More',
+        rating: 4.6,
+        ratingCount: 340,
+      },
+      {
+        id: 'vengo-vegetable-utthapam',
+        storeId: 'store-vengo',
+        name: 'Vegetable Utthapam',
+        price: 209,
+        description: 'Soft and thick savoury pancake loaded with diced tomatoes, onions, capsicum and carrots.',
+        image: '/images/vengo/vegetable_utthapam.jpeg',
+        isVeg: true,
+        category: 'Idli, Vada & More',
+        rating: 4.7,
+        ratingCount: 410,
+      },
+      {
+        id: 'vengo-sambar-vada',
+        storeId: 'store-vengo',
+        name: 'Sambar Vada',
+        price: 169,
+        description: 'Crispy medu vadas dipped in a bowl of piping hot aromatic South Indian lentil vegetable sambar.',
+        image: '/images/vengo/sambar_vada.jpeg',
+        isVeg: true,
+        category: 'Idli, Vada & More',
+        rating: 4.8,
+        ratingCount: 580,
+      },
+      {
+        id: 'vengo-upma',
+        storeId: 'store-vengo',
+        name: 'Upma',
+        price: 169,
+        description: 'Wholesome roasted semolina cooked with mustard seeds, curry leaves, ginger and vegetables.',
+        image: '/images/vengo/upma.jpeg',
+        isVeg: true,
+        category: 'Idli, Vada & More',
+        rating: 4.5,
+        ratingCount: 290,
+      },
+
+      // 3. Main Course
+      {
+        id: 'vengo-kadhai-paneer',
+        storeId: 'store-vengo',
+        name: 'Kadhai Paneer',
+        price: 275,
+        description: 'Cottage cheese cubes cooked with crunchy bell peppers, onions and fresh ground kadhai spices.',
+        image: '/images/vengo/kadhai_paneer.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Main Course',
+        rating: 4.9,
+        ratingCount: 880,
+      },
+      {
+        id: 'vengo-dal-makhani',
+        storeId: 'store-vengo',
+        name: 'Dal Makhani',
+        price: 220,
+        description: 'Black lentils slow cooked overnight on low flame with fresh cream, white butter and mild spices.',
+        image: '/images/vengo/dal_makhani.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Main Course',
+        rating: 4.9,
+        ratingCount: 1140,
+      },
+      {
+        id: 'vengo-rajma-masala',
+        storeId: 'store-vengo',
+        name: 'Rajma Masala',
+        price: 190,
+        description: 'Tender red kidney beans simmered in a thick, spiced onion-tomato gravy flavored with garam masala.',
+        image: '/images/vengo/rajma_masala.jpeg',
+        isVeg: true,
+        category: 'Main Course',
+        rating: 4.7,
+        ratingCount: 510,
+      },
+      {
+        id: 'vengo-chole',
+        storeId: 'store-vengo',
+        name: 'Chole',
+        price: 190,
+        description: 'Authentic Amritsari chickpeas cooked in a robust blend of aromatic roasted spices and herbs.',
+        image: '/images/vengo/chole.jpeg',
+        isVeg: true,
+        category: 'Main Course',
+        rating: 4.7,
+        ratingCount: 460,
+      },
+      {
+        id: 'vengo-dal-tadka',
+        storeId: 'store-vengo',
+        name: 'Dal Tadka',
+        price: 185,
+        description: 'Yellow lentils cooked to perfection and tempered with cumin, garlic, dry red chillies and ghee.',
+        image: '/images/vengo/dal_tadka.jpeg',
+        isVeg: true,
+        category: 'Main Course',
+        rating: 4.6,
+        ratingCount: 390,
+      },
+      {
+        id: 'vengo-mix-vegetables',
+        storeId: 'store-vengo',
+        name: 'Mix Vegetables',
+        price: 185,
+        description: 'Assorted seasonal fresh vegetables simmered in a mildly spiced onion-tomato masala gravy.',
+        image: '/images/vengo/mix_vegetables.jpeg',
+        isVeg: true,
+        category: 'Main Course',
+        rating: 4.5,
+        ratingCount: 280,
+      },
+
+      // 4. Breads
+      {
+        id: 'vengo-paneer-paratha',
+        storeId: 'store-vengo',
+        name: 'Paneer Paratha',
+        price: 130,
+        description: 'Whole wheat flatbread stuffed with spiced grated paneer, cooked golden with pure butter.',
+        image: '/images/vengo/paneer_paratha.jpeg',
+        isVeg: true,
+        category: 'Breads',
+        rating: 4.8,
+        ratingCount: 470,
+      },
+      {
+        id: 'vengo-paratha-aloo-mix',
+        storeId: 'store-vengo',
+        name: 'Paratha (Aloo/Mix)',
+        price: 100,
+        description: 'Tawa roasted whole wheat paratha filled with seasoned mashed potatoes or mixed vegetables.',
+        image: '/images/vengo/paratha_aloo_mix.jpeg',
+        isVeg: true,
+        category: 'Breads',
+        rating: 4.6,
+        ratingCount: 350,
+      },
+      {
+        id: 'vengo-naan-plain-butter',
+        storeId: 'store-vengo',
+        name: 'Naan (Plain/Butter)',
+        price: 60,
+        description: 'Soft leavened oven-baked flatbread brushed with rich melted butter.',
+        image: '/images/vengo/naan_plain_butter.jpeg',
+        isVeg: true,
+        category: 'Breads',
+        rating: 4.7,
+        ratingCount: 620,
+      },
+
+      // 5. Thali, Snacks & Indo-Chinese
+      {
+        id: 'vengo-executive-thali',
+        storeId: 'store-vengo',
+        name: 'Executive Thali',
+        price: 249,
+        description: 'Balanced wholesome meal comprising Dal, Paneer Gravy, Rice, 2 Rotis, Salad, Raita & Dessert.',
+        image: '/images/vengo/executive_thali.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.9,
+        ratingCount: 920,
+      },
+      {
+        id: 'vengo-special-thali',
+        storeId: 'store-vengo',
+        name: 'Special Thali',
+        price: 299,
+        description: 'Grand royal thali with Dal Makhani, Kadhai Paneer, Veg Pulao, 2 Naans/Parathas, Raita & Sweet.',
+        image: '/images/vengo/special_thali.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.9,
+        ratingCount: 1080,
+      },
+      {
+        id: 'vengo-chole-bhature',
+        storeId: 'store-vengo',
+        name: 'Chole Bhature',
+        price: 299,
+        description: '2 large fluffy deep-fried golden bhaturas served with spicy Punjabi chole, pickle and onion.',
+        image: '/images/vengo/chole_bhature.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.9,
+        ratingCount: 1350,
+      },
+      {
+        id: 'vengo-puri-bhaji',
+        storeId: 'store-vengo',
+        name: 'Puri Bhaji',
+        price: 355,
+        description: 'Crisp golden fried puris served with traditional spiced potato bhaji and tangy pickle.',
+        image: '/images/vengo/puri_bhaji.jpeg',
+        isVeg: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.8,
+        ratingCount: 490,
+      },
+      {
+        id: 'vengo-veg-noodles',
+        storeId: 'store-vengo',
+        name: 'Veg Noodles',
+        price: 189,
+        description: 'Wok-tossed noodles with shredded cabbage, capsicum, carrots, spring onions and savory sauces.',
+        image: '/images/vengo/veg_noodles.jpeg',
+        isVeg: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.6,
+        ratingCount: 380,
+      },
+      {
+        id: 'vengo-veg-fried-rice',
+        storeId: 'store-vengo',
+        name: 'Veg Fried Rice',
+        price: 175,
+        description: 'Fragrant long-grain rice stir-fried with diced vegetables, garlic, pepper and oriental seasoning.',
+        image: '/images/vengo/veg_fried_rice.jpeg',
+        isVeg: true,
+        category: 'Thali, Snacks & Indo-Chinese',
+        rating: 4.6,
+        ratingCount: 340,
+      },
+
+      // 6. Value Combos & Accompaniments
+      {
+        id: 'vengo-chole-rice',
+        storeId: 'store-vengo',
+        name: 'Chole Rice',
+        price: 219,
+        description: 'Delicious bowl of spiced Punjabi chickpea curry served over steamed basmati rice with salad.',
+        image: '/images/vengo/chole_rice.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.7,
+        ratingCount: 420,
+      },
+      {
+        id: 'vengo-rajma-rice',
+        storeId: 'store-vengo',
+        name: 'Rajma Rice',
+        price: 219,
+        description: 'Comforting home-style red kidney bean curry paired with hot steamed basmati rice.',
+        image: '/images/vengo/rajma_rice.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.8,
+        ratingCount: 680,
+      },
+      {
+        id: 'vengo-dal-makhani-rice',
+        storeId: 'store-vengo',
+        name: 'Dal Makhani with Rice',
+        price: 219,
+        description: 'Creamy slow-cooked black lentils served alongside fragrant steamed basmati rice.',
+        image: '/images/vengo/dal_makhani_with_rice.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.8,
+        ratingCount: 540,
+      },
+      {
+        id: 'vengo-veg-noodles-manchurian',
+        storeId: 'store-vengo',
+        name: 'Veg Noodles with Manchurian',
+        price: 205,
+        description: 'Hakka veg noodles paired with vegetable Manchurian balls in rich savory garlic gravy.',
+        image: '/images/vengo/veg_noodles_with_manchurian.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.7,
+        ratingCount: 410,
+      },
+      {
+        id: 'vengo-green-salad',
+        storeId: 'store-vengo',
+        name: 'Green Salad',
+        price: 65,
+        description: 'Fresh slices of cucumbers, juicy tomatoes, onions, carrots and green chillies with lemon.',
+        image: '/images/vengo/green_salad.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.5,
+        ratingCount: 160,
+      },
+      {
+        id: 'vengo-raita',
+        storeId: 'store-vengo',
+        name: 'Raita',
+        price: 65,
+        description: 'Cool spiced churned yogurt with cucumber, roasted cumin powder and black salt.',
+        image: '/images/vengo/raita.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.6,
+        ratingCount: 210,
+      },
+      {
+        id: 'vengo-butter-tawa-roti',
+        storeId: 'store-vengo',
+        name: 'Butter Tawa Roti (Add On)',
+        price: 50,
+        description: 'Freshly puffed whole wheat tawa phulka brushed with desi butter.',
+        image: '/images/vengo/butter_tawa_roti_add_on.jpeg',
+        isVeg: true,
+        category: 'Value Combos & Accompaniments',
+        rating: 4.6,
+        ratingCount: 320,
+      },
+
+      // 7. Tiffin Combo
+      {
+        id: 'vengo-tiffin-combo',
+        storeId: 'store-vengo',
+        name: 'Tiffin Combo',
+        price: 99,
+        description: 'Mini delight combo with 1 Steamed Idli, 1 Crispy Medu Vada, Sambar and duo of chutneys.',
+        image: '/images/vengo/tiffin_combo.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Tiffin Combo',
+        rating: 4.8,
+        ratingCount: 780,
+      },
+      {
+        id: 'vengo-double-dosa-treat',
+        storeId: 'store-vengo',
+        name: 'Double Dosa Treat',
+        price: 189,
+        description: 'Combo of 2 mini crispy dosas with potato masala, fresh coconut chutney and sambar.',
+        image: '/images/vengo/double_dosa_treat.jpeg',
+        isVeg: true,
+        category: 'Tiffin Combo',
+        rating: 4.7,
+        ratingCount: 410,
+      },
+
+      // 8. Desserts
+      {
+        id: 'vengo-rawa-kesari',
+        storeId: 'store-vengo',
+        name: 'Rawa Kesari',
+        price: 99,
+        description: 'Traditional melt-in-mouth South Indian semolina pudding prepared with ghee, saffron and cashews.',
+        image: '/images/vengo/rawa_kesari.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Desserts',
+        rating: 4.9,
+        ratingCount: 560,
+      },
+
+      // 9. Beverages
+      {
+        id: 'vengo-chai',
+        storeId: 'store-vengo',
+        name: 'Chai (Plain/Ginger/Masala)',
+        price: 60,
+        description: 'Freshly brewed piping hot Indian tea infused with aromatic spices or fresh crushed ginger.',
+        image: '/images/vengo/chai_plain_ginger_masala.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.8,
+        ratingCount: 620,
+      },
+      {
+        id: 'vengo-mint-masala-chaas',
+        storeId: 'store-vengo',
+        name: 'Mint Masala Chaas',
+        price: 99,
+        description: 'Refreshing churned buttermilk infused with fresh garden mint leaves, ginger and black salt.',
+        image: '/images/vengo/mint_masala_chaas.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.7,
+        ratingCount: 390,
+      },
+      {
+        id: 'vengo-lassi',
+        storeId: 'store-vengo',
+        name: 'Lassi (Sweet/Salted)',
+        price: 110,
+        description: 'Thick and creamy traditional yogurt drink churned to frothy perfection.',
+        image: '/images/vengo/lassi_sweet_salted.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.8,
+        ratingCount: 510,
+      },
+      {
+        id: 'vengo-filter-coffee-small',
+        storeId: 'store-vengo',
+        name: 'Filter Coffee - Small',
+        price: 85,
+        description: 'Traditional South Indian chicory-coffee decoction brewed with frothy milk in small cup.',
+        image: '/images/vengo/filter_coffee_small.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.8,
+        ratingCount: 460,
+      },
+      {
+        id: 'vengo-filter-coffee-regular',
+        storeId: 'store-vengo',
+        name: 'Filter Coffee - Regular',
+        price: 99,
+        description: 'Aromatic piping hot degree filter coffee brewed fresh with full-cream milk in brass dabarah.',
+        image: '/images/vengo/filter_coffee_regular.jpeg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Beverages',
+        rating: 4.9,
+        ratingCount: 1120,
+      },
+      {
+        id: 'vengo-buttermilk',
+        storeId: 'store-vengo',
+        name: 'Buttermilk',
+        price: 85,
+        description: 'Light, cooling traditional salted buttermilk seasoned with curry leaves and mustard seeds.',
+        image: '/images/vengo/buttermilk.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.6,
+        ratingCount: 280,
+      },
+      {
+        id: 'vengo-packaged-water',
+        storeId: 'store-vengo',
+        name: 'Packaged Drinking Water',
+        price: 20,
+        description: 'Pure and sealed packaged mineral drinking water bottle.',
+        image: '/images/vengo/packaged_drinking_water.jpeg',
+        isVeg: true,
+        category: 'Beverages',
+        rating: 4.5,
+        ratingCount: 190,
+      }
+    ]
+  }
+];
+
+export const INITIAL_ADDRESSES: UserAddress[] = [
+  {
+    id: 'addr-1',
+    label: 'Hostel',
+    hostelName: 'Tagore Boys Hostel',
+    roomNo: 'B-304',
+    addressLine: 'Campus West Block, North Gate',
+    locality: 'University Road',
+    city: 'Metro City',
+    isDefault: true,
+  },
+  {
+    id: 'addr-2',
+    label: 'Home',
+    addressLine: 'Apt 402, Sunset Heights',
+    locality: 'Palm Grove Avenue, Sector 14',
+    city: 'Metro City',
+    isDefault: false,
+  },
+  {
+    id: 'addr-3',
+    label: 'Work',
+    addressLine: 'Tower B, 7th Floor, Cyber Tech Park',
+    locality: 'Innovation Boulevard',
+    city: 'Metro City',
+    isDefault: false,
+  }
+];
+
+export const INITIAL_ORDERS: Order[] = [];

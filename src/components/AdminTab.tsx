@@ -28,6 +28,7 @@ import {
   saveStoresToFirestore,
   saveCategoriesToFirestore
 } from '../services/firebase';
+import { STORES, CATEGORIES } from '../data/mockData';
 
 interface AdminTabProps {
   stores: Store[];
@@ -984,11 +985,34 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                   onClick={async () => {
                     setIsCloudSyncing(true);
                     try {
-                      await saveStoresToFirestore(stores);
-                      await saveCategoriesToFirestore(categories);
-                      setCloudStatusMsg('✅ All stores and categories pushed to Cloud Firestore successfully!');
+                      // Merge default stores and user-added stores
+                      const allStoresToSync = [...STORES];
+                      stores.forEach(s => {
+                        const idx = allStoresToSync.findIndex(existing => existing.id === s.id);
+                        if (idx >= 0) {
+                          allStoresToSync[idx] = s;
+                        } else {
+                          allStoresToSync.push(s);
+                        }
+                      });
+
+                      const allCatsToSync = [...CATEGORIES];
+                      categories.forEach(c => {
+                        const idx = allCatsToSync.findIndex(existing => existing.id === c.id);
+                        if (idx >= 0) {
+                          allCatsToSync[idx] = c;
+                        } else {
+                          allCatsToSync.push(c);
+                        }
+                      });
+
+                      await saveStoresToFirestore(allStoresToSync);
+                      await saveCategoriesToFirestore(allCatsToSync);
+                      onUpdateStores(allStoresToSync);
+                      onUpdateCategories(allCatsToSync);
+                      setCloudStatusMsg(`✅ All ${allStoresToSync.length} stores & ${allCatsToSync.length} categories pushed to Cloud Firestore successfully!`);
                     } catch (e) {
-                      setCloudStatusMsg('⚠️ Failed to sync. Please verify your Firebase project credentials.');
+                      setCloudStatusMsg('⚠️ Failed to sync. Please verify your Firebase project credentials & rules.');
                     } finally {
                       setIsCloudSyncing(false);
                     }

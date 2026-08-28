@@ -274,15 +274,21 @@ export async function autoSeedFirestoreIfEmpty(initialStores: Store[], initialCa
 
   try {
     const storesSnapshot = await getDocs(collection(db, 'stores'));
-    if (storesSnapshot.empty && initialStores.length > 0) {
-      console.log('🌱 Firestore stores collection is empty. Auto-seeding initial stores to cloud...');
-      await saveStoresToFirestore(initialStores);
+    const existingStoreIds = new Set(storesSnapshot.docs.map(d => d.id));
+    
+    // Seed any initial store that doesn't exist in Firestore
+    const missingStores = initialStores.filter(s => !existingStoreIds.has(s.id));
+    if (missingStores.length > 0) {
+      console.log(`🌱 Seeding ${missingStores.length} missing stores to Firestore...`);
+      await saveStoresToFirestore(missingStores);
     }
 
     const categoriesSnapshot = await getDocs(collection(db, 'categories'));
-    if (categoriesSnapshot.empty && initialCategories.length > 0) {
-      console.log('🌱 Firestore categories collection is empty. Auto-seeding initial categories to cloud...');
-      await saveCategoriesToFirestore(initialCategories);
+    const existingCatIds = new Set(categoriesSnapshot.docs.map(d => d.id));
+    const missingCats = initialCategories.filter(c => !existingCatIds.has(c.id));
+    if (missingCats.length > 0) {
+      console.log(`🌱 Seeding ${missingCats.length} missing categories to Firestore...`);
+      await saveCategoriesToFirestore(missingCats);
     }
   } catch (err) {
     console.warn('Auto-seed check note:', err);

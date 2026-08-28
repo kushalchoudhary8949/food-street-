@@ -131,65 +131,68 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
           </div>
         </div>
 
-        {/* Controls & Filter Bar */}
-        <div className="bg-white rounded-2xl p-3 shadow-xs border border-gray-100 flex flex-wrap items-center justify-between gap-3">
-          {/* Veg Only Switch */}
-          <button
-            onClick={() => setVegOnly(!vegOnly)}
-            className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
-              vegOnly ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <span className={`w-3 h-3 rounded-sm border-2 flex items-center justify-center ${
-              vegOnly ? 'border-emerald-600 bg-emerald-600' : 'border-emerald-600'
-            }`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-            </span>
-            <span>Pure Veg Only</span>
-          </button>
+        {/* Sticky Filters & Category Tabs Header */}
+        <div className="sticky top-[61px] z-20 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs py-3 px-4 space-y-3">
+          {/* Controls & Filter Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            {/* Veg Only Switch */}
+            <button
+              onClick={() => setVegOnly(!vegOnly)}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                vegOnly ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <span className={`w-3 h-3 rounded-sm border-2 flex items-center justify-center ${
+                vegOnly ? 'border-emerald-600 bg-emerald-600' : 'border-emerald-600'
+              }`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+              </span>
+              <span>Pure Veg Only</span>
+            </button>
 
-          {/* In-store Search */}
-          <div className="relative flex-1 min-w-[180px]">
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
-            <input
-              type="text"
-              value={menuSearch}
-              onChange={(e) => setMenuSearch(e.target.value)}
-              placeholder="Search in menu..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-hidden focus:ring-1 focus:ring-red-500"
-            />
+            {/* In-store Search */}
+            <div className="relative flex-1 min-w-[170px]">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                value={menuSearch}
+                onChange={(e) => setMenuSearch(e.target.value)}
+                placeholder="Search in menu..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-hidden focus:ring-1 focus:ring-red-500"
+              />
+            </div>
+          </div>
+
+          {/* Menu Category Tabs */}
+          <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pt-1 pb-0.5 -mx-4 px-4">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shrink-0 transition-all ${
+                selectedCategory === 'all'
+                  ? 'bg-gray-900 text-white shadow-xs'
+                  : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+            >
+              All Items ({store.items.length})
+            </button>
+            {store.menuCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shrink-0 transition-all ${
+                  selectedCategory === cat
+                    ? 'bg-gray-900 text-white shadow-xs'
+                    : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Menu Category Sticky Tabs */}
-        <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
-              selectedCategory === 'all'
-                ? 'bg-gray-900 text-white shadow-xs'
-                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-            }`}
-          >
-            All Items ({store.items.length})
-          </button>
-          {store.menuCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
-                selectedCategory === cat
-                  ? 'bg-gray-900 text-white shadow-xs'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
         {/* Menu Items Feed */}
-        <div className="space-y-3 pb-24">
+        <div className="p-4 space-y-3 pb-28">
           {filteredItems.map((item) => {
             const countInCart = getItemCountInCart(item.id);
             return (

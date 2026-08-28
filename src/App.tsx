@@ -17,6 +17,8 @@ import {
   subscribeToStores, 
   subscribeToCategories, 
   saveOrderToFirestore, 
+  saveStoresToFirestore,
+  saveCategoriesToFirestore,
   deleteOrderFromFirestore,
   autoSeedFirestoreIfEmpty
 } from './services/firebase';
@@ -421,6 +423,22 @@ export default function App() {
   // Only track active orders among the customer's top 4 recent orders
   const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
 
+  // Handlers to synchronize Admin updates to both Local State and Firebase Firestore Cloud
+  const handleUpdateStores = (newStores: Store[]) => {
+    setStores(newStores);
+    saveStoresToFirestore(newStores).catch(err => console.warn('Firestore store sync notice:', err));
+  };
+
+  const handleUpdateCategories = (newCategories: Category[]) => {
+    setCategories(newCategories);
+    saveCategoriesToFirestore(newCategories).catch(err => console.warn('Firestore category sync notice:', err));
+  };
+
+  const handleUpdateOrders = (newOrders: Order[]) => {
+    setOrders(newOrders);
+    newOrders.forEach(o => saveOrderToFirestore(o).catch(err => console.warn('Firestore order sync notice:', err)));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans">
       {/* Mobile-contained wrapper max-w-md matching screenshot */}
@@ -439,9 +457,9 @@ export default function App() {
                 stores={stores}
                 categories={categories}
                 orders={orders}
-                onUpdateStores={setStores}
-                onUpdateCategories={setCategories}
-                onUpdateOrders={setOrders}
+                onUpdateStores={handleUpdateStores}
+                onUpdateCategories={handleUpdateCategories}
+                onUpdateOrders={handleUpdateOrders}
                 onLogout={() => {
                   localStorage.removeItem('admin_session_token');
                   sessionStorage.removeItem('admin_session_token');

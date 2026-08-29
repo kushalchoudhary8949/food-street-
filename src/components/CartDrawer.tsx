@@ -41,7 +41,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return sum + (ci.item.price + addonsCost) * ci.quantity;
   }, 0);
 
-  const deliveryFee = 10;
+  const deliveryFee = 15;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
   const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + selectedTip);
 

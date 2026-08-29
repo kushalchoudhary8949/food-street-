@@ -26,12 +26,15 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { 
-  getStoredFirebaseConfig, 
-  saveStoredFirebaseConfig, 
-  isFirebaseConfigured,
-  saveStoresToFirestore,
-  saveCategoriesToFirestore
-} from '../services/firebase';
+  saveStoresToDb, 
+  saveCategoriesToDb,
+  seedDatabase,
+  fetchDatabaseStatus,
+  fetchOrdersFromDb,
+  fetchStoresFromDb,
+  fetchCategoriesFromDb,
+  DatabaseStatus
+} from '../services/api';
 import { STORES, CATEGORIES } from '../data/mockData';
 
 interface AdminTabProps {
@@ -91,19 +94,73 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     slug: '',
   });
 
-  // Cloud Firebase Config Form State
-  const [firebaseConfig, setFirebaseConfig] = useState(() => {
-    const existing = getStoredFirebaseConfig();
-    return {
-      projectId: existing?.projectId || '',
-      apiKey: existing?.apiKey || '',
-      authDomain: existing?.authDomain || '',
-      appId: existing?.appId || '',
-    };
-  });
   const [isCloudSyncing, setIsCloudSyncing] = useState(false);
+  const [isFetchingDb, setIsFetchingDb] = useState(false);
+  const [isCheckingDb, setIsCheckingDb] = useState(false);
+  const [dbStatus, setDbStatus] = useState<DatabaseStatus | null>(null);
   const [cloudStatusMsg, setCloudStatusMsg] = useState<string | null>(null);
   const [orderFilter, setOrderFilter] = useState<'all' | 'active' | 'delivered'>('all');
+
+  const checkDb = async () => {
+    setIsCheckingDb(true);
+    try {
+      const status = await fetchDatabaseStatus();
+      setDbStatus(status);
+    } catch (e: any) {
+      setDbStatus({
+        success: false,
+        connected: false,
+        database: 'PostgreSQL',
+        error: e?.message || 'Failed to check database',
+      });
+    } finally {
+      setIsCheckingDb(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (activeSubTab === 'cloud') {
+      checkDb();
+    }
+  }, [activeSubTab]);
+
+  const handleFetchFromPostgres = async () => {
+    setIsFetchingDb(true);
+    setCloudStatusMsg(null);
+    try {
+      const [pgStores, pgCats, pgOrders] = await Promise.all([
+        fetchStoresFromDb(),
+        fetchCategoriesFromDb(),
+        fetchOrdersFromDb(),
+      ]);
+
+      let msgParts: string[] = [];
+      if (pgStores && pgStores.length > 0) {
+        onUpdateStores(pgStores);
+        msgParts.push(`${pgStores.length} stores`);
+      }
+      if (pgCats && pgCats.length > 0) {
+        onUpdateCategories(pgCats);
+        msgParts.push(`${pgCats.length} categories`);
+      }
+      if (pgOrders && pgOrders.length > 0) {
+        onUpdateOrders(pgOrders);
+        msgParts.push(`${pgOrders.length} orders`);
+      }
+
+      await checkDb();
+
+      if (msgParts.length > 0) {
+        setCloudStatusMsg(`✅ Fetched and loaded ${msgParts.join(', ')} from PostgreSQL successfully!`);
+      } else {
+        setCloudStatusMsg(`ℹ️ Database connected, but tables are currently empty. Click "Push & Seed Data" to populate.`);
+      }
+    } catch (err: any) {
+      setCloudStatusMsg(`⚠️ Failed to fetch from PostgreSQL: ${err?.message || 'Network error'}`);
+    } finally {
+      setIsFetchingDb(false);
+    }
+  };
 
   // Calculate Overview Stats
   const totalRevenue = orders
@@ -393,7 +450,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
-            {tab === 'cloud' ? '⚡ Cloud DB' : tab}
+            {tab === 'cloud' ? '🐘 PostgreSQL' : tab}
           </button>
         ))}
       </div>
@@ -1023,29 +1080,56 @@ export const AdminTab: React.FC<AdminTabProps> = ({
           </div>
         )}
 
-        {/* 6. CLOUD FIREBASE DATABASE SUBTAB */}
+        {/* 6. POSTGRESQL DATABASE SUBTAB */}
         {activeSubTab === 'cloud' && (
           <div className="space-y-5">
-            {/* Status Card */}
+            {/* Status & Health Card */}
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-3 rounded-2xl ${isFirebaseConfigured() ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                    <Cloud className="w-6 h-6" />
+                  <div className="p-3 rounded-2xl bg-indigo-50 text-indigo-600">
+                    <Database className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-extrabold text-gray-900">Firebase Firestore Cloud</h3>
-                    <p className="text-xs text-gray-500">Live order & store synchronization across all customer devices</p>
+                    <h3 className="text-base font-extrabold text-gray-900">🐘 PostgreSQL Database</h3>
+                    <p className="text-xs text-gray-500">Live storage & real-time sync for stores, menus, and customer orders</p>
                   </div>
                 </div>
-                <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                  isFirebaseConfigured() 
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                    : 'bg-amber-100 text-amber-800 border border-amber-200'
-                }`}>
-                  {isFirebaseConfigured() ? '🟢 Cloud Active' : '🟡 Local Storage'}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={checkDb}
+                    disabled={isCheckingDb}
+                    title="Test PostgreSQL connection"
+                    className="p-2 hover:bg-gray-100 rounded-xl text-gray-500 transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isCheckingDb ? 'animate-spin' : ''}`} />
+                  </button>
+                  <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                    dbStatus?.connected
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                      : dbStatus?.connected === false
+                      ? 'bg-rose-100 text-rose-800 border-rose-200'
+                      : 'bg-amber-100 text-amber-800 border-amber-200'
+                  }`}>
+                    {isCheckingDb
+                      ? '⏳ Checking...'
+                      : dbStatus?.connected
+                      ? '🟢 PostgreSQL Connected'
+                      : '🔴 Disconnected / Pending URI'}
+                  </span>
+                </div>
               </div>
+
+              {dbStatus?.error && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-2xl flex items-start space-x-2">
+                  <XCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-bold">Database Connection Notice:</p>
+                    <p className="font-mono text-[11px] mt-0.5">{dbStatus.error}</p>
+                  </div>
+                </div>
+              )}
 
               {cloudStatusMsg && (
                 <div className="p-3.5 bg-gray-900 text-white text-xs rounded-2xl flex items-center space-x-2 animate-in fade-in duration-200">
@@ -1054,19 +1138,49 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                 </div>
               )}
 
-              {/* Sync Action */}
-              <div className="p-4 bg-linear-to-r from-red-50 to-orange-50 rounded-2xl border border-red-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-xs font-black text-gray-900 uppercase">Push Local Data to Cloud</h4>
-                  <p className="text-xs text-gray-600 mt-0.5">Upload current {stores.length} stores and {categories.length} categories to Firestore DB</p>
+              {/* PostgreSQL Live Table Counters */}
+              <div className="grid grid-cols-3 gap-2.5 pt-2">
+                <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
+                  <div className="text-lg font-black text-gray-900">
+                    {dbStatus?.counts ? dbStatus.counts.stores : stores.length}
+                  </div>
+                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Stores in DB</div>
                 </div>
+                <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
+                  <div className="text-lg font-black text-gray-900">
+                    {dbStatus?.counts ? dbStatus.counts.categories : categories.length}
+                  </div>
+                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Categories in DB</div>
+                </div>
+                <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
+                  <div className="text-lg font-black text-gray-900">
+                    {dbStatus?.counts ? dbStatus.counts.orders : orders.length}
+                  </div>
+                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Orders in DB</div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {/* 1. Fetch from PostgreSQL */}
+                <button
+                  type="button"
+                  disabled={isFetchingDb}
+                  onClick={handleFetchFromPostgres}
+                  className="p-3.5 bg-indigo-50 hover:bg-indigo-100 active:scale-98 border border-indigo-200 text-indigo-900 rounded-2xl text-xs font-black transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
+                >
+                  <RefreshCw className={`w-4 h-4 text-indigo-600 ${isFetchingDb ? 'animate-spin' : ''}`} />
+                  <span>{isFetchingDb ? 'Fetching from PostgreSQL...' : '📥 Fetch Data from PostgreSQL'}</span>
+                </button>
+
+                {/* 2. Push & Seed to PostgreSQL */}
                 <button
                   type="button"
                   disabled={isCloudSyncing}
                   onClick={async () => {
                     setIsCloudSyncing(true);
+                    setCloudStatusMsg(null);
                     try {
-                      // Merge default stores and user-added stores
                       const allStoresToSync = [...STORES];
                       stores.forEach(s => {
                         const idx = allStoresToSync.findIndex(existing => existing.id === s.id);
@@ -1087,105 +1201,63 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                         }
                       });
 
-                      await saveStoresToFirestore(allStoresToSync);
-                      await saveCategoriesToFirestore(allCatsToSync);
+                      await saveStoresToDb(allStoresToSync);
+                      await saveCategoriesToDb(allCatsToSync);
+                      await seedDatabase(allStoresToSync, allCatsToSync);
                       onUpdateStores(allStoresToSync);
                       onUpdateCategories(allCatsToSync);
-                      setCloudStatusMsg(`✅ All ${allStoresToSync.length} stores & ${allCatsToSync.length} categories pushed to Cloud Firestore successfully!`);
-                    } catch (e) {
-                      setCloudStatusMsg('⚠️ Failed to sync. Please verify your Firebase project credentials & rules.');
+                      await checkDb();
+                      setCloudStatusMsg(`✅ Successfully synced ${allStoresToSync.length} stores & ${allCatsToSync.length} categories to PostgreSQL!`);
+                    } catch (e: any) {
+                      setCloudStatusMsg(`⚠️ Failed to sync to PostgreSQL: ${e?.message || 'Check DATABASE_URL'}`);
                     } finally {
                       setIsCloudSyncing(false);
                     }
                   }}
-                  className="px-4 py-2.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-xl text-xs font-black transition-all flex items-center space-x-2 shrink-0 cursor-pointer shadow-md shadow-red-500/20"
+                  className="p-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white rounded-2xl text-xs font-black transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-indigo-500/20"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isCloudSyncing ? 'animate-spin' : ''}`} />
-                  <span>{isCloudSyncing ? 'Syncing...' : 'Sync Data to Cloud'}</span>
+                  <Sparkles className={`w-4 h-4 ${isCloudSyncing ? 'animate-spin' : ''}`} />
+                  <span>{isCloudSyncing ? 'Syncing to PostgreSQL...' : '📤 Push & Seed to PostgreSQL'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Credentials Card */}
+            {/* PostgreSQL Setup Instructions Card */}
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4">
               <div className="border-b border-gray-100 pb-3">
-                <h3 className="text-sm font-bold text-gray-900">Firebase Project Credentials</h3>
-                <p className="text-xs text-gray-500">Enter your Firebase Web App credentials from Firebase Console</p>
+                <h3 className="text-sm font-bold text-gray-900">PostgreSQL Connection Setup</h3>
+                <p className="text-xs text-gray-500">Configure your database environment variable in .env.local or cloud deployment</p>
               </div>
 
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  saveStoredFirebaseConfig(firebaseConfig);
-                  setCloudStatusMsg('🚀 Firebase configuration saved! Reloading live listeners...');
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 1200);
-                }} 
-                className="space-y-3"
-              >
+              <div className="space-y-3 text-xs text-gray-700">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Project ID</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. food-delivery-app-12345"
-                    value={firebaseConfig.projectId}
-                    onChange={(e) => setFirebaseConfig({ ...firebaseConfig, projectId: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500 focus:outline-hidden"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">API Key</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. AIzaSy..."
-                    value={firebaseConfig.apiKey}
-                    onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500 focus:outline-hidden"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Auth Domain (Optional)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. project-id.firebaseapp.com"
-                      value={firebaseConfig.authDomain}
-                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, authDomain: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500 focus:outline-hidden"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">App ID (Optional)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 1:123456:web:abcd"
-                      value={firebaseConfig.appId}
-                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, appId: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-red-500 focus:outline-hidden"
-                    />
+                  <label className="text-[11px] font-bold text-gray-600 block mb-1">Environment Variable (.env.local / Vercel):</label>
+                  <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 font-mono text-[11px] text-gray-800 break-all select-all">
+                    DATABASE_URL=postgresql://postgres:&lt;password&gt;@ep-xyz.region.aws.neon.tech/food_connect?sslmode=require
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-md mt-2"
-                >
-                  Save & Connect Firebase Cloud
-                </button>
-              </form>
-
-              {/* Instructions */}
-              <div className="text-[11px] text-gray-500 bg-gray-50 p-4 rounded-2xl space-y-1.5 border border-gray-100">
-                <p className="font-bold text-gray-700">💡 Quick Setup (Free Firebase Account):</p>
-                <p>1. Go to <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-red-600 underline font-semibold">console.firebase.google.com</a> and click "Create a project".</p>
-                <p>2. In the project dashboard, enable <strong>Cloud Firestore</strong> in Test Mode.</p>
-                <p>3. Click <strong>Project Settings ⚙️</strong> → Add Web App (<code>&lt;/&gt;</code>) → Copy your <code>projectId</code> and <code>apiKey</code> here!</p>
+                <div className="space-y-2 text-[11px] text-gray-600">
+                  <p className="font-bold text-gray-800">💡 Free PostgreSQL Providers:</p>
+                  <ul className="list-disc pl-4 space-y-1">
+                    <li>
+                      <strong><a href="https://neon.tech" target="_blank" rel="noreferrer" className="text-indigo-600 underline font-semibold">Neon.tech</a> (Recommended, Free Serverless Postgres)</strong>: Create a database in 10 seconds and copy the Connection String.
+                    </li>
+                    <li>
+                      <strong><a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-indigo-600 underline font-semibold">Supabase</a></strong>: Free tier PostgreSQL with built-in dashboard and pooling.
+                    </li>
+                    <li>
+                      <strong><a href="https://render.com" target="_blank" rel="noreferrer" className="text-indigo-600 underline font-semibold">Render</a> or Railway</strong>: Free/inexpensive managed PostgreSQL instance.
+                    </li>
+                    <li>
+                      <strong>Localhost</strong>: <code>DATABASE_URL=postgresql://postgres:password@localhost:5432/food_connect</code>
+                    </li>
+                  </ul>
+                  <div className="pt-2 border-t border-gray-100 space-y-1">
+                    <p className="font-bold text-gray-800">🚀 Automatic Table Initialization:</p>
+                    <p>Tables (<code>stores</code>, <code>categories</code>, <code>orders</code>) are automatically created on first connect with optimal indexes!</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

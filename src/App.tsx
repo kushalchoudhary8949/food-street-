@@ -14,14 +14,14 @@ import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { 
   subscribeToOrders, 
-  subscribeToStores, 
-  subscribeToCategories, 
-  saveOrderToFirestore, 
-  saveStoresToFirestore,
-  saveCategoriesToFirestore,
-  deleteOrderFromFirestore,
-  autoSeedFirestoreIfEmpty
-} from './services/firebase';
+  saveOrderToDb, 
+  saveStoresToDb, 
+  saveCategoriesToDb, 
+  deleteOrderFromDb,
+  fetchStoresFromDb,
+  fetchCategoriesFromDb,
+  seedDatabase
+} from './services/api';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS } from './data/mockData';
 import {
@@ -81,33 +81,33 @@ export default function App() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Real-time Firebase Cloud Database Listeners
+  // Real-time PostgreSQL Database Polling & Initial Sync
   React.useEffect(() => {
-    // Auto-seed initial stores & categories to cloud if DB is empty
-    autoSeedFirestoreIfEmpty(STORES, CATEGORIES);
+    // Fetch initial stores and categories from PostgreSQL
+    fetchStoresFromDb().then((dbStores) => {
+      if (dbStores && dbStores.length > 0) {
+        setStores(dbStores);
+      } else {
+        // Seed PostgreSQL if empty
+        seedDatabase(STORES, CATEGORIES);
+      }
+    });
 
+    fetchCategoriesFromDb().then((dbCats) => {
+      if (dbCats && dbCats.length > 0) {
+        setCategories(dbCats);
+      }
+    });
+
+    // Real-time Live Orders Polling Subscription (every 3.5s)
     const unsubOrders = subscribeToOrders((liveOrders) => {
       if (liveOrders && liveOrders.length > 0) {
         setOrders(liveOrders);
       }
     });
 
-    const unsubStores = subscribeToStores((liveStores) => {
-      if (liveStores && liveStores.length > 0) {
-        setStores(liveStores);
-      }
-    });
-
-    const unsubCategories = subscribeToCategories((liveCategories) => {
-      if (liveCategories && liveCategories.length > 0) {
-        setCategories(liveCategories);
-      }
-    });
-
     return () => {
       unsubOrders();
-      unsubStores();
-      unsubCategories();
     };
   }, []);
 
@@ -335,8 +335,8 @@ export default function App() {
     setIsCartOpen(false);
     setIsStoreModalOpen(false);
 
-    // Save to Firebase Firestore Cloud DB (if configured)
-    saveOrderToFirestore(newOrder);
+    // Save to PostgreSQL Database
+    saveOrderToDb(newOrder);
 
     // Forward receipt directly to WhatsApp (+91 8949508256)
     sendOrderToWhatsApp(newOrder);
@@ -349,7 +349,7 @@ export default function App() {
   // Complete & remove order from list
   const handleCompleteOrder = (orderId: string) => {
     setOrders(prev => prev.filter(o => o.id !== orderId));
-    deleteOrderFromFirestore(orderId);
+    deleteOrderFromDb(orderId);
     showToast('✅ Order completed & removed');
   };
 
@@ -423,20 +423,20 @@ export default function App() {
   // Only track active orders among the customer's top 4 recent orders
   const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
 
-  // Handlers to synchronize Admin updates to both Local State and Firebase Firestore Cloud
+  // Handlers to synchronize Admin updates to both Local State and PostgreSQL Database
   const handleUpdateStores = (newStores: Store[]) => {
     setStores(newStores);
-    saveStoresToFirestore(newStores).catch(err => console.warn('Firestore store sync notice:', err));
+    saveStoresToDb(newStores).catch(err => console.warn('PostgreSQL store sync notice:', err));
   };
 
   const handleUpdateCategories = (newCategories: Category[]) => {
     setCategories(newCategories);
-    saveCategoriesToFirestore(newCategories).catch(err => console.warn('Firestore category sync notice:', err));
+    saveCategoriesToDb(newCategories).catch(err => console.warn('PostgreSQL category sync notice:', err));
   };
 
   const handleUpdateOrders = (newOrders: Order[]) => {
     setOrders(newOrders);
-    newOrders.forEach(o => saveOrderToFirestore(o).catch(err => console.warn('Firestore order sync notice:', err)));
+    newOrders.forEach(o => saveOrderToDb(o).catch(err => console.warn('PostgreSQL order sync notice:', err)));
   };
 
   return (

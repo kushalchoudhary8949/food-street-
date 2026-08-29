@@ -151,13 +151,19 @@ export function subscribeToOrders(callback: (orders: Order[]) => void): () => vo
   }
 
   try {
-    const ordersQuery = query(collection(db, 'orders'), orderBy('createdAtTimestamp', 'desc'));
+    const ordersCollection = collection(db, 'orders');
     const unsubscribe = onSnapshot(
-      ordersQuery,
+      ordersCollection,
       (snapshot) => {
         const liveOrders: Order[] = [];
         snapshot.forEach((docSnap) => {
           liveOrders.push(docSnap.data() as Order);
+        });
+        // Sort newest first
+        liveOrders.sort((a, b) => {
+          const timeA = (a as any).createdAtTimestamp || parseInt(a.id.replace(/\D/g, '')) || 0;
+          const timeB = (b as any).createdAtTimestamp || parseInt(b.id.replace(/\D/g, '')) || 0;
+          return timeB - timeA;
         });
         callback(liveOrders);
       },

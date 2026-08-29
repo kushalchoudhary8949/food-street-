@@ -19,7 +19,11 @@ import {
   Database,
   RefreshCw,
   Check,
-  Sparkles
+  Sparkles,
+  Phone,
+  MapPin,
+  CreditCard,
+  MessageSquare
 } from 'lucide-react';
 import { 
   getStoredFirebaseConfig, 
@@ -99,6 +103,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   });
   const [isCloudSyncing, setIsCloudSyncing] = useState(false);
   const [cloudStatusMsg, setCloudStatusMsg] = useState<string | null>(null);
+  const [orderFilter, setOrderFilter] = useState<'all' | 'active' | 'delivered'>('all');
 
   // Calculate Overview Stats
   const totalRevenue = orders
@@ -881,64 +886,140 @@ export const AdminTab: React.FC<AdminTabProps> = ({
         {/* 5. ORDERS SUBTAB */}
         {activeSubTab === 'orders' && (
           <div className="space-y-4">
-            <h3 className="font-extrabold text-sm text-gray-900">Live Order Fulfillment Tracker</h3>
-
-            {orders.length === 0 ? (
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 text-center text-xs text-gray-400">
-                No orders are active right now
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-extrabold text-sm text-gray-900">Live Order Fulfillment Tracker</h3>
+                <p className="text-xs text-gray-500">Total {orders.length} orders recorded</p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {orders.map(order => (
-                  <div key={order.id} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-extrabold text-sm text-gray-900">{order.store.name}</div>
-                        <div className="text-[10px] text-gray-400 mt-0.5">Order ID: {order.orderNumber} • {order.placedAt}</div>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
-                        order.status === 'delivered'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
-                      }`}>
-                        {order.status.replace('_', ' ')}
-                      </span>
-                    </div>
+              
+              {/* Order Status Filters */}
+              <div className="flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold">
+                <button
+                  onClick={() => setOrderFilter('all')}
+                  className={`px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`}
+                >
+                  All ({orders.length})
+                </button>
+                <button
+                  onClick={() => setOrderFilter('active')}
+                  className={`px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`}
+                >
+                  Active ({orders.filter(o => o.status !== 'delivered').length})
+                </button>
+                <button
+                  onClick={() => setOrderFilter('delivered')}
+                  className={`px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`}
+                >
+                  Delivered ({orders.filter(o => o.status === 'delivered').length})
+                </button>
+              </div>
+            </div>
 
-                    {/* Order items */}
-                    <div className="text-xs text-gray-600 pl-2 border-l-2 border-gray-100 space-y-1 py-1">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex justify-between">
-                          <span>{item.quantity}x {item.name}</span>
-                          <span className="font-semibold">₹{item.price}</span>
-                        </div>
-                      ))}
-                    </div>
+            {(() => {
+              const displayedOrders = orders.filter(o => {
+                if (orderFilter === 'active') return o.status !== 'delivered';
+                if (orderFilter === 'delivered') return o.status === 'delivered';
+                return true;
+              });
 
-                    <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-50">
-                      <span className="font-bold text-gray-900">Total: ₹{order.grandTotal.toFixed(0)}</span>
-                      <div className="flex space-x-2">
-                        {order.status !== 'delivered' && (
-                          <button
-                            onClick={() => handleAdvanceStatus(order.id, order.status)}
-                            className="flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-bold"
-                          >
-                            <span>Next Step</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleCancelOrder(order.id)}
-                          className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold"
-                        >
-                          Cancel / Delete
-                        </button>
-                      </div>
+              if (displayedOrders.length === 0) {
+                return (
+                  <div className="bg-white p-8 rounded-2xl border border-gray-100 text-center space-y-2">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center mx-auto">
+                      <ShoppingBag className="w-6 h-6" />
                     </div>
+                    <div className="text-xs font-bold text-gray-700">No {orderFilter === 'all' ? '' : orderFilter} orders found</div>
+                    <p className="text-[11px] text-gray-400">When customers place orders, they will appear here live with address and phone number.</p>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              }
+
+              return (
+                <div className="space-y-3">
+                  {displayedOrders.map(order => (
+                    <div key={order.id} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-extrabold text-sm text-gray-900">{order.store.name}</div>
+                          <div className="text-[10px] text-gray-400 mt-0.5">Order ID: {order.orderNumber} • {order.placedAt}</div>
+                        </div>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                          order.status === 'delivered'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
+                        }`}>
+                          {order.status.replace('_', ' ')}
+                        </span>
+                      </div>
+
+                      {/* Customer contact & address */}
+                      <div className="p-2.5 bg-gray-50 rounded-xl space-y-1.5 text-xs text-gray-700">
+                        {order.customerPhone && (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1.5 font-bold text-gray-900">
+                              <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                              <span>Customer: {order.customerPhone}</span>
+                            </div>
+                            <a
+                              href={`https://wa.me/91${order.customerPhone.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-0.5 bg-emerald-600 text-white rounded-md text-[10px] font-bold flex items-center space-x-1 hover:bg-emerald-700"
+                            >
+                              <MessageSquare className="w-3 h-3" />
+                              <span>WhatsApp</span>
+                            </a>
+                          </div>
+                        )}
+                        {order.deliveryAddress && (
+                          <div className="flex items-start space-x-1.5 text-[11px] text-gray-600">
+                            <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                            <span>{order.deliveryAddress}</span>
+                          </div>
+                        )}
+                        {order.paymentMethod && (
+                          <div className="flex items-center space-x-1.5 text-[11px] text-gray-500 font-medium">
+                            <CreditCard className="w-3.5 h-3.5 text-blue-500" />
+                            <span>Payment: {order.paymentMethod}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Order items */}
+                      <div className="text-xs text-gray-600 pl-2 border-l-2 border-red-200 space-y-1 py-1">
+                        {order.items.map((item, idx) => (
+                          <div key={idx} className="flex justify-between">
+                            <span>{item.quantity}x {item.name}</span>
+                            <span className="font-semibold">₹{item.price * item.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs pt-2 border-t border-gray-100">
+                        <span className="font-bold text-gray-900 text-sm">Total: ₹{order.grandTotal.toFixed(0)}</span>
+                        <div className="flex space-x-2">
+                          {order.status !== 'delivered' && (
+                            <button
+                              onClick={() => handleAdvanceStatus(order.id, order.status)}
+                              className="flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-bold transition-all active:scale-95"
+                            >
+                              <span>Next Step</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleCancelOrder(order.id)}
+                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold transition-all"
+                          >
+                            Cancel / Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
 

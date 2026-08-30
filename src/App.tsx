@@ -23,7 +23,7 @@ import {
   seedDatabase
 } from './services/api';
 
-import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS } from './data/mockData';
+import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import {
   ActiveTab,
   CartItem,
@@ -37,12 +37,25 @@ import {
 } from './types';
 
 export default function App() {
-  // Load initial states from localStorage if available
+  // Load initial states from localStorage if available (invalidates on data version mismatch)
   const [stores, setStores] = useState<Store[]>(() => {
+    const savedVersion = typeof window !== 'undefined' ? localStorage.getItem('food_street_version') : null;
+    if (savedVersion !== DATA_VERSION) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('food_street_version', DATA_VERSION);
+        localStorage.setItem('food_street_stores', JSON.stringify(STORES));
+        localStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
+      }
+      return STORES;
+    }
     const saved = localStorage.getItem('food_street_stores');
     return saved ? JSON.parse(saved) : STORES;
   });
   const [categories, setCategories] = useState<Category[]>(() => {
+    const savedVersion = typeof window !== 'undefined' ? localStorage.getItem('food_street_version') : null;
+    if (savedVersion !== DATA_VERSION) {
+      return CATEGORIES;
+    }
     const saved = localStorage.getItem('food_street_categories');
     return saved ? JSON.parse(saved) : CATEGORIES;
   });
@@ -50,6 +63,18 @@ export default function App() {
     const saved = localStorage.getItem('food_street_orders');
     return saved ? JSON.parse(saved) : INITIAL_ORDERS;
   });
+
+  // Ensure fresh stores and categories are loaded when version changes
+  React.useEffect(() => {
+    const savedVersion = localStorage.getItem('food_street_version');
+    if (savedVersion !== DATA_VERSION) {
+      localStorage.setItem('food_street_version', DATA_VERSION);
+      localStorage.setItem('food_street_stores', JSON.stringify(STORES));
+      localStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
+      setStores(STORES);
+      setCategories(CATEGORIES);
+    }
+  }, []);
 
   // Save states to localStorage when they change
   React.useEffect(() => {
@@ -362,7 +387,7 @@ export default function App() {
     if (cat === 'chicken') return ['chicken', 'wing', 'wings', 'tikka', 'kebab'];
     if (cat === 'desserts') return ['dessert', 'cake', 'lava', 'phirni', 'ice cream', 'sundae', 'kesari', 'sweet', 'shake'];
     if (cat === 'ice cream') return ['ice cream', 'sundae', 'scoop', 'tub', 'shake', 'baskin'];
-    if (cat === 'south indian') return ['south indian', 'dosa', 'idli', 'vada', 'utthapam', 'upma', 'sambar', 'rasam', 'filter coffee', 'vaango', 'vengo'];
+    if (cat === 'south indian') return ['south indian', 'dosa', 'idli', 'vada', 'utthapam', 'upma', 'sambar', 'rasam', 'filter coffee', 'vaango'];
     if (cat === 'pizza') return ['pizza', 'breadstick', 'italian', 'crust'];
     if (cat === 'biryani') return ['biryani', 'dum', 'handi', 'rice'];
     if (cat === 'burgers') return ['burger', 'zinger', 'crispy'];

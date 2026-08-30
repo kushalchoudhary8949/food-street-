@@ -1,4 +1,4 @@
-﻿Category,Item Name,Item Price,Image URL
+Category,Item Name,Item Price,Image URL
 Curries,24/7 Dal Makhani,₹249,24_7_dal_makhani.jpg
 Curries,Goila Butter Paneer,₹299,goila_butter_paneer.jpg
 Curries,Soya Makhani Wala,₹249,soya_makhani_wala.jpg
@@ -24,20 +24,7 @@ Rolls,Butter Chicken Roll,₹199,butter_chicken_roll.jpg
 Rolls,Malai Chicken Tikka Roll,₹229,malai_chicken_tikka_roll.jpg
 Beverages,Butter Milk,₹99,butter_milk.jpg
 Beverages,Sweet Lassi,₹99,sweet_lassi.jpg
-Beverages,Red Bull / Water Bottle / Soft Beverages,MRP,red_bull_water_bottle_soft_beverages.jpg
 Dessert,Gulab Jamun with Rabri,₹199,gulab_jamun_with_rabri.jpg
-Meal for Two,Butter Paneer Meal,₹589,butter_paneer_meal.jpg
-Meal for Two,Butter Chicken Meal,₹599,butter_chicken_meal.jpg
-Kebab & Naan Meal,Soya Tikka Meal,₹199,soya_tikka_meal.jpg
-Kebab & Naan Meal,Paneer Tikka Shashlik Meal,₹269,paneer_tikka_shashlik_meal.jpg
-Kebab & Naan Meal,Murgh Galouti Meal,₹229,murgh_galouti_meal.jpg
-Kebab & Naan Meal,Chicken Tikka Meal,₹269,chicken_tikka_meal.jpg
-Kebab & Naan Meal,Chicken Malai Tikka Meal,₹289,chicken_malai_tikka_meal.jpg
-GBC Curry Naan Meal,Soya Makhani Wala Meal,₹179,soya_makhani_wala_meal.jpg
-GBC Curry Naan Meal,Goila Butter Paneer Meal,₹229,goila_butter_paneer_meal.jpg
-GBC Curry Naan Meal,Desi Egg Curry Meal,₹189,desi_egg_curry_meal.jpg
-GBC Curry Naan Meal,Chicken Tikka Masala Meal,₹249,chicken_tikka_masala_meal.jpg
-GBC Curry Naan Meal,Goila Butter Chicken Meal,₹259,goila_butter_chicken_meal.jpg
 GBC Curry Rice Bowl,Dal Makhani Rice Bowl,₹199,dal_makhani_rice_bowl.jpg
 GBC Curry Rice Bowl,Butter Paneer Rice Bowl,₹229,butter_paneer_rice_bowl.jpg
 GBC Curry Rice Bowl,Desi Egg Curry Rice Bowl,₹199,desi_egg_curry_rice_bowl.jpg

@@ -254,6 +254,11 @@ export default function App() {
     }, 3000);
   };
 
+  const isOrderWindowOpen = () => {
+    const now = new Date();
+    return now.getHours() < 22;
+  };
+
   // Toggle favorite store
   const handleToggleFavorite = (e?: React.MouseEvent, storeId?: string) => {
     if (e) e.stopPropagation();
@@ -351,6 +356,10 @@ export default function App() {
     cancellationConfirmed: boolean;
   }) => {
     if (cartItems.length === 0) return;
+    if (!isOrderWindowOpen()) {
+      showToast('Orders are closed after 10:00 PM. Please place your order before 10:00 PM.');
+      return;
+    }
 
     const itemTotal = cartItems.reduce((sum, ci) => {
       const addonsCost = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
@@ -583,6 +592,12 @@ export default function App() {
                   cartCount={totalCartCount}
                   cartTotal={totalCartPrice}
                 />
+
+                {!isOrderWindowOpen() && (
+                  <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
+                    Orders are accepted only until 10:00 PM.
+                  </div>
+                )}
 
                 {/* Categories Carousel Row */}
                 <div className="mt-1">

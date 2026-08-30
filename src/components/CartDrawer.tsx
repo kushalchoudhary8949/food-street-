@@ -35,6 +35,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
 
+  const isOrderWindowOpen = () => {
+    const now = new Date();
+    return now.getHours() < 22;
+  };
+
   if (!isOpen) return null;
 
   // Calculate bill
@@ -49,6 +54,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
+    if (!isOrderWindowOpen()) {
+      alert('Orders are closed after 10:00 PM. Please place your order before 10:00 PM.');
+      return;
+    }
     if (currentAddress.id === 'addr-none') {
       alert('Please add a delivery address before placing an order.');
       onOpenLocationModal();
@@ -187,6 +196,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 })}
               </div>
 
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
+                Orders are accepted only until 10:00 PM.
+              </div>
+
               {/* Delivery Tip */}
               <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs space-y-2.5">
                 <span className="text-xs font-bold text-gray-900 block">
@@ -279,7 +292,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               id="place-order-checkout-btn"
               onClick={handleCheckout}
-              disabled={!isCancellationConfirmed}
+              disabled={!isCancellationConfirmed || !isOrderWindowOpen()}
               className="w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600"
             >
               <div className="text-left">

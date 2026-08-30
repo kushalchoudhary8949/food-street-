@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v13_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v17_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -247,47 +247,7 @@ export const STORES: Store[] = [
             "category": "Veg"
       },
       {
-            "id": "kfc-17",
-            "storeId": "store-kfc",
-            "name": "Double Chicken Dynamite",
-            "price": 299,
-            "description": "Crunchy, juicy signature KFC favourite. (720 Kcal • 250g)",
-            "image": "/images/KFC/Double Chicken Dynamite.jpg",
-            "isVeg": false,
-            "category": "Double Chicken Dynamite"
-      },
-      {
-            "id": "kfc-18",
-            "storeId": "store-kfc",
-            "name": "Double Chicken Dynamite Combo",
-            "price": 339,
-            "description": "Crunchy, juicy signature KFC favourite. (862 Kcal • 580g)",
-            "image": "/images/KFC/Double Chicken Dynamite Combo.jpg",
-            "isVeg": false,
-            "category": "Double Chicken Dynamite"
-      },
-      {
-            "id": "kfc-19",
-            "storeId": "store-kfc",
-            "name": "Double Chicken Dynamite Snack Box",
-            "price": 429,
-            "description": "Crunchy, juicy signature KFC favourite. (1168 Kcal • 670g)",
-            "image": "/images/KFC/Double Chicken Dynamite Snack Box.jpg",
-            "isVeg": false,
-            "category": "Double Chicken Dynamite"
-      },
-      {
             "id": "kfc-20",
-            "storeId": "store-kfc",
-            "name": "Double Chicken Dynamite Box Meal",
-            "price": 429,
-            "description": "Crunchy, juicy signature KFC favourite. (1335 Kcal • 720g)",
-            "image": "/images/KFC/Double Chicken Dynamite Box Meal.jpg",
-            "isVeg": false,
-            "category": "Double Chicken Dynamite"
-      },
-      {
-            "id": "kfc-21",
             "storeId": "store-kfc",
             "name": "2 Shawarmas – Saver Deal",
             "price": 249,
@@ -424,16 +384,6 @@ export const STORES: Store[] = [
             "description": "Crunchy, juicy signature KFC favourite. (387 Kcal • 146g)",
             "image": "/images/KFC/Gold Edition – 3pc Boneless Strips.jpg",
             "isVeg": false,
-            "category": "Gold Edition"
-      },
-      {
-            "id": "kfc-35",
-            "storeId": "store-kfc",
-            "name": "Gold Edition – Regular Fries",
-            "price": 129,
-            "description": "Crunchy, juicy signature KFC favourite. (362 Kcal • 150g)",
-            "image": "/images/KFC/Gold Edition – Regular Fries.jpg",
-            "isVeg": true,
             "category": "Gold Edition"
       },
       {
@@ -1157,46 +1107,6 @@ export const STORES: Store[] = [
             "category": "Rice Bowlz"
       },
       {
-            "id": "kfc-108",
-            "storeId": "store-kfc",
-            "name": "Very Berry Strawberry Cup",
-            "price": 67,
-            "description": "Crunchy, juicy signature KFC favourite. (69 Kcal • 60g)",
-            "image": "/images/KFC/Very Berry Strawberry Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-109",
-            "storeId": "store-kfc",
-            "name": "Alphonso Mango",
-            "price": 76,
-            "description": "Crunchy, juicy signature KFC favourite. (72 Kcal • 60g)",
-            "image": "/images/KFC/Mojito.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-110",
-            "storeId": "store-kfc",
-            "name": "Dutch Chocolate Cup",
-            "price": 76,
-            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 59g)",
-            "image": "/images/KFC/Dutch Chocolate Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-111",
-            "storeId": "store-kfc",
-            "name": "Honey Nut Crunch Cup",
-            "price": 86,
-            "description": "Crunchy, juicy signature KFC favourite. (90 Kcal • 61g)",
-            "image": "/images/KFC/Dutch Chocolate Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
             "id": "kfc-112",
             "storeId": "store-kfc",
             "name": "Redbull Energy Drink",
@@ -1413,16 +1323,6 @@ export const STORES: Store[] = [
             "price": 109,
             "description": "Crunchy, juicy signature KFC favourite. (343 Kcal • 60g)",
             "image": "/images/KFC/Choco Lava Cake.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-134",
-            "storeId": "store-kfc",
-            "name": "Choco Mud Pie",
-            "price": 119,
-            "description": "Crunchy, juicy signature KFC favourite. (241 Kcal • 93g)",
-            "image": "/images/KFC/Choco mud pie.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       }

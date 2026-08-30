@@ -97,7 +97,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
           className="mb-6 flex items-center space-x-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-xl backdrop-blur-xs border border-white/10"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Food Store</span>
+          <span>Back to FoodZa</span>
         </button>
 
         {/* Card */}
@@ -108,7 +108,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
               <ShieldCheck className="w-8 h-8" />
             </div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-              Admin Portal
+              FoodZa Admin Portal
             </h1>
             <p className="text-xs text-gray-400">
               Protected workspace • Authorized administrator login only

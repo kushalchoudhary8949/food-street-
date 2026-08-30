@@ -27,24 +27,30 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="bg-white px-4 pt-3 pb-2 sticky top-0 z-30 shadow-xs border-b border-gray-100/80">
-      {/* Top row: Location & Cart + Profile Avatar */}
+      {/* Top row: Brand, Location & Cart */}
       <div className="flex items-center justify-between pb-3">
-        {/* Delivery Location Pill/Button */}
-        <button
-          id="location-picker-btn"
-          onClick={onOpenLocationModal}
-          className="flex items-center space-x-1.5 text-left group transition-all"
-        >
-          <div className="text-red-600 transition-transform group-hover:scale-110">
-            <MapPin className="w-5 h-5 fill-red-600/10 stroke-red-600 stroke-[2.2]" />
-          </div>
-          <div className="flex items-center space-x-1">
-            <span className="text-xl sm:text-2xl font-extrabold text-[#c5221f] tracking-tight hover:text-red-700 transition-colors">
-              Delivery to {currentAddress.label}
-            </span>
-            <ChevronDown className="w-4 h-4 text-[#c5221f] stroke-[2.5] opacity-70 group-hover:translate-y-0.5 transition-transform" />
-          </div>
-        </button>
+        {/* Brand & Delivery Location */}
+        <div className="flex items-center space-x-2.5">
+          <span className="text-2xl font-black tracking-tighter bg-linear-to-r from-red-600 via-rose-600 to-amber-500 bg-clip-text text-transparent select-none">
+            FoodZa
+          </span>
+          <span className="text-gray-300 font-light hidden xs:inline">|</span>
+          <button
+            id="location-picker-btn"
+            onClick={onOpenLocationModal}
+            className="flex items-center space-x-1 text-left group transition-all"
+          >
+            <div className="text-red-600 transition-transform group-hover:scale-110">
+              <MapPin className="w-4 h-4 fill-red-600/10 stroke-red-600 stroke-[2.2]" />
+            </div>
+            <div className="flex items-center space-x-0.5">
+              <span className="text-sm font-extrabold text-gray-900 tracking-tight group-hover:text-red-600 transition-colors">
+                {currentAddress.label}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-500 stroke-[2.5] opacity-70 group-hover:translate-y-0.5 transition-transform" />
+            </div>
+          </button>
+        </div>
 
         {/* Right Actions: Sticky Cart + Profile Avatar */}
         <div className="flex items-center space-x-2.5">

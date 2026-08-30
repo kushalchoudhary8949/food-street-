@@ -422,7 +422,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
         <div>
           <h1 className="text-xl font-black flex items-center space-x-2">
             <Building2 className="w-6 h-6" />
-            <span>Food Street Admin Panel</span>
+            <span>FoodZa Admin Panel</span>
           </h1>
           <p className="text-xs text-rose-100 mt-0.5">Manage your stores, menus, categories, and tracking</p>
         </div>

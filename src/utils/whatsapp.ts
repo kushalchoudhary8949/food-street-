@@ -18,7 +18,7 @@ export function generateWhatsAppOrderMessage(order: Order): string {
       ? 'Cash on Delivery (Pending)'
       : 'Paid / Confirmed';
 
-  const message = `🧾 *FOOD DELIVERY APP - ORDER RECEIPT*
+  const message = `🧾 *FOODZA - ORDER RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━
 🆔 *Order ID:* ${order.orderNumber}
 🏪 *Store:* ${order.store.name}
@@ -44,7 +44,7 @@ ${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
 ☎️ *Support & Contact:* 7682890864
 
 ━━━━━━━━━━━━━━━━━━━━
-_Thank you for ordering with us!_`;
+_Thank you for ordering with FoodZa!_`;
 
   return message;
 }

@@ -88,6 +88,7 @@ export interface Order {
   driverRating?: number;
   driverPhoto?: string;
   paymentMethod: string;
+  cancellationConfirmed?: boolean;
 }
 
 export interface UserAddress {
@@ -96,10 +97,11 @@ export interface UserAddress {
   addressLine: string;
   roomNo?: string;
   hostelName?: string;
+  block?: string;
   locality: string;
   city: string;
   phone: string;
   isDefault: boolean;
 }
 
-export type ActiveTab = 'home' | 'search' | 'orders' | 'admin';
+export type ActiveTab = 'home' | 'search' | 'orders' | 'profile' | 'admin';

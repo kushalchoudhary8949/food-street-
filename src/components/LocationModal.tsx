@@ -24,6 +24,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
   const [showAddForm, setShowAddForm] = useState(false);
   const [newLabel, setNewLabel] = useState<'Hostel' | 'Home' | 'Work' | 'Other'>('Hostel');
   const [newHostelName, setNewHostelName] = useState('');
+  const [newBlock, setNewBlock] = useState('');
   const [newRoomNo, setNewRoomNo] = useState('');
   const [newLine, setNewLine] = useState('');
   const [newLocality, setNewLocality] = useState('');
@@ -40,6 +41,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
       id: `addr-${Date.now()}`,
       label: newLabel,
       hostelName: newHostelName.trim() || undefined,
+      block: newBlock.trim() || undefined,
       roomNo: newRoomNo.trim() || undefined,
       addressLine: newLine.trim(),
       locality: newLocality.trim(),
@@ -52,6 +54,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
     onSelectAddress(created);
     setShowAddForm(false);
     setNewHostelName('');
+    setNewBlock('');
     setNewRoomNo('');
     setNewLine('');
     setNewLocality('');
@@ -136,9 +139,9 @@ export const LocationModal: React.FC<LocationModalProps> = ({
                       </div>
 
                       {/* Optional Hostel / Room display */}
-                      {(addr.hostelName || addr.roomNo) && (
+                      {(addr.hostelName || addr.block || addr.roomNo) && (
                         <p className="text-xs font-bold text-red-600">
-                          {[addr.roomNo ? `Room ${addr.roomNo}` : null, addr.hostelName].filter(Boolean).join(', ')}
+                          {[addr.roomNo ? `Room ${addr.roomNo}` : null, addr.hostelName, addr.block].filter(Boolean).join(', ')}
                         </p>
                       )}
 
@@ -223,15 +226,15 @@ export const LocationModal: React.FC<LocationModalProps> = ({
                 </div>
               </div>
 
-              {/* Optional Hostel / Room fields */}
+              {/* Optional Hostel / Block / Room fields */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Hostel / Building <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
+                    Hostel Name <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Ganga Hostel / Block A"
+                    placeholder="e.g. Ganga Hostel"
                     value={newHostelName}
                     onChange={(e) => setNewHostelName(e.target.value)}
                     className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
@@ -240,16 +243,29 @@ export const LocationModal: React.FC<LocationModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Room / Flat No. <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
+                    Block / Wing <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Room 204"
-                    value={newRoomNo}
-                    onChange={(e) => setNewRoomNo(e.target.value)}
+                    placeholder="e.g. Block A"
+                    value={newBlock}
+                    onChange={(e) => setNewBlock(e.target.value)}
                     className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Room / Flat No. <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Room 204"
+                  value={newRoomNo}
+                  onChange={(e) => setNewRoomNo(e.target.value)}
+                  className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
+                />
               </div>
 
               {/* Street Address Line */}

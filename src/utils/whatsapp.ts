@@ -18,6 +18,10 @@ export function generateWhatsAppOrderMessage(order: Order): string {
       ? 'Cash on Delivery (Pending)'
       : 'Paid / Confirmed';
 
+  const cancellationNote = order.cancellationConfirmed
+    ? '⚠️ *Cancellation Policy:* This order cannot be cancelled after it is placed.\n'
+    : '';
+
   const message = `🧾 *FOODZA - ORDER RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━
 🆔 *Order ID:* ${order.orderNumber}
@@ -36,7 +40,7 @@ ${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *
 ━━━━━━━━━━━━━━━━━━━━
 💳 *Payment Method:* ${order.paymentMethod}
 📌 *Payment Status:* ${paymentStatus}
-
+${cancellationNote}
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
 ${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}

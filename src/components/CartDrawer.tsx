@@ -16,6 +16,7 @@ interface CartDrawerProps {
     couponCode: string;
     instructions: string;
     paymentMethod: string;
+    cancellationConfirmed: boolean;
   }) => void;
 }
 
@@ -32,6 +33,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [selectedTip, setSelectedTip] = useState<number>(20);
   const [deliveryNote, setDeliveryNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
+  const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
 
   if (!isOpen) return null;
 
@@ -52,12 +54,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       onOpenLocationModal();
       return;
     }
+    if (!isCancellationConfirmed) {
+      alert('Please confirm that the order cannot be cancelled after it is placed.');
+      return;
+    }
     onPlaceOrder({
       tip: selectedTip,
       discount: 0,
       couponCode: '',
       instructions: deliveryNote,
       paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / Online',
+      cancellationConfirmed: isCancellationConfirmed,
     });
   };
 
@@ -250,6 +257,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span className="text-red-600">₹{grandTotal.toFixed(0)}</span>
                 </div>
               </div>
+
+              <label className="flex items-start gap-3 rounded-2xl border border-gray-200 bg-white p-3 text-left shadow-xs">
+                <input
+                  type="checkbox"
+                  checked={isCancellationConfirmed}
+                  onChange={(e) => setIsCancellationConfirmed(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="text-[11px] font-medium text-gray-700 leading-relaxed">
+                  I understand this order cannot be cancelled after it is placed.
+                </span>
+              </label>
             </>
           )}
         </div>
@@ -260,7 +279,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               id="place-order-checkout-btn"
               onClick={handleCheckout}
-              className="w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all"
+              disabled={!isCancellationConfirmed}
+              className="w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600"
             >
               <div className="text-left">
                 <span className="text-xs uppercase tracking-wider opacity-90 block font-semibold">Total</span>

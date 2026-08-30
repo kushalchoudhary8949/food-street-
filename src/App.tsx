@@ -9,6 +9,7 @@ import { LocationModal } from './components/LocationModal';
 import { BottomNav } from './components/BottomNav';
 import { SearchTab } from './components/SearchTab';
 import { OrdersTab } from './components/OrdersTab';
+import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
@@ -35,6 +36,9 @@ import {
   Store,
   UserAddress,
 } from './types';
+
+const ADDRESS_STORAGE_KEY = 'food_street_addresses';
+const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 
 export default function App() {
   // Load initial states from localStorage if available (invalidates on data version mismatch)
@@ -100,6 +104,22 @@ export default function App() {
       }
       if (e.key === 'food_street_orders' && e.newValue) {
         setOrders(JSON.parse(e.newValue));
+      }
+      if (e.key === ADDRESS_STORAGE_KEY && e.newValue) {
+        try {
+          const next = JSON.parse(e.newValue);
+          if (Array.isArray(next)) setAddresses(next);
+        } catch {
+          // ignore invalid data
+        }
+      }
+      if (e.key === CURRENT_ADDRESS_STORAGE_KEY && e.newValue) {
+        try {
+          const next = JSON.parse(e.newValue);
+          if (next && next.id) setCurrentAddress(next);
+        } catch {
+          // ignore invalid data
+        }
       }
     };
     window.addEventListener('storage', handleStorageChange);
@@ -169,9 +189,45 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Address state
-  const [addresses, setAddresses] = useState<UserAddress[]>(INITIAL_ADDRESSES);
-  const [currentAddress, setCurrentAddress] = useState<UserAddress>(INITIAL_ADDRESSES[0]);
+  const [addresses, setAddresses] = useState<UserAddress[]>(() => {
+    if (typeof window === 'undefined') return INITIAL_ADDRESSES;
+    const saved = window.localStorage.getItem(ADDRESS_STORAGE_KEY);
+    if (!saved) return INITIAL_ADDRESSES;
+
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_ADDRESSES;
+    } catch {
+      return INITIAL_ADDRESSES;
+    }
+  });
+  const [currentAddress, setCurrentAddress] = useState<UserAddress>(() => {
+    if (typeof window === 'undefined') return INITIAL_ADDRESSES[0];
+
+    const savedAddress = window.localStorage.getItem(CURRENT_ADDRESS_STORAGE_KEY);
+    if (savedAddress) {
+      try {
+        const parsed = JSON.parse(savedAddress);
+        if (parsed && parsed.id) return parsed;
+      } catch {
+        // fall through to the persisted addresses list below
+      }
+    }
+
+    const fallback = addresses[0] ?? INITIAL_ADDRESSES[0];
+    return fallback;
+  });
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+
+  React.useEffect(() => {
+    localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(addresses));
+  }, [addresses]);
+
+  React.useEffect(() => {
+    if (currentAddress) {
+      localStorage.setItem(CURRENT_ADDRESS_STORAGE_KEY, JSON.stringify(currentAddress));
+    }
+  }, [currentAddress]);
 
   // Favorites state
   const [favorites, setFavorites] = useState<string[]>(['store-kfc', 'store-bbk']);
@@ -285,12 +341,14 @@ export default function App() {
     couponCode,
     instructions,
     paymentMethod,
+    cancellationConfirmed,
   }: {
     tip: number;
     discount: number;
     couponCode: string;
     instructions: string;
     paymentMethod: string;
+    cancellationConfirmed: boolean;
   }) => {
     if (cartItems.length === 0) return;
 
@@ -316,6 +374,7 @@ export default function App() {
     const formattedAddress = [
       currentAddress.roomNo ? `Room ${currentAddress.roomNo}` : null,
       currentAddress.hostelName,
+      currentAddress.block,
       currentAddress.addressLine,
       currentAddress.locality,
       currentAddress.city,
@@ -353,6 +412,7 @@ export default function App() {
       driverRating: 4.9,
       driverPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
       paymentMethod: paymentMethod || 'UPI / Online',
+      cancellationConfirmed,
     };
 
     setOrders([newOrder, ...orders]);
@@ -608,6 +668,18 @@ export default function App() {
               </div>
             )}
 
+            {activeTab === 'profile' && (
+              <div className="flex-1">
+                <ProfileTab
+                  currentAddress={currentAddress}
+                  addresses={addresses}
+                  onOpenLocationModal={() => setIsLocationModalOpen(true)}
+                  favoritesCount={favorites.length}
+                  onViewFavorites={() => setActiveTab('home')}
+                />
+              </div>
+            )}
+
             {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
             {totalCartCount > 0 && activeTab !== 'orders' && (
               <div className="fixed bottom-18 left-4 right-4 max-w-md mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl z-30 px-2 animate-in slide-in-from-bottom duration-200">
@@ -691,7 +763,7 @@ export default function App() {
               addresses={addresses}
               currentAddress={currentAddress}
               onSelectAddress={(addr) => setCurrentAddress(addr)}
-              onAddAddress={(newAddr) => setAddresses([newAddr, ...addresses])}
+              onAddAddress={(newAddr) => setAddresses((prev) => [newAddr, ...prev])}
               onDeleteAddress={(addressId) => {
                 const remaining = addresses.filter(a => a.id !== addressId);
                 if (remaining.length === 0) return;

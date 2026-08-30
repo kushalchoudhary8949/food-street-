@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v17_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v18_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -1762,7 +1762,7 @@ export const STORES: Store[] = [
         id: 'ph-dhabe-da-keema-nv',
         storeId: 'store-pizzahut',
         name: 'Dhabe Da Keema',
-        price: 369,
+        price: 339,
         description: 'Dhaba style chicken keema masala, green chilli, onion, mint mayo. (270 kcal/100g (Pan); 290 kcal/100g (Thin n Crispy))',
         image: '/images/Pizza hut/Dhabe Da Keema.jpg',
         isVeg: false,

@@ -1,6 +1,8 @@
 import { Order } from '../types';
 
 export const WHATSAPP_NUMBER = '918949508256';
+export const PHONEPE_UPI_URI = 'upi://pay?pa=foodza@upi&pn=FoodZa%20Delivery&cu=INR';
+export const PAYMENT_UPI_ID = '8949508256@axl';
 
 export function generateWhatsAppOrderMessage(order: Order): string {
   const itemsText = order.items
@@ -8,15 +10,9 @@ export function generateWhatsAppOrderMessage(order: Order): string {
       (it) =>
         `• ${it.quantity}x ${it.name}${
           it.addons && it.addons.length > 0 ? ` (+${it.addons.join(', ')})` : ''
-        } - ₹${(it.price * it.quantity).toFixed(0)}`
+        } ${it.isVeg ? '(Veg)' : '(Non-Veg)'} - ₹${(it.price * it.quantity).toFixed(0)}`
     )
     .join('\n');
-
-  const paymentStatus =
-    order.paymentMethod.toLowerCase().includes('cod') ||
-    order.paymentMethod.toLowerCase().includes('cash')
-      ? 'Cash on Delivery (Pending)'
-      : 'Paid / Confirmed';
 
   const cancellationNote = order.cancellationConfirmed
     ? '⚠️ *Cancellation Policy:* This order cannot be cancelled after it is placed.\n'
@@ -24,10 +20,7 @@ export function generateWhatsAppOrderMessage(order: Order): string {
 
   const message = `🧾 *FOODZA - ORDER RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━
-🆔 *Order ID:* ${order.orderNumber}
 🏪 *Store:* ${order.store.name}
-⏱️ *Status:* ${order.status.toUpperCase()}
-🕒 *Placed At:* ${order.placedAt}
 
 📋 *ORDER ITEMS:*
 ${itemsText}
@@ -39,8 +32,9 @@ ${itemsText}
 ${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${order.grandTotal.toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
 💳 *Payment Method:* ${order.paymentMethod}
-📌 *Payment Status:* ${paymentStatus}
-${cancellationNote}
+${cancellationNote}� *PAYMENT COLLECTION DETAILS:*
+🔗 *UPI ID:* 8949508256@axl
+
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
 ${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}

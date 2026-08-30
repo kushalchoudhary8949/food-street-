@@ -1150,19 +1150,19 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               <div className="grid grid-cols-3 gap-2.5 pt-2">
                 <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
                   <div className="text-lg font-black text-gray-900">
-                    {dbStatus?.counts ? dbStatus.counts.stores : stores.length}
+                    {dbStatus?.counts?.stores ?? stores?.length ?? 0}
                   </div>
                   <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Stores in DB</div>
                 </div>
                 <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
                   <div className="text-lg font-black text-gray-900">
-                    {dbStatus?.counts ? dbStatus.counts.categories : categories.length}
+                    {dbStatus?.counts?.categories ?? categories?.length ?? 0}
                   </div>
                   <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Categories in DB</div>
                 </div>
                 <div className="bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center">
                   <div className="text-lg font-black text-gray-900">
-                    {dbStatus?.counts ? dbStatus.counts.orders : orders.length}
+                    {dbStatus?.counts?.orders ?? orders?.length ?? 0}
                   </div>
                   <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5">Orders in DB</div>
                 </div>
@@ -1190,7 +1190,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                     setCloudStatusMsg(null);
                     try {
                       const allStoresToSync = [...STORES];
-                      stores.forEach(s => {
+                      (stores || []).forEach(s => {
                         const idx = allStoresToSync.findIndex(existing => existing.id === s.id);
                         if (idx >= 0) {
                           allStoresToSync[idx] = s;
@@ -1200,7 +1200,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                       });
 
                       const allCatsToSync = [...CATEGORIES];
-                      categories.forEach(c => {
+                      (categories || []).forEach(c => {
                         const idx = allCatsToSync.findIndex(existing => existing.id === c.id);
                         if (idx >= 0) {
                           allCatsToSync[idx] = c;

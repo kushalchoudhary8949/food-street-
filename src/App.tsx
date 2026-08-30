@@ -101,7 +101,7 @@ export default function App() {
 
     // Real-time Live Orders Polling Subscription (every 3.5s)
     const unsubOrders = subscribeToOrders((liveOrders) => {
-      if (liveOrders && liveOrders.length > 0) {
+      if (Array.isArray(liveOrders)) {
         setOrders(liveOrders);
       }
     });

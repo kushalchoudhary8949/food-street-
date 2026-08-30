@@ -52,19 +52,19 @@ function apiDevServerPlugin(): Plugin {
 
           let handler: any = null;
           if (endpoint === 'orders') {
-            const mod = await import('./api/orders.ts');
+            const mod = await server.ssrLoadModule('./api/orders.ts');
             handler = mod.default;
           } else if (endpoint === 'stores') {
-            const mod = await import('./api/stores.ts');
+            const mod = await server.ssrLoadModule('./api/stores.ts');
             handler = mod.default;
           } else if (endpoint === 'categories') {
-            const mod = await import('./api/categories.ts');
+            const mod = await server.ssrLoadModule('./api/categories.ts');
             handler = mod.default;
           } else if (endpoint === 'seed') {
-            const mod = await import('./api/seed.ts');
+            const mod = await server.ssrLoadModule('./api/seed.ts');
             handler = mod.default;
           } else if (endpoint === 'status') {
-            const mod = await import('./api/status.ts');
+            const mod = await server.ssrLoadModule('./api/status.ts');
             handler = mod.default;
           }
 

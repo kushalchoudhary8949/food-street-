@@ -116,7 +116,7 @@ export function subscribeToOrders(
     if (!isSubscribed) return;
     try {
       const orders = await fetchOrdersFromDb();
-      if (isSubscribed && orders && orders.length > 0) {
+      if (isSubscribed && Array.isArray(orders)) {
         callback(orders);
       }
     } catch (e) {
@@ -169,6 +169,22 @@ export async function saveStoresToDb(stores: Store[]): Promise<boolean> {
 }
 
 /**
+ * Delete a store from PostgreSQL
+ */
+export async function deleteStoreFromDb(storeId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/stores?storeId=${encodeURIComponent(storeId)}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    return Boolean(data.success);
+  } catch (error) {
+    console.error('API: Failed to delete store from PostgreSQL:', error);
+    return false;
+  }
+}
+
+/**
  * Fetch categories from PostgreSQL
  */
 export async function fetchCategoriesFromDb(): Promise<Category[]> {
@@ -197,6 +213,22 @@ export async function saveCategoriesToDb(categories: Category[]): Promise<boolea
     return Boolean(data.success);
   } catch (error) {
     console.error('API: Failed to save categories to PostgreSQL:', error);
+    return false;
+  }
+}
+
+/**
+ * Delete a category from PostgreSQL
+ */
+export async function deleteCategoryFromDb(categoryId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/categories?categoryId=${encodeURIComponent(categoryId)}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    return Boolean(data.success);
+  } catch (error) {
+    console.error('API: Failed to delete category from PostgreSQL:', error);
     return false;
   }
 }

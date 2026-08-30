@@ -25,10 +25,14 @@ export default async function handler(req: any, res: any) {
     // POST /api/stores (Save array of stores or single store)
     if (req.method === 'POST') {
       const body = req.body;
-      const storesToSave = Array.isArray(body) ? body : [body];
+      const isArray = Array.isArray(body);
+      const storesToSave: any[] = isArray ? body : (body?.stores ? body.stores : [body]);
+      const shouldReplace = req.query?.replace === 'true' || body?.replace === true;
 
+      const savedIds: string[] = [];
       for (const store of storesToSave) {
         if (store && store.id) {
+          savedIds.push(String(store.id));
           await query(
             `INSERT INTO stores (id, name, data, updated_at)
              VALUES ($1, $2, $3, NOW())
@@ -41,18 +45,26 @@ export default async function handler(req: any, res: any) {
         }
       }
 
-      return res.status(200).json({ success: true });
+      // If replacing all stores, remove any obsolete stores not in the incoming list
+      if (shouldReplace && savedIds.length > 0) {
+        await query(
+          `DELETE FROM stores WHERE id NOT IN (${savedIds.map((_, i) => `$${i + 1}`).join(', ')})`,
+          savedIds
+        );
+      }
+
+      return res.status(200).json({ success: true, count: savedIds.length });
     }
 
     // DELETE /api/stores
     if (req.method === 'DELETE') {
-      const storeId = req.query.storeId || req.body?.storeId;
+      const storeId = req.query?.storeId || req.body?.storeId;
       if (!storeId) {
         return res.status(400).json({ success: false, error: 'Missing storeId' });
       }
 
-      await query('DELETE FROM stores WHERE id = $1', [String(storeId)]);
-      return res.status(200).json({ success: true });
+      const result = await query('DELETE FROM stores WHERE id = $1', [String(storeId)]);
+      return res.status(200).json({ success: true, deletedCount: result.rowCount });
     }
 
     return res.status(405).json({ success: false, error: 'Method Not Allowed' });

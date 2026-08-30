@@ -25,10 +25,14 @@ export default async function handler(req: any, res: any) {
     // POST /api/categories (Save array of categories or single category)
     if (req.method === 'POST') {
       const body = req.body;
-      const categoriesToSave = Array.isArray(body) ? body : [body];
+      const isArray = Array.isArray(body);
+      const categoriesToSave: any[] = isArray ? body : (body?.categories ? body.categories : [body]);
+      const shouldReplace = req.query?.replace === 'true' || body?.replace === true;
 
+      const savedIds: string[] = [];
       for (const cat of categoriesToSave) {
         if (cat && cat.id) {
+          savedIds.push(String(cat.id));
           await query(
             `INSERT INTO categories (id, name, data, updated_at)
              VALUES ($1, $2, $3, NOW())
@@ -41,18 +45,26 @@ export default async function handler(req: any, res: any) {
         }
       }
 
-      return res.status(200).json({ success: true });
+      // If replacing all categories, remove any obsolete categories not in the incoming list
+      if (shouldReplace && savedIds.length > 0) {
+        await query(
+          `DELETE FROM categories WHERE id NOT IN (${savedIds.map((_, i) => `$${i + 1}`).join(', ')})`,
+          savedIds
+        );
+      }
+
+      return res.status(200).json({ success: true, count: savedIds.length });
     }
 
     // DELETE /api/categories
     if (req.method === 'DELETE') {
-      const categoryId = req.query.categoryId || req.body?.categoryId;
+      const categoryId = req.query?.categoryId || req.body?.categoryId;
       if (!categoryId) {
         return res.status(400).json({ success: false, error: 'Missing categoryId' });
       }
 
-      await query('DELETE FROM categories WHERE id = $1', [String(categoryId)]);
-      return res.status(200).json({ success: true });
+      const result = await query('DELETE FROM categories WHERE id = $1', [String(categoryId)]);
+      return res.status(200).json({ success: true, deletedCount: result.rowCount });
     }
 
     return res.status(405).json({ success: false, error: 'Method Not Allowed' });

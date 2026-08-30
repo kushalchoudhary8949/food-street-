@@ -28,6 +28,10 @@ import {
 import { 
   saveStoresToDb, 
   saveCategoriesToDb,
+  deleteStoreFromDb,
+  deleteCategoryFromDb,
+  deleteOrderFromDb,
+  updateOrderStatusInDb,
   seedDatabase,
   fetchDatabaseStatus,
   fetchOrdersFromDb,
@@ -239,9 +243,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     });
   };
 
-  const handleDeleteStore = (storeId: string) => {
+  const handleDeleteStore = async (storeId: string) => {
     if (confirm('Are you sure you want to delete this store and all its items?')) {
       onUpdateStores(stores.filter(s => s.id !== storeId));
+      await deleteStoreFromDb(storeId);
     }
   };
 
@@ -384,14 +389,15 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     });
   };
 
-  const handleDeleteCategory = (catId: string) => {
+  const handleDeleteCategory = async (catId: string) => {
     if (confirm('Delete this category?')) {
       onUpdateCategories(categories.filter(c => c.id !== catId));
+      await deleteCategoryFromDb(catId);
     }
   };
 
   // Order Status Handler
-  const handleAdvanceStatus = (orderId: string, currentStatus: OrderStatus) => {
+  const handleAdvanceStatus = async (orderId: string, currentStatus: OrderStatus) => {
     const statusMap: Record<OrderStatus, OrderStatus> = {
       'placed': 'confirmed',
       'confirmed': 'cooking',
@@ -399,19 +405,21 @@ export const AdminTab: React.FC<AdminTabProps> = ({
       'out_for_delivery': 'delivered',
       'delivered': 'delivered',
     };
+    const nextStatus = statusMap[currentStatus];
     const updatedOrders = orders.map(o => {
       if (o.id === orderId) {
-        return { ...o, status: statusMap[currentStatus] };
+        return { ...o, status: nextStatus };
       }
       return o;
     });
     onUpdateOrders(updatedOrders);
+    await updateOrderStatusInDb(orderId, nextStatus);
   };
 
-  const handleCancelOrder = (orderId: string) => {
+  const handleCancelOrder = async (orderId: string) => {
     if (confirm('Are you sure you want to cancel this order?')) {
-      // Simulate delete order
       onUpdateOrders(orders.filter(o => o.id !== orderId));
+      await deleteOrderFromDb(orderId);
     }
   };
 

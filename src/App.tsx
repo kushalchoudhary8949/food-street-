@@ -256,7 +256,8 @@ export default function App() {
 
   const isOrderWindowOpen = () => {
     const now = new Date();
-    return now.getHours() < 22;
+    const hour = now.getHours();
+    return hour >= 12 && hour < 22;
   };
 
   // Toggle favorite store
@@ -357,7 +358,7 @@ export default function App() {
   }) => {
     if (cartItems.length === 0) return;
     if (!isOrderWindowOpen()) {
-      showToast('Orders are closed after 10:00 PM. Please place your order before 10:00 PM.');
+      showToast('Orders are open only from 12:00 PM to 10:00 PM.');
       return;
     }
 
@@ -595,7 +596,7 @@ export default function App() {
 
                 {!isOrderWindowOpen() && (
                   <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                    Orders are accepted only until 10:00 PM.
+                    Orders are accepted only from 12:00 PM to 10:00 PM.
                   </div>
                 )}
 

@@ -37,7 +37,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const isOrderWindowOpen = () => {
     const now = new Date();
-    return now.getHours() < 22;
+    const hour = now.getHours();
+    return hour >= 12 && hour < 22;
   };
 
   if (!isOpen) return null;
@@ -55,7 +56,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
     if (!isOrderWindowOpen()) {
-      alert('Orders are closed after 10:00 PM. Please place your order before 10:00 PM.');
+      alert('Orders are open only from 12:00 PM to 10:00 PM.');
       return;
     }
     if (currentAddress.id === 'addr-none') {

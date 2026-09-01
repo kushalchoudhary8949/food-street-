@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v25_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v27_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -272,7 +272,7 @@ export const STORES: Store[] = [
             "name": "8 Pc Boneless Meal",
             "price": 409,
             "description": "Crunchy, juicy signature KFC favourite. (374 Kcal • 500g)",
-            "image": "/images/KFC/8 Pc Boneless Meal.jpg",
+            "image": "/images/KFC/8 Pc Bucket.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
       },

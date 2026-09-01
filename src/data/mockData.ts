@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v22_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v25_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -120,7 +120,7 @@ export const STORES: Store[] = [
             "id": "kfc-12",
             "storeId": "store-kfc",
             "name": "Veg Roll",
-            "price": 109,
+            "price": 104,
             "description": "Crunchy, juicy signature KFC favourite. (447 Kcal • 145g)",
             "image": "/images/KFC/Veg Roll.jpg",
             "isVeg": true,

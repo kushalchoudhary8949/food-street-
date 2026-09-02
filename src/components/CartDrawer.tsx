@@ -253,11 +253,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>₹{itemTotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Delivery Partner Fee</span>
+                  <span>Platform Fee</span>
                   <span>₹{deliveryFee}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Taxes & Restaurant Packaging</span>
+                  <span>Taxes</span>
                   <span>₹{taxesAndPacking.toFixed(0)}</span>
                 </div>
                 {selectedTip > 0 && (

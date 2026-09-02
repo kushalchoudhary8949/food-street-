@@ -29,8 +29,11 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
   const selectedAddons = (item.addons || []).filter(a => selectedAddonIds.includes(a.id));
   const addonsTotal = selectedAddons.reduce((sum, a) => sum + a.price, 0);
   const totalPrice = (item.price + addonsTotal) * quantity;
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  const isAvailableToday = !item.availableOnDays || item.availableOnDays.length === 0 || item.availableOnDays.includes(today);
 
   const handleConfirm = () => {
+    if (!isAvailableToday) return;
     onAddToCart(item, quantity, selectedAddons);
     onClose();
   };
@@ -75,6 +78,12 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
                 ₹{item.price.toFixed(0)}
               </span>
             </div>
+
+            {!isAvailableToday && (
+              <div className="mt-3 inline-flex rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700">
+                Only available on {item.availableOnDays?.join(', ')}
+              </div>
+            )}
 
             <p className="text-sm text-gray-600 mt-2.5 leading-relaxed">{item.description}</p>
           </div>
@@ -136,9 +145,14 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
           <button
             id="add-item-modal-btn"
             onClick={handleConfirm}
-            className="flex-1 py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-extrabold text-sm flex items-center justify-between shadow-md active:scale-98 transition-all"
+            disabled={!isAvailableToday}
+            className={`flex-1 py-3.5 px-4 rounded-2xl font-extrabold text-sm flex items-center justify-between shadow-md active:scale-98 transition-all ${
+              isAvailableToday
+                ? 'bg-red-600 hover:bg-red-700 text-white'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
           >
-            <span>Add Item</span>
+            <span>{isAvailableToday ? 'Add Item' : 'Unavailable'}</span>
             <span>₹{totalPrice.toFixed(0)}</span>
           </button>
         </div>

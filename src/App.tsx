@@ -291,6 +291,13 @@ export default function App() {
     quantity = 1,
     selectedAddons: MenuItemAddon[] = []
   ) => {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    const isDayRestricted = Array.isArray(item.availableOnDays) && item.availableOnDays.length > 0;
+    if (isDayRestricted && !item.availableOnDays!.includes(today)) {
+      showToast(`Only available on ${item.availableOnDays!.join(', ')}`);
+      return;
+    }
+
     const store = customizingItemStore || selectedStore || stores.find(s => s.id === item.storeId) || stores[0];
 
     const uniqueId = `${item.id}-${selectedAddons.map(a => a.id).sort().join('_')}`;

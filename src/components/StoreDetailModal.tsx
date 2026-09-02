@@ -195,6 +195,8 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         <div className="p-4 space-y-3 pb-28">
           {filteredItems.map((item) => {
             const countInCart = getItemCountInCart(item.id);
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            const isAvailableToday = !item.availableOnDays || item.availableOnDays.length === 0 || item.availableOnDays.includes(today);
             return (
               <div
                 key={item.id}
@@ -228,6 +230,12 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                     )}
                   </div>
 
+                  {!isAvailableToday && (
+                    <div className="mt-2 inline-flex rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-bold text-red-700">
+                      Only available on {item.availableOnDays?.join(', ')}
+                    </div>
+                  )}
+
                   {/* Description */}
                   <p className="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
                     {item.description}
@@ -250,7 +258,14 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
                   {/* Add or Counter Button */}
                   <div className="-mt-4 relative z-10">
-                    {countInCart === 0 ? (
+                    {!isAvailableToday ? (
+                      <button
+                        disabled
+                        className="px-4 py-1.5 bg-gray-200 text-gray-500 border border-gray-300 text-[10px] font-black rounded-xl shadow-sm uppercase tracking-wider cursor-not-allowed"
+                      >
+                        ONLY ON WED
+                      </button>
+                    ) : countInCart === 0 ? (
                       <button
                         id={`add-btn-${item.id}`}
                         onClick={() => onOpenItemModal(item)}

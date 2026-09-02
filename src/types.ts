@@ -24,6 +24,7 @@ export interface MenuItem {
   category: string;
   rating?: number;
   ratingCount?: number;
+  availableOnDays?: string[];
   addons?: MenuItemAddon[];
 }
 

@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v36_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v37_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -264,7 +264,8 @@ export const STORES: Store[] = [
             "description": "7 Strips, 6 Wings and 2 Hot & Crispy",
             "image": "/images/KFC/KFC-category-EPIC-Bucket-3_Wednesday-Special-15-PC-Bucket_-28th-JAN.jpg",
             "isVeg": false,
-            "category": "Chicken Buckets"
+            "category": "Chicken Buckets",
+            "availableOnDays": ["Wednesday"]
       },
       {
             "id": "kfc-50",

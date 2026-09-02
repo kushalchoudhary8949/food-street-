@@ -1,6 +1,6 @@
 import { Category, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v27_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v36_remove_biscoff_2026_08_30';
 
 export const CATEGORIES: Category[] = [
   {
@@ -253,6 +253,16 @@ export const STORES: Store[] = [
             "price": 689,
             "description": "Crunchy, juicy signature KFC favourite. (160 Kcal • 880g)",
             "image": "/images/KFC/8 Pc Bucket.jpg",
+            "isVeg": false,
+            "category": "Chicken Buckets"
+      },
+      {
+            "id": "kfc-wed-15pc-bucket",
+            "storeId": "store-kfc",
+            "name": "Wednesday Specials 15 Pc Bucket",
+            "price": 409,
+            "description": "7 Strips, 6 Wings and 2 Hot & Crispy",
+            "image": "/images/KFC/KFC-category-EPIC-Bucket-3_Wednesday-Special-15-PC-Bucket_-28th-JAN.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
       },

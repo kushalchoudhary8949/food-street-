@@ -34,8 +34,12 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
   // Cuisines display
   const cuisinesText = store.cuisines.join(', ');
 
+  const uniqueItems = store.items.filter((item, index, items) =>
+    items.findIndex((candidate) => candidate.name === item.name) === index
+  );
+
   // Filtered menu items
-  const filteredItems = store.items.filter((item) => {
+  const filteredItems = uniqueItems.filter((item) => {
     if (vegOnly && !item.isVeg) return false;
     if (selectedCategory !== 'all' && item.category !== selectedCategory) return false;
     if (menuSearch.trim()) {
@@ -173,7 +177,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                   : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
-              All Items ({store.items.length})
+              All Items ({uniqueItems.length})
             </button>
             {store.menuCategories.map((cat) => (
               <button

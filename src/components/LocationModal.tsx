@@ -27,15 +27,13 @@ export const LocationModal: React.FC<LocationModalProps> = ({
   const [newBlock, setNewBlock] = useState('');
   const [newRoomNo, setNewRoomNo] = useState('');
   const [newLine, setNewLine] = useState('');
-  const [newLocality, setNewLocality] = useState('');
-  const [newCity, setNewCity] = useState('');
   const [newPhone, setNewPhone] = useState('');
 
   if (!isOpen) return null;
 
   const handleCreateAddress = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newLine.trim() || !newLocality.trim() || !newPhone.trim()) return;
+    if (!newLine.trim() || !newPhone.trim()) return;
 
     const created: UserAddress = {
       id: `addr-${Date.now()}`,
@@ -44,8 +42,8 @@ export const LocationModal: React.FC<LocationModalProps> = ({
       block: newBlock.trim() || undefined,
       roomNo: newRoomNo.trim() || undefined,
       addressLine: newLine.trim(),
-      locality: newLocality.trim(),
-      city: newCity.trim() || 'Metro City',
+      locality: '',
+      city: '',
       phone: newPhone.trim(),
       isDefault: false,
     };
@@ -57,8 +55,6 @@ export const LocationModal: React.FC<LocationModalProps> = ({
     setNewBlock('');
     setNewRoomNo('');
     setNewLine('');
-    setNewLocality('');
-    setNewCity('');
     setNewPhone('');
   };
 
@@ -281,36 +277,6 @@ export const LocationModal: React.FC<LocationModalProps> = ({
                   onChange={(e) => setNewLine(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
                 />
-              </div>
-
-              {/* Locality & City */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Area / Locality <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. North Campus, Sector 12"
-                    value={newLocality}
-                    onChange={(e) => setNewLocality(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Metro City"
-                    value={newCity}
-                    onChange={(e) => setNewCity(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
               </div>
 
               {/* Phone Number */}

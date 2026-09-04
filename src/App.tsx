@@ -13,16 +13,6 @@ import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
-import { 
-  subscribeToOrders, 
-  saveOrderToDb, 
-  saveStoresToDb, 
-  saveCategoriesToDb, 
-  deleteOrderFromDb,
-  fetchStoresFromDb,
-  fetchCategoriesFromDb,
-  seedDatabase
-} from './services/api';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import {
@@ -124,36 +114,6 @@ export default function App() {
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // Real-time PostgreSQL Database Polling & Initial Sync
-  React.useEffect(() => {
-    // Fetch initial stores and categories from PostgreSQL
-    fetchStoresFromDb().then((dbStores) => {
-      if (dbStores && dbStores.length > 0) {
-        setStores(dbStores);
-      } else {
-        // Seed PostgreSQL if empty
-        seedDatabase(STORES, CATEGORIES);
-      }
-    });
-
-    fetchCategoriesFromDb().then((dbCats) => {
-      if (dbCats && dbCats.length > 0) {
-        setCategories(dbCats);
-      }
-    });
-
-    // Real-time Live Orders Polling Subscription (every 3.5s)
-    const unsubOrders = subscribeToOrders((liveOrders) => {
-      if (Array.isArray(liveOrders)) {
-        setOrders(liveOrders);
-      }
-    });
-
-    return () => {
-      unsubOrders();
-    };
   }, []);
 
   // Hash/Path-based Router State
@@ -437,9 +397,6 @@ export default function App() {
     setIsCartOpen(false);
     setIsStoreModalOpen(false);
 
-    // Save to PostgreSQL Database
-    saveOrderToDb(newOrder);
-
     // Forward receipt directly to WhatsApp (+91 8949508256)
     sendOrderToWhatsApp(newOrder);
 
@@ -451,7 +408,6 @@ export default function App() {
   // Complete & remove order from list
   const handleCompleteOrder = (orderId: string) => {
     setOrders(prev => prev.filter(o => o.id !== orderId));
-    deleteOrderFromDb(orderId);
     showToast('✅ Order completed & removed');
   };
 
@@ -525,20 +481,18 @@ export default function App() {
   // Only track active orders among the customer's top 4 recent orders
   const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
 
-  // Handlers to synchronize Admin updates to both Local State and PostgreSQL Database
+  // Handlers to synchronize Admin updates to local state
+  // Handlers to synchronize Admin updates to local state
   const handleUpdateStores = (newStores: Store[]) => {
     setStores(newStores);
-    saveStoresToDb(newStores).catch(err => console.warn('PostgreSQL store sync notice:', err));
   };
 
   const handleUpdateCategories = (newCategories: Category[]) => {
     setCategories(newCategories);
-    saveCategoriesToDb(newCategories).catch(err => console.warn('PostgreSQL category sync notice:', err));
   };
 
   const handleUpdateOrders = (newOrders: Order[]) => {
     setOrders(newOrders);
-    newOrders.forEach(o => saveOrderToDb(o).catch(err => console.warn('PostgreSQL order sync notice:', err)));
   };
 
   return (

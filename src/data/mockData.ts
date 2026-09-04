@@ -1,6 +1,16 @@
-import { Category, Store, UserAddress, Order } from '../types';
+import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v3721_remove_biscoff_2026_08_30';
+export const DATA_VERSION = 'food_street_v34_fries_combo_image_2026_09_04';
+
+const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
+      const seenNames = new Set<string>();
+
+      return items.filter((item) => {
+            if (seenNames.has(item.name)) return false;
+            seenNames.add(item.name);
+            return true;
+      });
+};
 
 export const CATEGORIES: Category[] = [
   {
@@ -84,7 +94,7 @@ export const STORES: Store[] = [
       "Rice Bowlz",
       "Desserts & Beverages"
 ],
-    items: [
+      items: deduplicateMenuItems([
       {
             "id": "kfc-1",
             "storeId": "store-kfc",
@@ -292,7 +302,7 @@ export const STORES: Store[] = [
             "name": "Classic Chicken Krisper",
             "price": 94,
             "description": "Crunchy, juicy signature KFC favourite. (405 Kcal • 150g)",
-            "image": "/images/KFC/Classic Chicken Krisper.jpg",
+            "image": "/images/KFC/Chicken Krisper.jpeg",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -302,7 +312,7 @@ export const STORES: Store[] = [
             "name": "Spicy Chicken Krisper",
             "price": 94,
             "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 145g)",
-            "image": "/images/KFC/Spicy Chicken Krisper.jpg",
+            "image": "/images/KFC/Chicken Krisper.jpeg",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -362,7 +372,7 @@ export const STORES: Store[] = [
             "name": "Spicy Chicken Krisper - With Cheese",
             "price": 134,
             "description": "Crunchy, juicy signature KFC favourite. (378 Kcal • 156g)",
-            "image": "/images/KFC/Spicy Chicken Krisper - With Cheese.jpg",
+            "image": "/images/KFC/Chicken Krisper.jpeg",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -372,7 +382,7 @@ export const STORES: Store[] = [
             "name": "Classic Chicken Krisper - With Cheese",
             "price": 134,
             "description": "Crunchy, juicy signature KFC favourite. (441 Kcal • 161g)",
-            "image": "/images/KFC/Classic Chicken Krisper - With Cheese.jpg",
+            "image": "/images/KFC/Chicken Krisper.jpeg",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -410,7 +420,7 @@ export const STORES: Store[] = [
             "id": "kfc-76",
             "storeId": "store-kfc",
             "name": "4pc Hot Wings",
-            "price": 159,
+            "price": 169,
             "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
             "image": "/images/KFC/4pc Hot Wings.jpg",
             "isVeg": false,
@@ -420,7 +430,7 @@ export const STORES: Store[] = [
             "id": "kfc-77",
             "storeId": "store-kfc",
             "name": "3 Pc Peri Peri Strips",
-            "price": 159,
+            "price": 169,
             "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
             "image": "/images/KFC/3 Pc Peri Peri Strips.jpg",
             "isVeg": false,
@@ -740,7 +750,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-4",
             "storeId": "store-kfc",
             "name": "Veg Zinger Meal",
-            "price": 288,
+            "price": 298,
             "description": "Crunchy, juicy signature KFC favourite. (985 Kcal • 635g)",
             "image": "/images/KFC/Veg Zinger Meal.jpg",
             "isVeg": true,
@@ -820,7 +830,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-12",
             "storeId": "store-kfc",
             "name": "Veg Roll",
-            "price": 109,
+            "price": 119,
             "description": "Crunchy, juicy signature KFC favourite. (447 Kcal • 145g)",
             "image": "/images/KFC/Veg Roll.jpg",
             "isVeg": true,
@@ -1312,7 +1322,7 @@ export const STORES: Store[] = [
             "name": "Spicy Chicken Krisper, Popcorn & Pepsi Combo",
             "price": 259,
             "description": "Crunchy, juicy signature KFC favourite. (648 Kcal • 235g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.png",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -1322,7 +1332,7 @@ export const STORES: Store[] = [
             "name": "Classic Chicken Krisper, Popcorn & Pepsi Combo",
             "price": 259,
             "description": "Crunchy, juicy signature KFC favourite. (853 Kcal • 570g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.png",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -1332,7 +1342,7 @@ export const STORES: Store[] = [
             "name": "Classic Chicken Krisper, Fries & Pepsi Combo",
             "price": 208,
             "description": "Crunchy, juicy signature KFC favourite. (721 Kcal • 780g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "image": "/images/KFC/Classic Chicken Krisper, Fries & Pepsi Combo.png",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -1362,7 +1372,7 @@ export const STORES: Store[] = [
             "name": "Spicy Chicken Krisper, Fries & Pepsi Combo",
             "price": 208,
             "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "image": "/images/KFC/Classic Chicken Krisper, Fries & Pepsi Combo.png",
             "isVeg": false,
             "category": "Burgers"
       },
@@ -1420,7 +1430,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-76",
             "storeId": "store-kfc",
             "name": "4pc Hot Wings",
-            "price": 159,
+            "price": 169,
             "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
             "image": "/images/KFC/4pc Hot Wings.jpg",
             "isVeg": true,
@@ -1430,7 +1440,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-77",
             "storeId": "store-kfc",
             "name": "3 Pc Peri Peri Strips",
-            "price": 159,
+            "price": 169,
             "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
             "image": "/images/KFC/3 Pc Peri Peri Strips.jpg",
             "isVeg": true,
@@ -1500,7 +1510,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-84",
             "storeId": "store-kfc",
             "name": "Regular Fries",
-            "price": 89,
+            "price": 94,
             "description": "Signature KFC preparation. (224g)",
             "image": "/images/KFC/Regular Fries.jpg",
             "isVeg": true,
@@ -1510,7 +1520,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-85",
             "storeId": "store-kfc",
             "name": "Medium Fries",
-            "price": 99,
+            "price": 104,
             "description": "Signature KFC preparation.",
             "image": "/images/KFC/Medium Fries.jpg",
             "isVeg": true,
@@ -1520,7 +1530,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-86",
             "storeId": "store-kfc",
             "name": "Large Fries",
-            "price": 109,
+            "price": 119,
             "description": "Signature KFC preparation.",
             "image": "/images/KFC/Large Fries.jpg",
             "isVeg": true,
@@ -1540,7 +1550,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-88",
             "storeId": "store-kfc",
             "name": "Tandoori Chicken Roll",
-            "price": 109,
+            "price": 119,
             "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
             "image": "/images/KFC/Tandoori Chicken Roll.jpg",
             "isVeg": true,
@@ -1996,7 +2006,7 @@ export const STORES: Store[] = [
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
-]
+])
     },
   {
     id: 'store-pizzahut',

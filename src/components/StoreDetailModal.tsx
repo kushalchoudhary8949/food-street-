@@ -35,7 +35,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
   const cuisinesText = store.cuisines.join(', ');
 
   const uniqueItems = store.items.filter((item, index, items) =>
-    items.findIndex((candidate) => candidate.name === item.name) === index
+    items.findIndex((candidate) => candidate.name === item.name && candidate.isVeg === item.isVeg) === index
   );
 
   // Filtered menu items

@@ -570,11 +570,22 @@ export default function App() {
 
                 {/* Top Restaurants Heading */}
                 <div className="px-4 mt-6 flex items-center justify-between">
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
-                      {selectedCategory ? `${selectedCategory.toUpperCase()} SPOTS` : 'Featured Restaurants'}
+                      {selectedCategory ? (
+                        `${selectedCategory.toUpperCase()} SPOTS`
+                      ) : (
+                        <>
+                          <span className="block text-center text-xl sm:text-2xl font-black leading-none text-gray-900">
+                            The Food Street
+                          </span>
+                          <span className="mt-1 block text-base sm:text-lg font-bold leading-tight text-red-600">
+                            Featured Stores
+                          </span>
+                        </>
+                      )}
                     </h2>
-                    <p className="text-xs text-gray-500">
+                    <p className="mt-1.5 text-xs text-gray-500">
                       {filteredStores.length} stores delivering near you
                     </p>
                   </div>

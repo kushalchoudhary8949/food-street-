@@ -555,11 +555,9 @@ export default function App() {
                   cartTotal={totalCartPrice}
                 />
 
-                {!isOrderWindowOpen() && (
-                  <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                    Orders are accepted only from 3:00 PM to 10:00 PM.
-                  </div>
-                )}
+                <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
+                  Orders are open daily from 3:00 PM to 10:00 PM.
+                </div>
 
                 {/* Categories Carousel Row */}
                 <div className="mt-1">

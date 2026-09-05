@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v35_classic_zinger_box_price_2026_09_04';
+export const DATA_VERSION = 'food_street_v36_vaango_delivery_time_2026_09_05';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -4285,7 +4285,7 @@ export const STORES: Store[] = [
     name: 'Vaango',
     rating: 4.6,
     reviewsCount: 2310,
-    deliveryTime: '20-30 mins',
+      deliveryTime: '35-45 mins',
     deliveryFee: 15,
     distance: '2.8 km',
     image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1000&q=85',

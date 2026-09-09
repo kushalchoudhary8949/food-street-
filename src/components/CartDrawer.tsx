@@ -38,7 +38,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const isOrderWindowOpen = () => {
     const now = new Date();
     const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-    return minutesSinceMidnight >= 12 * 60 && minutesSinceMidnight < 22 * 60;
+    return minutesSinceMidnight >= 12 * 60 && minutesSinceMidnight < 22 * 60 + 30;
   };
 
   if (!isOpen) return null;
@@ -56,7 +56,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
     if (!isOrderWindowOpen()) {
-      alert('Orders are open only from 12:00 PM to 10:00 PM.');
+      alert('Orders are open only from 12:00 PM to 10:30 PM.');
       return;
     }
     if (currentAddress.id === 'addr-none') {
@@ -198,7 +198,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               <div className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                Orders are open daily from 12:00 PM to 10:00 PM.
+                Orders are open daily from 12:00 PM to 10:30 PM.
               </div>
 
               {/* Delivery Tip */}

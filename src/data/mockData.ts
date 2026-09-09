@@ -920,7 +920,7 @@ export const STORES: Store[] = [
             "id": "kfc-csv-25",
             "storeId": "store-kfc",
             "name": "Shawarma Regular Meal",
-            "price": 288,
+            "price": 289,
             "description": "Signature KFC preparation.",
             "image": "/images/KFC/Shawarma Regular Meal.jpg",
             "isVeg": true,

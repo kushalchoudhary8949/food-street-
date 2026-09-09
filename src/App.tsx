@@ -217,7 +217,7 @@ export default function App() {
   const isOrderWindowOpen = () => {
     const now = new Date();
     const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-    return minutesSinceMidnight >= 13 * 60 + 30 && minutesSinceMidnight < 22 * 60;
+    return minutesSinceMidnight >= 12 * 60 && minutesSinceMidnight < 22 * 60;
   };
 
   // Toggle favorite store
@@ -325,7 +325,7 @@ export default function App() {
   }) => {
     if (cartItems.length === 0) return;
     if (!isOrderWindowOpen()) {
-      showToast('Orders are open only from 1:30 PM to 10:00 PM.');
+      showToast('Orders are open only from 12:00 PM to 10:00 PM.');
       return;
     }
 
@@ -556,7 +556,7 @@ export default function App() {
                 />
 
                 <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                  Orders are open daily from 1:30 PM to 10:00 PM.
+                  Orders are open daily from 12:00 PM to 10:00 PM.
                 </div>
 
                 {/* Categories Carousel Row */}

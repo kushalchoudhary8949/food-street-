@@ -38,7 +38,6 @@ ${cancellationNote}� *PAYMENT COLLECTION DETAILS:*
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
 ${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
-🛵 *Delivery Partner:* ${order.driverPhone || '9366265129'}
 ☎️ *Support & Contact:* 7682890864
 
 ━━━━━━━━━━━━━━━━━━━━

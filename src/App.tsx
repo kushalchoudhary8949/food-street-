@@ -334,7 +334,7 @@ export default function App() {
       return sum + (ci.item.price + addonsCost) * ci.quantity;
     }, 0);
 
-    const deliveryFee = 15;
+    const deliveryFee = 19;
     const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
     const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + tip - discount);
 

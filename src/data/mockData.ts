@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v36_vaango_delivery_time_2026_09_05';
+export const DATA_VERSION = 'food_street_v36_vaango_delivery_time_2026_09_11';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -141,7 +141,7 @@ export const STORES: Store[] = [
             "name": "Longer Veg Burger",
             "price": 94,
             "description": "Crunchy, juicy signature KFC favourite. (259 Kcal • 110g)",
-            "image": "/images/KFC/Longer Veg Burger.jpg?v=20260902",
+            "image": "/images/KFC/Longer Veg Burger.jpg",
             "isVeg": true,
             "category": "Veg"
       },
@@ -762,7 +762,7 @@ export const STORES: Store[] = [
             "name": "Veg Rice Bowlz & Pepsi Combo",
             "price": 229,
             "description": "Crunchy, juicy signature KFC favourite. (560 Kcal • 635g)",
-            "image": "/images/KFC/Veg Rice Bowlz & Pepsi Combo.jpg?v=20260902",
+            "image": "/images/KFC/Veg Rice Bowlz & Pepsi Combo.jpg",
             "isVeg": true,
             "category": "Veg"
       },
@@ -792,7 +792,7 @@ export const STORES: Store[] = [
             "name": "Classic Veg Krisper, Fries & Pepsi Combo",
             "price": 198,
             "description": "Crunchy, juicy signature KFC favourite. (771 Kcal • 555g)",
-            "image": "/images/KFC/Classic Veg Krisper, Fries & Pepsi Combo.jpg?v=20260902",
+            "image": "/images/KFC/Classic Veg Krisper, Fries & Pepsi Combo.jpg",
             "isVeg": true,
             "category": "Veg"
       },
@@ -802,7 +802,7 @@ export const STORES: Store[] = [
             "name": "Spicy Veg Krisper, Fries & Pepsi Combo",
             "price": 198,
             "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
-            "image": "/images/KFC/Spicy Veg Krisper.jpg?v=20260902",
+            "image": "/images/KFC/Spicy Veg Krisper, Fries & Pepsi Combo.jpg",
             "isVeg": true,
             "category": "Veg"
       },
@@ -872,7 +872,7 @@ export const STORES: Store[] = [
             "name": "Fries + Pepsi",
             "price": 129,
             "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Fries + Pepsi.jpg?v=20260902",
+            "image": "/images/KFC/Fries + Pepsi.jpg",
             "isVeg": true,
             "category": "Veg"
       },
@@ -892,7 +892,7 @@ export const STORES: Store[] = [
             "name": "2 Shawarma Meals – Value Deal",
             "price": 409,
             "description": "Crunchy, juicy signature KFC favourite. (1636 Kcal • 1140g)",
-            "image": "/images/KFC/2 Shawarma Meals – Value Deal.jpg?v=20260902",
+            "image": "/images/KFC/2 Shawarma Meals – Value Deal.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
       },
@@ -942,7 +942,7 @@ export const STORES: Store[] = [
             "name": "Shawarma Box Meal",
             "price": 319,
             "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Shawarma Big Box.jpg?v=20260902",
+            "image": "/images/KFC/Shawarma Big Box.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
       },
@@ -1022,7 +1022,7 @@ export const STORES: Store[] = [
             "name": "Gold Edition – Regular Fries",
             "price": 139,
             "description": "Crunchy, juicy signature KFC favourite. (362 Kcal • 150g)",
-            "image": "/images/KFC/Gold Edition – Regular Fries.jpg?v=20260902",
+            "image": "/images/KFC/Gold Edition – Regular Fries.jpg",
             "isVeg": true,
             "category": "Gold Edition"
       },

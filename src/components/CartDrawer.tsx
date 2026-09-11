@@ -51,8 +51,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const deliveryFee = 19;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-  const offerDiscount = itemTotal > 0 ? Math.min(itemTotal * 0.5, 40) : 0;
-  const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + selectedTip - offerDiscount);
+  const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + selectedTip);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
@@ -71,8 +70,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
     onPlaceOrder({
       tip: selectedTip,
-      discount: offerDiscount,
-      couponCode: '50OFFUPTO40',
+      discount: 0,
+      couponCode: '',
       instructions: deliveryNote,
       paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / Online',
       cancellationConfirmed: isCancellationConfirmed,
@@ -260,10 +259,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="flex justify-between text-gray-600">
                   <span>Taxes</span>
                   <span>₹{taxesAndPacking.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>50% Off up to ₹40</span>
-                  <span>-₹{offerDiscount.toFixed(0)}</span>
                 </div>
                 {selectedTip > 0 && (
                   <div className="flex justify-between text-gray-600">

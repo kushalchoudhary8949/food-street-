@@ -305,23 +305,22 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         </div>
       </div>
 
-      {/* Floating Bottom Cart Bar - placed outside scrollable container so it's always visible */}
       {storeCartCount > 0 && (
         <div className="fixed bottom-4 left-0 right-0 flex justify-center z-[60] pointer-events-none">
           <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl px-4 pointer-events-auto">
             <button
               id="store-view-cart-floating-btn"
               onClick={onOpenCart}
-              className="w-full py-3.5 px-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between shadow-2xl transition-all active:scale-98 animate-in slide-in-from-bottom duration-300"
+              className="w-full min-h-[52px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-2xl transition-all active:scale-98 animate-in slide-in-from-bottom duration-300"
             >
-              <div className="flex items-center space-x-2">
-                <span className="px-2 py-0.5 bg-red-800 text-white text-xs font-black rounded-md">
+              <div className="flex items-center gap-2.5 min-w-0 leading-none">
+                <span className="inline-flex items-center justify-center h-7 px-2.5 bg-red-800 text-white text-[10px] sm:text-xs font-black rounded-md shrink-0 leading-none">
                   {storeCartCount} {storeCartCount === 1 ? 'item' : 'items'}
                 </span>
-                <span className="text-sm font-extrabold">₹{storeCartSubtotal.toFixed(0)}</span>
+                <span className="text-sm font-extrabold leading-none">₹{storeCartSubtotal.toFixed(0)}</span>
               </div>
-              <span className="text-sm font-bold flex items-center uppercase tracking-wider">
-                View Cart →
+              <span className="flex items-center text-xs sm:text-sm font-black uppercase tracking-wider leading-none whitespace-nowrap">
+                View Cart <span aria-hidden="true">→</span>
               </span>
             </button>
           </div>

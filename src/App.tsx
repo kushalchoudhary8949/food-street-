@@ -668,24 +668,26 @@ export default function App() {
 
             {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
             {totalCartCount > 0 && activeTab !== 'orders' && (
-              <div className="fixed bottom-18 left-4 right-4 max-w-md mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl z-30 px-2 animate-in slide-in-from-bottom duration-200">
-                <button
-                  id="global-floating-cart-btn"
-                  onClick={() => setIsCartOpen(true)}
-                  className="w-full py-3.5 px-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between shadow-2xl shadow-red-600/30 active:scale-98 transition-all"
-                >
-                  <div className="flex items-center space-x-2.5">
-                    <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-black rounded-lg">
+              <div className="fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200">
+                <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
+                  <button
+                    id="global-floating-cart-btn"
+                    onClick={() => setIsCartOpen(true)}
+                    className="w-full min-h-[52px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-2xl shadow-red-600/30 active:scale-98 transition-all"
+                  >
+                  <div className="flex items-center gap-2.5 min-w-0 leading-none">
+                    <span className="inline-flex items-center justify-center h-7 px-2.5 bg-white/20 text-white text-[10px] sm:text-xs font-black rounded-lg shrink-0 leading-none">
                       {totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}
                     </span>
-                    <span className="text-sm font-extrabold text-white">
+                    <span className="text-sm font-extrabold text-white leading-none">
                       ₹{totalCartPrice.toFixed(0)}
                     </span>
                   </div>
-                  <span className="text-xs sm:text-sm font-black flex items-center uppercase tracking-wider">
-                    View Cart →
-                  </span>
-                </button>
+                    <span className="flex items-center text-xs sm:text-sm font-black uppercase tracking-wider leading-none whitespace-nowrap">
+                      View Cart <span aria-hidden="true">→</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             )}
 

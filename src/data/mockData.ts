@@ -1051,7 +1051,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "All Chicken Box Meal",
             "price": 219,
-            "description": "Signature KFC preparation.",
+            "description": "All in one meal box with 1pc Hot & Crispy,2 Hot Wings & Reg Pepsi.",
             "image": "/images/KFC/All Chicken Box Meal.jpg",
             "isVeg": true,
             "category": "Box Meals"
@@ -1061,7 +1061,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Classic Zinger Box Meal",
             "price": 349,
-            "description": "Crunchy, juicy signature KFC favourite. (1227 Kcal • 700g)",
+            "description": "1 Zinger,2 Wings,Veg Patty,1 Reg Pepsi. Allergen Wheat,Soy,Milk| 1227Kcal | Wt",
             "image": "/images/KFC/Classic Zinger Box Meal.jpg",
             "isVeg": true,
             "category": "Box Meals"
@@ -1080,8 +1080,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-41",
             "storeId": "store-kfc",
             "name": "Epic Feast Grand Bucket",
-            "price": 819,
-            "description": "Signature KFC preparation.",
+            "price": 839,
+            "description": "Get 30% off on 5 Hot & Crispy, 8 Pc Strips, 4 Dips, 2 Reg Fries & 2 Reg Pepsi",
             "image": "/images/KFC/Epic Feast Grand Bucket.jpg",
             "isVeg": true,
             "category": "Variety Buckets"
@@ -1090,8 +1090,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-42",
             "storeId": "store-kfc",
             "name": "All In One Bucket",
-            "price": 569,
-            "description": "Crunchy, juicy signature KFC favourite. (520 Kcal • 1105g)",
+            "price": 589,
+            "description": "2Wings,2Strip,1 HC,1 Leg pc/HC,1 Zinger,3 Dips,2Reg Pepsi Allergen",
             "image": "/images/KFC/All In One Bucket.jpg",
             "isVeg": true,
             "category": "Variety Buckets"
@@ -1100,8 +1100,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-43",
             "storeId": "store-kfc",
             "name": "Ultimate Savings Bucket",
-            "price": 729,
-            "description": "Signature KFC preparation.",
+            "price": 749,
+            "description": "43% Off on 4 pc Hot & Crispy, 6 Hot Wings, 4pc Peri Peri Strips, 3 Pepsi & 2",
             "image": "/images/KFC/Ultimate Savings Bucket.jpg",
             "isVeg": true,
             "category": "Variety Buckets"
@@ -1111,7 +1111,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Big 12",
             "price": 749,
-            "description": "Crunchy, juicy signature KFC favourite. (579 Kcal • 910g)",
+            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk|",
             "image": "/images/KFC/Big 12.jpg",
             "isVeg": true,
             "category": "Variety Buckets"
@@ -1141,7 +1141,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "5 Leg Pc & Pepsi Combo",
             "price": 609,
-            "description": "Crunchy, juicy signature KFC favourite. (1004 Kcal • 1160g)",
+            "description": "5 Leg Pc & 2 Reg. Reg Pepsi Combo Allergen Wheat| 1004 Kcal | Wt 1160 g",
             "image": "/images/KFC/Pepsi Regular.jpg",
             "isVeg": true,
             "category": "Chicken Buckets"
@@ -1181,7 +1181,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Boneless Meal",
             "price": 459,
-            "description": "Crunchy, juicy signature KFC favourite. (374 Kcal • 500g)",
+            "description": "8 Peri Peri Strips with 2 Dips! Allergen Wheat,Milk| 374 Kcal | Wt 500 g",
             "image": "/images/KFC/8 Pc Boneless Meal.jpg",
             "isVeg": true,
             "category": "Chicken Buckets"

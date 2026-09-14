@@ -189,8 +189,8 @@ export const STORES: Store[] = [
             "id": "kfc-29",
             "storeId": "store-kfc",
             "name": "Epic Savers Bucket",
-            "price": 509,
-            "description": "Crunchy, juicy signature KFC favourite. (479 Kcal • 670g)",
+            "price": 519,
+            "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips Allergen Wheat, Soy, Milk| 479 Kcal| Wt 670g",
             "image": "/images/KFC/Epic Savers Bucket.jpg",
             "isVeg": false,
             "category": "Epic Savers"

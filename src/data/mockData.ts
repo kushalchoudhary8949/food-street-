@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v36_vaango_delivery_time_2026_09_11';
+export const DATA_VERSION = 'food_street_v37_vaango_delivery_time_2026_09_11';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -240,7 +240,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Big 12",
             "price": 739,
-            "description": "Crunchy, juicy signature KFC favourite. (579 Kcal • 910g)",
+            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk| 579 Kcal | Wt 910 g",
             "image": "/images/KFC/Big 12.jpg",
             "isVeg": false,
             "category": "Variety Buckets"
@@ -250,7 +250,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "5 Peri Peri Leg Pc",
             "price": 489,
-            "description": "Crunchy, juicy signature KFC favourite. (748 Kcal • 500g)",
+            "description": "Save Rs. 120 on 5 Peri Peri Leg pc Allergen Wheat, Soy, Milk| 748 Kcal| Wt 500 g",
             "image": "/images/KFC/5 Peri Peri Leg Pc.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
@@ -260,7 +260,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Bucket",
             "price": 689,
-            "description": "Crunchy, juicy signature KFC favourite. (160 Kcal • 880g)",
+            "description": "8 pc Hot & Cripsy Allergen Wheat| 160 Kcal | Wt 880 g",
             "image": "/images/KFC/8 Pc Bucket.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
@@ -269,7 +269,7 @@ export const STORES: Store[] = [
             "id": "kfc-wed-15pc-bucket",
             "storeId": "store-kfc",
             "name": "Wednesday Specials 15 Pc Bucket",
-            "price": 409,
+            "price": 429,
             "description": "7 Strips, 6 Wings and 2 Hot & Crispy",
             "image": "/images/KFC/KFC-category-EPIC-Bucket-3_Wednesday-Special-15-PC-Bucket_-28th-JAN.jpg",
             "isVeg": false,
@@ -281,7 +281,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "6pc Hot & Crispy",
             "price": 559,
-            "description": "Crunchy, juicy signature KFC favourite. (213 Kcal • 660g)",
+            "description": "Get 6 piece Hot & Crispy Chicken. Allergen Wheat| 213 Kcal | Wt 660 g",
             "image": "/images/KFC/6pc Hot & Crispy.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
@@ -291,7 +291,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Boneless Meal",
             "price": 459,
-            "description": "Crunchy, juicy signature KFC favourite. (374 Kcal • 500g)",
+            "description": "8 Peri Peri Strips with 2 Dips! Allergen Wheat,Milk| 374 Kcal | Wt 500 g",
             "image": "/images/KFC/8 Pc Bucket.jpg",
             "isVeg": false,
             "category": "Chicken Buckets"
@@ -760,8 +760,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-5",
             "storeId": "store-kfc",
             "name": "Veg Rice Bowlz & Pepsi Combo",
-            "price": 229,
-            "description": "Crunchy, juicy signature KFC favourite. (560 Kcal • 635g)",
+            "price": 249,
+            "description": "Get this deal of Veg Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 560 Kcal | Wt 635 g",
             "image": "/images/KFC/Veg Rice Bowlz & Pepsi Combo.jpg",
             "isVeg": true,
             "category": "Veg"
@@ -890,8 +890,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-22",
             "storeId": "store-kfc",
             "name": "2 Shawarma Meals – Value Deal",
-            "price": 409,
-            "description": "Crunchy, juicy signature KFC favourite. (1636 Kcal • 1140g)",
+            "price": 429,
+            "description": "Enjoy 2 shawarmas with 2 reg fries and 2 reg Pepsi Serve 2 | Avg wt. 1140g | 1636",
             "image": "/images/KFC/2 Shawarma Meals – Value Deal.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
@@ -930,8 +930,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-26",
             "storeId": "store-kfc",
             "name": "Shawarma Snack Box",
-            "price": 309,
-            "description": "Signature KFC preparation.",
+            "price": 329,
+            "description": "Shawarma with popcorn chicken and a regular Pepsi – perfect for snack",
             "image": "/images/KFC/Shawarma Snack Box.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
@@ -941,7 +941,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Shawarma Box Meal",
             "price": 319,
-            "description": "Signature KFC preparation.",
+            "description": "Shawarma served with 2 hot wings, regular fries and Pepsi for a hearty feast.",
             "image": "/images/KFC/Shawarma Big Box.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
@@ -951,7 +951,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Shawarma Big Box",
             "price": 339,
-            "description": "Signature KFC preparation.",
+            "description": "Loaded box with shawarma, 2 hot wings, 2 strips & Pepsi – big on flavour & satisfaction",
             "image": "/images/KFC/Shawarma Big Box.jpg",
             "isVeg": true,
             "category": "Shawarma Specials"
@@ -961,7 +961,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Epic Savers Bucket",
             "price": 509,
-            "description": "Crunchy, juicy signature KFC favourite. (479 Kcal • 670g)",
+            "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips Allergen Wheat, Soy, Milk| 479 Kcal| Wt 670g",
             "image": "/images/KFC/Epic Savers Bucket.jpg",
             "isVeg": true,
             "category": "Epic Savers"
@@ -971,7 +971,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Gold Zinger and Popcorn Meal",
             "price": 359,
-            "description": "Signature KFC preparation.",
+            "description": "30% Off on Gold Zinger, Reg Fries, Reg Popcorn & Reg Pepsi",
             "image": "/images/KFC/Gold Zinger and Popcorn Meal.jpg",
             "isVeg": true,
             "category": "Gold Edition"
@@ -1071,7 +1071,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Tandoori Zinger Box Meal",
             "price": 359,
-            "description": "Crunchy, juicy signature KFC favourite. (1500 Kcal • 705g)",
+            "description": "Box Meal -Zinger,2 Wings,Fries & Reg Pepsi",
             "image": "/images/KFC/Tandoori Zinger Box Meal.jpg",
             "isVeg": true,
             "category": "Box Meals"
@@ -1111,7 +1111,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Big 12",
             "price": 749,
-            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk|",
+            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk| 579 Kcal | Wt 910 g",
             "image": "/images/KFC/Big 12.jpg",
             "isVeg": true,
             "category": "Variety Buckets"
@@ -1151,7 +1151,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "5 Peri Peri Leg Pc",
             "price": 489,
-            "description": "Crunchy, juicy signature KFC favourite. (748 Kcal • 500g)",
+            "description": "Save Rs. 120 on 5 Peri Peri Leg pc Allergen Wheat, Soy, Milk| 748 Kcal| Wt 500 g",
             "image": "/images/KFC/5 Peri Peri Leg Pc.jpg",
             "isVeg": true,
             "category": "Chicken Buckets"
@@ -1161,7 +1161,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Bucket",
             "price": 689,
-            "description": "Crunchy, juicy signature KFC favourite. (160 Kcal • 880g)",
+            "description": "8 pc Hot & Cripsy Allergen Wheat| 160 Kcal | Wt 880 g",
             "image": "/images/KFC/8 Pc Bucket.jpg",
             "isVeg": true,
             "category": "Chicken Buckets"
@@ -1171,7 +1171,7 @@ export const STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "6pc Hot & Crispy",
             "price": 559,
-            "description": "Crunchy, juicy signature KFC favourite. (213 Kcal • 660g)",
+            "description": "Get 6 piece Hot & Crispy Chicken. Allergen Wheat| 213 Kcal | Wt 660 g",
             "image": "/images/KFC/6pc Hot & Crispy.jpg",
             "isVeg": true,
             "category": "Chicken Buckets"
@@ -1330,8 +1330,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-66",
             "storeId": "store-kfc",
             "name": "Classic Chicken Krisper, Popcorn & Pepsi Combo",
-            "price": 259,
-            "description": "Crunchy, juicy signature KFC favourite. (853 Kcal • 570g)",
+            "price": 279,
+            "description": "Chicken Krisper with Popcorn & Reg Pepsi Allergen Wheat,Soy,Milk| 853 Kcal | Wt 570 g",
             "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.png",
             "isVeg": false,
             "category": "Burgers"
@@ -1690,8 +1690,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-102",
             "storeId": "store-kfc",
             "name": "Classic Chicken Rice Bowlz & Pepsi Combo",
-            "price": 258.57,
-            "description": "Crunchy, juicy signature KFC favourite. (689 Kcal • 690g)",
+            "price": 269,
+            "description": "Classic Chicken Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 689 Kcal | Wt 690 g",
             "image": "/images/KFC/Pepsi Regular.jpg",
             "isVeg": true,
             "category": "Rice Bowlz"
@@ -1700,8 +1700,8 @@ export const STORES: Store[] = [
             "id": "kfc-csv-103",
             "storeId": "store-kfc",
             "name": "Popcorn Chicken Rice Bowlz & Pepsi Combo",
-            "price": 258.57,
-            "description": "Crunchy, juicy signature KFC favourite. (757 Kcal • 670g)",
+            "price": 269,
+            "description": "Popcorn Chicken Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 757 Kcal | Wt",
             "image": "/images/KFC/Pepsi Regular.jpg",
             "isVeg": true,
             "category": "Rice Bowlz"

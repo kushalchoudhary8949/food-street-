@@ -38,8 +38,6 @@ ${cancellationNote}� *PAYMENT COLLECTION DETAILS:*
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
 ${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
-☎️ *Support & Contact:* 7682890864
-
 ━━━━━━━━━━━━━━━━━━━━
 _Thank you for ordering with FoodZa!_`;
 

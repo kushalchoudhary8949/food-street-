@@ -70,7 +70,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   const [storeForm, setStoreForm] = useState({
     name: '',
     deliveryTime: '25-35 mins',
-    deliveryFee: 19,
+    deliveryFee: 21,
     distance: '2.5 km',
     image: '',
     cuisines: '',
@@ -221,7 +221,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     setStoreForm({
       name: '',
       deliveryTime: '25-35 mins',
-      deliveryFee: 15,
+      deliveryFee: 21,
       distance: '2.5 km',
       image: '',
       cuisines: '',

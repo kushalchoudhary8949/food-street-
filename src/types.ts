@@ -94,6 +94,7 @@ export interface Order {
 
 export interface UserAddress {
   id: string;
+  name?: string;
   label: 'Hostel' | 'Home' | 'Work' | 'Other';
   addressLine: string;
   roomNo?: string;

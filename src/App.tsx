@@ -349,6 +349,7 @@ export default function App() {
     const storeId = uniqueStores.map(s => s.id).join('_');
 
     const formattedAddress = [
+      currentAddress.name ? `Name: ${currentAddress.name}` : null,
       currentAddress.roomNo ? `Room ${currentAddress.roomNo}` : null,
       currentAddress.hostelName,
       currentAddress.block,

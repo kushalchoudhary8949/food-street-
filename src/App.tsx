@@ -385,7 +385,7 @@ export default function App() {
       deliveryAddress: formattedAddress,
       customerPhone: currentAddress.phone,
       driverName: 'Alex Mercer',
-      driverPhone: '9366265129',
+      driverPhone: '8549908385',
       driverRating: 4.9,
       driverPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
       paymentMethod: paymentMethod || 'UPI / Online',

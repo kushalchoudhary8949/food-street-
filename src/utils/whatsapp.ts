@@ -31,13 +31,13 @@ ${itemsText}
 🧾 *Taxes & Charges:* ₹${order.taxesAndCharges.toFixed(0)}
 ${order.discount > 0 ? `🏷️ *Offer Discount:* -₹${order.discount.toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${order.grandTotal.toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
-💳 *Payment Method:* ${order.paymentMethod}
-${cancellationNote}� *PAYMENT COLLECTION DETAILS:*
+${cancellationNote}📌 *PAYMENT COLLECTION DETAILS:*
 🔗 *UPI ID:* 8949508256@axl
 
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
-${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
+${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}🛵 *Delivery Partner Contact:* ${order.driverPhone || '8549908385'}
+
 ━━━━━━━━━━━━━━━━━━━━
 _Thank you for ordering with FoodZa!_`;
 

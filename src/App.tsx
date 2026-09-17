@@ -13,6 +13,7 @@ import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
+import { isOrderWindowOpen, getOrderWindowStatus } from './utils/orderTiming';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import {
@@ -214,12 +215,6 @@ export default function App() {
     }, 3000);
   };
 
-  const isOrderWindowOpen = () => {
-    const now = new Date();
-    const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-    return minutesSinceMidnight >= 12 * 60 && minutesSinceMidnight < 22 * 60 + 30;
-  };
-
   // Toggle favorite store
   const handleToggleFavorite = (e?: React.MouseEvent, storeId?: string) => {
     if (e) e.stopPropagation();
@@ -324,8 +319,9 @@ export default function App() {
     cancellationConfirmed: boolean;
   }) => {
     if (cartItems.length === 0) return;
-    if (!isOrderWindowOpen()) {
-      showToast('Orders are open only from 12:00 PM to 10:30 PM.');
+    const windowStatus = getOrderWindowStatus();
+    if (!windowStatus.isOpen) {
+      showToast(windowStatus.message);
       return;
     }
 
@@ -556,9 +552,25 @@ export default function App() {
                   cartTotal={totalCartPrice}
                 />
 
-                <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                  Orders are open daily from 12:00 PM to 10:30 PM.
-                </div>
+                {(() => {
+                  const windowStatus = getOrderWindowStatus();
+                  if (!windowStatus.isOpen) {
+                    return (
+                      <div className="mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
+                        <div className="flex items-center space-x-2">
+                          <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                          <span>Closed for today, resumes tomorrow</span>
+                        </div>
+                        <span className="text-[10px] font-medium opacity-90 hidden sm:inline">12:00 PM – 10:30 PM</span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
+                      {windowStatus.bannerMessage}
+                    </div>
+                  );
+                })()}
 
                 {/* Categories Carousel Row */}
                 <div className="mt-1">

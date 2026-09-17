@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
 import { CartItem, UserAddress } from '../types';
+import { isOrderWindowOpen, getOrderWindowStatus } from '../utils/orderTiming';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -35,12 +36,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
 
-  const isOrderWindowOpen = () => {
-    const now = new Date();
-    const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-    return minutesSinceMidnight >= 12 * 60 && minutesSinceMidnight < 22 * 60 + 30;
-  };
-
   if (!isOpen) return null;
 
   // Calculate bill
@@ -55,8 +50,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
-    if (!isOrderWindowOpen()) {
-      alert('Orders are open only from 12:00 PM to 10:30 PM.');
+    const windowStatus = getOrderWindowStatus();
+    if (!windowStatus.isOpen) {
+      alert(windowStatus.message);
       return;
     }
     if (currentAddress.id === 'addr-none') {
@@ -197,9 +193,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 })}
               </div>
 
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                Orders are open daily from 12:00 PM to 10:30 PM.
-              </div>
+              {(() => {
+                const windowStatus = getOrderWindowStatus();
+                if (!windowStatus.isOpen) {
+                  return (
+                    <div className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
+                      <div className="flex items-center space-x-2">
+                        <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                        <span>Closed for today, resumes tomorrow</span>
+                      </div>
+                      <span className="text-[10px] font-medium opacity-90">12:00 PM – 10:30 PM</span>
+                    </div>
+                  );
+                }
+                return (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
+                    {windowStatus.bannerMessage}
+                  </div>
+                );
+              })()}
 
               {/* Delivery Tip */}
               <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs space-y-2.5">
@@ -289,7 +301,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         {/* Place Order CTA */}
         {cartItems.length > 0 && (
-          <div className="p-4 sm:p-5 bg-white border-t border-gray-100">
+          <div className="p-4 sm:p-5 bg-white border-t border-gray-100 space-y-2">
+            {!isOrderWindowOpen() && (
+              <div className="flex items-center justify-center space-x-2 py-2 px-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bold text-center">
+                <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                <span>Closed for today, resumes tomorrow</span>
+              </div>
+            )}
             <button
               id="place-order-checkout-btn"
               onClick={handleCheckout}
@@ -301,7 +319,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <span className="text-lg">₹{grandTotal.toFixed(0)}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span>Place Order</span>
+                <span>{!isOrderWindowOpen() ? 'Closed for Today' : 'Place Order'}</span>
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>

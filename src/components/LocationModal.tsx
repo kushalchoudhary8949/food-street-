@@ -34,11 +34,11 @@ export const LocationModal: React.FC<LocationModalProps> = ({
 
   const handleCreateAddress = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newLine.trim() || !newPhone.trim()) return;
+    if (!newName.trim() || !newLine.trim() || !newPhone.trim()) return;
 
     const created: UserAddress = {
       id: `addr-${Date.now()}`,
-      name: newName.trim() || undefined,
+      name: newName.trim(),
       label: newLabel,
       hostelName: newHostelName.trim() || undefined,
       block: newBlock.trim() || undefined,
@@ -235,10 +235,11 @@ export const LocationModal: React.FC<LocationModalProps> = ({
               {/* Customer Name */}
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Your Name / Recipient Name <span className="text-[10px] text-gray-400 font-normal">(Optional)</span>
+                  Your Name / Recipient Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
+                  required
                   placeholder="e.g. Rahul Sharma"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}

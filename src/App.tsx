@@ -253,7 +253,28 @@ export default function App() {
       return;
     }
 
-    const store = customizingItemStore || selectedStore || stores.find(s => s.id === item.storeId) || stores[0];
+    // Determine exact store / outlet for this item
+    let store = customizingItemStore || selectedStore;
+    if (store && store.outlets) {
+      const outletMatch = store.outlets.find((o) => o.id === item.storeId);
+      if (outletMatch) store = outletMatch;
+    }
+    if (!store || (store.id !== item.storeId && !store.outlets)) {
+      for (const s of stores) {
+        if (s.id === item.storeId) {
+          store = s;
+          break;
+        }
+        if (s.outlets) {
+          const match = s.outlets.find((o) => o.id === item.storeId);
+          if (match) {
+            store = match;
+            break;
+          }
+        }
+      }
+    }
+    if (!store) store = stores[0];
 
     const uniqueId = `${item.id}-${selectedAddons.map(a => a.id).sort().join('_')}`;
 
@@ -269,7 +290,7 @@ export default function App() {
           {
             id: uniqueId,
             item,
-            store,
+            store: store!,
             quantity,
             selectedAddons,
           },
@@ -330,7 +351,7 @@ export default function App() {
       return sum + (ci.item.price + addonsCost) * ci.quantity;
     }, 0);
 
-    const deliveryFee = 21;
+    const deliveryFee = 20;
     const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
     const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + tip - discount);
 
@@ -556,12 +577,11 @@ export default function App() {
                   const windowStatus = getOrderWindowStatus();
                   if (!windowStatus.isOpen) {
                     return (
-                      <div className="mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
+                      <div className="mx-4 mt-3 flex items-center justify-center px-4 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
                         <div className="flex items-center space-x-2">
                           <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                           <span>Closed for today, resumes tomorrow</span>
                         </div>
-                        <span className="text-[10px] font-medium opacity-90 hidden sm:inline">12:00 PM – 10:30 PM</span>
                       </div>
                     );
                   }
@@ -581,36 +601,20 @@ export default function App() {
                   />
                 </div>
 
-                {/* Top Restaurants Heading */}
-                <div className="px-4 mt-6 flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
-                      {selectedCategory ? (
-                        `${selectedCategory.toUpperCase()} SPOTS`
-                      ) : (
-                        <>
-                          <span className="block text-center text-xl sm:text-2xl font-black leading-none text-gray-900">
-                            The Food Street
-                          </span>
-                          <span className="mt-1 block text-base sm:text-lg font-bold leading-tight text-red-600">
-                            Featured Stores
-                          </span>
-                        </>
-                      )}
+                {/* Category filter header (shown only when a category filter is active) */}
+                {selectedCategory && (
+                  <div className="px-4 mt-4 flex items-center justify-between">
+                    <h2 className="text-base font-extrabold text-gray-900 tracking-tight">
+                      {selectedCategory.toUpperCase()} SPOTS
                     </h2>
-                    <p className="mt-1.5 text-xs text-gray-500">
-                      {filteredStores.length} stores delivering near you
-                    </p>
-                  </div>
-                  {selectedCategory && (
                     <button
                       onClick={() => setSelectedCategory(null)}
                       className="text-xs font-bold text-red-600 hover:text-red-700 underline"
                     >
                       Clear filter
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Stores List */}
                 <div className="px-4 mt-3 space-y-4">
@@ -680,7 +684,7 @@ export default function App() {
             )}
 
             {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
-            {totalCartCount > 0 && activeTab !== 'orders' && (
+            {totalCartCount > 0 && activeTab !== 'orders' && !isStoreModalOpen && (
               <div className="fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200">
                 <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
                   <button

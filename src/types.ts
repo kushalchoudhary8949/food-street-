@@ -44,6 +44,7 @@ export interface Store {
   tags?: string[];
   menuCategories: string[];
   items: MenuItem[];
+  outlets?: Store[];
 }
 
 export interface CartItem {

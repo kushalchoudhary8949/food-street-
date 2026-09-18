@@ -44,7 +44,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return sum + (ci.item.price + addonsCost) * ci.quantity;
   }, 0);
 
-  const deliveryFee = 21;
+  const deliveryFee = 20;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
   const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + selectedTip);
 
@@ -197,12 +197,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 const windowStatus = getOrderWindowStatus();
                 if (!windowStatus.isOpen) {
                   return (
-                    <div className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
+                    <div className="flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
                       <div className="flex items-center space-x-2">
                         <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                         <span>Closed for today, resumes tomorrow</span>
                       </div>
-                      <span className="text-[10px] font-medium opacity-90">12:00 PM – 10:30 PM</span>
                     </div>
                   );
                 }
@@ -265,7 +264,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>₹{itemTotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Delivery Charges</span>
+                  <span>Platform Fee</span>
                   <span>₹{deliveryFee}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
@@ -303,8 +302,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {cartItems.length > 0 && (
           <div className="p-4 sm:p-5 bg-white border-t border-gray-100 space-y-2">
             {!isOrderWindowOpen() && (
-              <div className="flex items-center justify-center space-x-2 py-2 px-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bold text-center">
-                <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+              <div className="flex items-center justify-center space-x-2 py-2.5 px-3 bg-red-600 text-white rounded-xl text-xs font-bold text-center shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                 <span>Closed for today, resumes tomorrow</span>
               </div>
             )}
@@ -319,7 +318,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <span className="text-lg">₹{grandTotal.toFixed(0)}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span>{!isOrderWindowOpen() ? 'Closed for Today' : 'Place Order'}</span>
+                <span>{!isOrderWindowOpen() ? 'Closed for today, resumes tomorrow' : 'Place Order'}</span>
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>

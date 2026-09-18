@@ -70,7 +70,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
   const [storeForm, setStoreForm] = useState({
     name: '',
     deliveryTime: '25-35 mins',
-    deliveryFee: 21,
+    deliveryFee: 20,
     distance: '2.5 km',
     image: '',
     cuisines: '',
@@ -221,7 +221,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
     setStoreForm({
       name: '',
       deliveryTime: '25-35 mins',
-      deliveryFee: 21,
+      deliveryFee: 20,
       distance: '2.5 km',
       image: '',
       cuisines: '',
@@ -586,7 +586,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                       />
                     </div>
                     <div>
-                      <label className="block font-bold mb-1">Delivery Fee (₹)</label>
+                      <label className="block font-bold mb-1">Platform Fee (₹)</label>
                       <input
                         type="number"
                         value={storeForm.deliveryFee}

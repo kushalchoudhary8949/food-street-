@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Store } from '../types';
 
 interface StoreCardProps {
@@ -49,19 +49,38 @@ export const StoreCard: React.FC<StoreCardProps> = ({
       </div>
 
       {/* Card Content Footer */}
-      <div className="p-4 flex items-center justify-between">
-        <div>
-          {/* Store Name */}
-          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight group-hover:text-red-600 transition-colors">
-            {store.name}
-          </h3>
+      <div className="p-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            {/* Store Name */}
+            <h3 className="text-xl font-extrabold text-gray-900 tracking-tight group-hover:text-red-600 transition-colors flex items-center gap-2">
+              <span>{store.name}</span>
+              {store.outlets && store.outlets.length > 0 && (
+                <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
+                  Food Court ({store.outlets.length} Outlets)
+                </span>
+              )}
+            </h3>
+          </div>
         </div>
 
-        {/* Rating Pill matching original */}
-        <div className="flex items-center space-x-1 bg-gray-50 border border-gray-200/80 px-2.5 py-1 rounded-xl shadow-2xs">
-          <span className="text-sm font-bold text-gray-900">{store.rating.toFixed(1)}</span>
-          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 stroke-[1.5]" />
-        </div>
+        {/* Cuisines or Outlets preview */}
+        {store.outlets && store.outlets.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5 pt-0.5">
+            {store.outlets.map((outlet) => (
+              <span
+                key={outlet.id}
+                className="text-[11px] font-semibold text-gray-700 bg-gray-100/80 border border-gray-200 px-2.5 py-0.5 rounded-lg"
+              >
+                {outlet.name}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-gray-500 line-clamp-1 font-medium">
+            {store.cuisines.join(' • ')}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ ${itemsText}
 
 ━━━━━━━━━━━━━━━━━━━━
 💵 *Item Total:* ₹${order.itemTotal.toFixed(0)}
-🛵 *Delivery Fee:* ₹${order.deliveryFee.toFixed(0)}
+💼 *Platform Fee:* ₹${order.deliveryFee.toFixed(0)}
 🧾 *Taxes & Charges:* ₹${order.taxesAndCharges.toFixed(0)}
 ${order.discount > 0 ? `🏷️ *Offer Discount:* -₹${order.discount.toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${order.grandTotal.toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━

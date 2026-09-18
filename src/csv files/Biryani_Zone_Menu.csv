@@ -1,0 +1,162 @@
+Category,Item,Variant,Price
+Beverages,Fresh Lime Soda,Sweet / Salted / Plain,99
+Beverages,Fresh Lime Juice,Sweet / Salted / Plain,99
+Beverages,Aerated Drinks,Tin 300ml/330ml - CocaCola / Thums Up / Sprite,MRP
+Beverages,Bottled Water,1 Ltr / 500ml,MRP
+Fruit Juice,Watermelon Juice,,99
+Fruit Juice,Pineapple Juice,,99
+Fruit Juice,Muskmelon Juice,,99
+Fruit Juice,Chickoo/Sapota Juice,,99
+Fruit Juice,Pink Guava Juice,,99
+Fruit Juice,Jamun Juice,,120
+Fruit Juice,Alphonso Mango,,120
+Fruit Juice,Alphonso Mango Milkshake,,150
+Soups,Cream of Tomato,,140
+Soups,Sweet Corn Soup,Veg / Chicken,140 / 170
+Soups,Hot n Sour Soup,Veg / Chicken,140 / 170
+Soups,Coriander Clear Soup,Veg / Chicken,140 / 170
+Soups,Manchow Soup,Veg / Chicken,140 / 170
+Biriyanis - Authentic,Hyderabadi Chicken Dum Biriyani,Regular / Family Pack,399 / 789
+Biriyanis - Authentic,Hyderabadi Mutton Dum Biriyani,Regular / Family Pack,499 / 969
+Biriyanis - Authentic,Hyderabadi Chicken Biriyani (Boneless),Regular / Family Pack,419 / 849
+Biriyanis - Authentic,Hyderabadi Fish Biriyani,,419
+Biriyanis - Authentic,Hyderabadi Prawn Biriyani,,489
+Biriyanis - Authentic,Egg Biriyani (Non Veg Rice),,289
+Biriyanis - Authentic,Hyderabadi Veg Biriyani,Regular / Family Pack,289 / 549
+Biriyanis - Authentic,Hyderabadi Biriyani Rice,,239
+Biriyanis - Specials,Chicken Drumstick Special Biriyani,,419
+Biriyanis - Specials,Chicken Tikka Biriyani (Boneless),,419
+Biriyanis - Specials,Lucknowi Chicken Biriyani (Boneless),,419
+Biriyanis - Specials,Lucknowi Mutton Biriyani,,499
+Biriyanis - Specials,Hyderabadi Paneer Biriyani,,389
+Biriyanis - Specials,Hyderabadi Mushroom Biriyani,,389
+Biriyanis - Specials,Soya Chaap Biriyani,,389
+Biriyanis - Chef Recommended,Guntur Chicken Biriyani (Boneless),,419
+Biriyanis - Chef Recommended,Mutton Keema Biriyani,,489
+Starters Non Veg,Chicken Sholay Kebab,,389
+Starters Non Veg,Lemon Chicken,,389
+Starters Non Veg,Chicken Lollipop,,379
+Starters Non Veg,Guntur Chicken Fry,,379
+Starters Non Veg,Chilli Chicken (Andhra Style),,379
+Starters Non Veg,Chicken Pepper Dry,,379
+Starters Non Veg,Honey Chilli Chicken,,379
+Starters Non Veg,Mutton Pepper Fry,,479
+Starters Non Veg,Mutton Fry,,479
+Starters Non Veg,Chilli Chicken (Boneless),,379
+Starters Non Veg,Chicken Manchurian,,379
+Starters Non Veg,Garlic Chicken,,379
+Starters Non Veg,Chicken 65,,379
+Starters Non Veg,Chicken Satey,,389
+Starters Non Veg,Crunchy Chicken Dry,,389
+Starters Non Veg,Dumka Chicken (Semi gravy),,379
+Starters Non Veg,Chicken Ghee Roast,,379
+Starters Non Veg,Mutton Ghee Roast,,479
+Starters Non Veg,Chicken Kebab,,359
+Starters Non Veg,Dragon Chicken,,389
+Starters Non Veg,Crispy Chicken,,389
+Starters Non Veg,Mutton Kheema Balls,,489
+Starters Seafood,Chilli Garlic Fish,,409
+Starters Seafood,Fish Pepper Fry,,409
+Starters Seafood,Fish Koliwada,,409
+Starters Seafood,Fish Tikka,,409
+Starters Seafood,Ajwaini Fish Tikka,,409
+Starters Seafood,Fish Manchurian/Chilli,,409
+Starters Seafood,Apollo Fish,,409
+Starters Seafood,Prawns Manchurian/Chilli,,439
+Starters Seafood,Prawns Salt n Pepper,,439
+Starters Seafood,Satay Prawns,,439
+Starters Seafood,Prawn Pepper Fry,,439
+Starters Egg,Egg Chilli/Manchurian,,239
+Starters Egg,Egg Pepper Dry,,239
+Starters Egg,Egg 65,,239
+Premium Tandoor Starters,Tandoori Chicken,Regular / Full,379 / 699
+Premium Tandoor Starters,Kalmi Kebab (2 Pieces),,279
+Premium Tandoor Starters,Murg Malai Kebab,,389
+Premium Tandoor Starters,Hariyali Kebab,,389
+Premium Tandoor Starters,Reshmi Kebab,,389
+Premium Tandoor Starters,Afghani Tikka,,389
+Premium Tandoor Starters,Chicken Tikka,,389
+Starters Veg,Masala Papad | Roasted Papad,,89
+Starters Veg,Gobi Manchurian /Chilli/65,,279
+Starters Veg,Paneer Manchurian/Chilli/65,,349
+Starters Veg,Paneer Sholey Kabab,,349
+Starters Veg,Paneer Satay,,359
+Starters Veg,Paneer Pepper Dry,,349
+Starters Veg,Mushroom Manchurian/Chilli/65,,349
+Starters Veg,Mushroom Pepper Dry,,349
+Starters Veg,Baby Corn Manchurian/Chilli/65,,299
+Starters Veg,Baby Corn Pepper Dry,,299
+Starters Veg,Baby Corn Lemon,,299
+Starters Veg,Corn Salt & Pepper,,299
+Starters Veg,Harabara Kabab,,299
+Starters Veg,Paneer Tikka,,369
+Starters Veg,Stuffed Mushroom Tikka,,369
+Starters Veg,Malai Paneer Tikka,,369
+Tandoor Breads,Roti,Plain / Methi / Butter,79
+Tandoor Breads,Naan,Plain / Butter,89
+Tandoor Breads,Kulcha,Plain / Butter,79
+Tandoor Breads,Paratha,Plain / Methi / Butter,89
+Tandoor Breads,Aloo Paratha,,99
+Tandoor Breads,Stuffed Kulcha,,99
+Tandoor Breads,Stuffed Naan,,99
+Rice & Noodles,Veg Fried Rice / Noodles,,269
+Rice & Noodles,Egg Fried Rice / Noodles,,289
+Rice & Noodles,Chicken Fried Rice / Noodles,,309
+Rice & Noodles,Schezwan Chicken Fried Rice/Noodles,,299
+Rice & Noodles,Ghee Rice / Jeera Rice,,249
+Rice & Noodles,Curd Rice,,169
+Indian Curry - Non Veg,Biriyani Zone Spl Chicken Curry,,399
+Indian Curry - Non Veg,Chicken Masala (Bone),,399
+Indian Curry - Non Veg,Kadhai Murgh,,399
+Indian Curry - Non Veg,Butter Chicken,,399
+Indian Curry - Non Veg,Hyderabadi Chicken Masala,,399
+Indian Curry - Non Veg,Murgh Kali Mirch,,399
+Indian Curry - Non Veg,Chicken Tikka Masala,,399
+Indian Curry - Non Veg,Chicken Kolhapuri,,399
+Indian Curry - Non Veg,Chicken Lababdar (BL),,399
+Indian Curry - Non Veg,Anda Curry,,269
+Indian Curry - Non Veg,Mutton Pepper Masala,,489
+Indian Curry - Non Veg,Mutton Hyderabadi,,489
+Indian Curry - Non Veg,Mutton Rogan Josh,,489
+Indian Curry - Non Veg,Mutton Kheema Masala,,489
+Indian Curry - Non Veg,Fish Curry,,419
+Indian Curry - Non Veg,Prawns Masala,,489
+Indian Curry - Veg,Dal Fry,,299
+Indian Curry - Veg,Biriyani Zone Spl Tadka Dal,,299
+Indian Curry - Veg,Paneer Tikka Masala,,389
+Indian Curry - Veg,Kadhai Paneer,,389
+Indian Curry - Veg,Mix Veg Curry,,389
+Indian Curry - Veg,Palak Paneer,,389
+Indian Curry - Veg,Kaju Masala (Spicy/Sweet),,389
+Indian Curry - Veg,Veg Kadhai,,299
+Indian Curry - Veg,Veg Hyderabadi,,299
+Indian Curry - Veg,Malai Kofta,,399
+Indian Curry - Veg,Dal Makhni,,299
+Indian Curry - Veg,Paneer Butter Masala,,389
+Indian Curry - Veg,Aloo Mutter Masala,,299
+Indian Curry - Veg,Veg Kolhapuri,,299
+Indian Curry - Veg,Baby Corn Masala,,389
+Indian Curry - Veg,Mushroom Masala,,389
+Salads & Raita,Green Salad,,110
+Salads & Raita,Mix Veg Raita,,140
+Salads & Raita,Boondi Raita,,140
+Desserts,Gajar Halwa,,169
+Desserts,Drunken Gulab Jamun (2 Nos.),,169
+Desserts,Drunken Gulab Jamun,1 No. with Vanilla Ice Cream,169
+Desserts,Qurbani ka Meetha,with Vanilla Ice Cream,199
+Ice cream,Vanilla,,149
+Ice cream,Chocolate,,149
+Ice cream,Butterscotch,,149
+Ice cream,Strawberry,,149
+Ice cream,Kesar-pista,,149
+Ice cream,Kulfi,,149
+Refreshers,Japanese Lime Refresher,Sweet / Salt,125
+Refreshers,Coconut Refresher,,125
+Refreshers,Ba-Na-Na,,150
+Refreshers,Green Apple Refresher,,150
+Mocktails,Virgin Colada,,199
+Mocktails,Yuzu Highball,,250
+Mocktails,Melon Basil Smash,,250
+Zero Alcohol Cocktails,Ame-O-Up,,350
+Zero Alcohol Cocktails,Mexican Sour,,350
+Zero Alcohol Cocktails,BZ Itali-Op,,400

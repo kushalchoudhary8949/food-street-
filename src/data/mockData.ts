@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v37_vaango_delivery_time_2026_09_11';
+export const DATA_VERSION = 'food_street_v53_restored_2_8km_distances_2026_09_18';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -69,14 +69,2217 @@ export const CATEGORIES: Category[] = [
   }
 ];
 
-export const STORES: Store[] = [
+export const RAW_STORES: Store[] = [
+  {
+      "id": "store-biriyani-zone",
+      "name": "Biriyani Zone",
+      "rating": 4.6,
+      "reviewsCount": 2840,
+      "deliveryTime": "40-50 mins",
+      "deliveryFee": 20,
+      "distance": "2.4 km",
+      "image": "/images/storeImage/Biriyani Zone_new.png",
+      "bannerImage": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+      "cuisines": [
+          "Biryani",
+          "Hyderabadi Dum Biryani",
+          "Tandoori Starters",
+          "Mughlai",
+          "North Indian",
+          "Seafood",
+          "Chinese",
+          "Desserts"
+      ],
+      "tags": [
+          "Biryani",
+          "Hyderabadi",
+          "Tandoor",
+          "Kebabs",
+          "Bestseller",
+          "North Indian"
+      ],
+      "menuCategories": [
+          "Beverages",
+          "Fruit Juice",
+          "Soups",
+          "Biriyanis - Authentic",
+          "Biriyanis - Specials",
+          "Biriyanis - Chef Recommended",
+          "Starters Non Veg",
+          "Starters Seafood",
+          "Starters Egg",
+          "Premium Tandoor Starters",
+          "Starters Veg",
+          "Tandoor Breads",
+          "Rice & Noodles",
+          "Indian Curry - Non Veg",
+          "Indian Curry - Veg",
+          "Salads & Raita",
+          "Desserts",
+          "Ice cream",
+          "Refreshers",
+          "Mocktails",
+          "Zero Alcohol Cocktails"
+      ],
+      "items": [
+          {
+              "id": "bz-1",
+              "storeId": "store-biriyani-zone",
+              "name": "Fresh Lime Soda",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Beverages",
+              "rating": 4.4,
+              "ratingCount": 144,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-1-0",
+                      "name": "Option: Sweet",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-1-1",
+                      "name": "Option: Salted",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-1-2",
+                      "name": "Option: Plain",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-2",
+              "storeId": "store-biriyani-zone",
+              "name": "Fresh Lime Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Beverages",
+              "rating": 4.7,
+              "ratingCount": 210,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-2-0",
+                      "name": "Option: Sweet",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-2-1",
+                      "name": "Option: Salted",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-2-2",
+                      "name": "Option: Plain",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-3",
+              "storeId": "store-biriyani-zone",
+              "name": "Aerated Drinks",
+              "price": 40,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Beverages",
+              "rating": 4.8,
+              "ratingCount": 312,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-3-0",
+                      "name": "Option: Tin 300ml",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-3-1",
+                      "name": "Option: 330ml - CocaCola",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-3-2",
+                      "name": "Option: Thums Up",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-3-3",
+                      "name": "Option: Sprite",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-4",
+              "storeId": "store-biriyani-zone",
+              "name": "Bottled Water",
+              "price": 20,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Beverages",
+              "rating": 4.9,
+              "ratingCount": 110,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-4-0",
+                      "name": "Option: 1 Ltr",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-4-1",
+                      "name": "Option: 500ml",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-5",
+              "storeId": "store-biriyani-zone",
+              "name": "Watermelon Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.6,
+              "ratingCount": 304
+          },
+          {
+              "id": "bz-6",
+              "storeId": "store-biriyani-zone",
+              "name": "Pineapple Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.7,
+              "ratingCount": 149
+          },
+          {
+              "id": "bz-7",
+              "storeId": "store-biriyani-zone",
+              "name": "Muskmelon Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.4,
+              "ratingCount": 166
+          },
+          {
+              "id": "bz-8",
+              "storeId": "store-biriyani-zone",
+              "name": "Chickoo/Sapota Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.9,
+              "ratingCount": 321
+          },
+          {
+              "id": "bz-9",
+              "storeId": "store-biriyani-zone",
+              "name": "Pink Guava Juice",
+              "price": 99,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.5,
+              "ratingCount": 205
+          },
+          {
+              "id": "bz-10",
+              "storeId": "store-biriyani-zone",
+              "name": "Jamun Juice",
+              "price": 120,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.5,
+              "ratingCount": 107
+          },
+          {
+              "id": "bz-11",
+              "storeId": "store-biriyani-zone",
+              "name": "Alphonso Mango",
+              "price": 120,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.7,
+              "ratingCount": 226
+          },
+          {
+              "id": "bz-12",
+              "storeId": "store-biriyani-zone",
+              "name": "Alphonso Mango Milkshake",
+              "price": 150,
+              "description": "",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Fruit Juice",
+              "rating": 4.8,
+              "ratingCount": 156
+          },
+          {
+              "id": "bz-13",
+              "storeId": "store-biriyani-zone",
+              "name": "Cream of Tomato",
+              "price": 140,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Soups",
+              "rating": 4.6,
+              "ratingCount": 204
+          },
+          {
+              "id": "bz-14",
+              "storeId": "store-biriyani-zone",
+              "name": "Sweet Corn Soup",
+              "price": 140,
+              "description": "Authentic Biriyani Zone speciality (Veg / Chicken). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Soups",
+              "rating": 4.5,
+              "ratingCount": 293,
+              "addons": [
+                  {
+                      "id": "addon-bz-14-1",
+                      "name": "Chicken",
+                      "price": 30
+                  }
+              ]
+          },
+          {
+              "id": "bz-15",
+              "storeId": "store-biriyani-zone",
+              "name": "Hot n Sour Soup",
+              "price": 140,
+              "description": "Authentic Biriyani Zone speciality (Veg / Chicken). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Soups",
+              "rating": 4.4,
+              "ratingCount": 244,
+              "addons": [
+                  {
+                      "id": "addon-bz-15-1",
+                      "name": "Chicken",
+                      "price": 30
+                  }
+              ]
+          },
+          {
+              "id": "bz-16",
+              "storeId": "store-biriyani-zone",
+              "name": "Coriander Clear Soup",
+              "price": 140,
+              "description": "Authentic Biriyani Zone speciality (Veg / Chicken). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": true,
+              "category": "Soups",
+              "rating": 4.8,
+              "ratingCount": 53,
+              "addons": [
+                  {
+                      "id": "addon-bz-16-1",
+                      "name": "Chicken",
+                      "price": 30
+                  }
+              ]
+          },
+          {
+              "id": "bz-17",
+              "storeId": "store-biriyani-zone",
+              "name": "Manchow Soup",
+              "price": 140,
+              "description": "Authentic Biriyani Zone speciality (Veg / Chicken). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Soups",
+              "rating": 4.5,
+              "ratingCount": 86,
+              "addons": [
+                  {
+                      "id": "addon-bz-17-1",
+                      "name": "Chicken",
+                      "price": 30
+                  }
+              ]
+          },
+          {
+              "id": "bz-18",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Chicken Dum Biriyani",
+              "price": 399,
+              "description": "Enjoy a royal feast with our Hyderabadi Chicken Biryani, featuring Tendered Chicken layered with saffron-infused Basmati rice and specially made Biriyanizone Hyderabadi Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.8,
+              "ratingCount": 141,
+              "isBestseller": true,
+              "addons": [
+                  {
+                      "id": "addon-bz-18-1",
+                      "name": "Family Pack",
+                      "price": 390
+                  }
+              ]
+          },
+          {
+              "id": "bz-19",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Mutton Dum Biriyani",
+              "price": 499,
+              "description": "Enjoy a royal feast with our Hyderabadi Mutton Biryani, featuring Tendered Mutton layered with saffron-infused Basmati rice and specially made Biriyanizone Hyderabadi Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_mutton_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.7,
+              "ratingCount": 91,
+              "isBestseller": true,
+              "addons": [
+                  {
+                      "id": "addon-bz-19-1",
+                      "name": "Family Pack",
+                      "price": 470
+                  }
+              ]
+          },
+          {
+              "id": "bz-20",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Chicken Biriyani (Boneless)",
+              "price": 419,
+              "description": "Enjoy a royal feast with our Hyderabadi Boneless Chicken Biryani, featuring Tendered Boneless Chicken layered with saffron-infused Basmati rice and specially made Biriyanizone Hyderabadi Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.7,
+              "ratingCount": 163,
+              "addons": [
+                  {
+                      "id": "addon-bz-20-1",
+                      "name": "Family Pack",
+                      "price": 430
+                  }
+              ]
+          },
+          {
+              "id": "bz-21",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Fish Biriyani",
+              "price": 419,
+              "description": "Enjoy a royal feast with our Hyderabadi Fish Biryani, featuring Fish layered with saffron-infused Basmati rice and specially made Biriyanizone Hyderabadi Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_mutton_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.5,
+              "ratingCount": 56
+          },
+          {
+              "id": "bz-22",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Prawn Biriyani",
+              "price": 489,
+              "description": "Enjoy a royal feast with our Hyderabadi Prawn Biryani, featuring succulent prawns layered with saffron-infused Basmati rice and specially made Biriyanizone Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_mutton_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.8,
+              "ratingCount": 282
+          },
+          {
+              "id": "bz-23",
+              "storeId": "store-biriyani-zone",
+              "name": "Egg Biriyani (Non Veg Rice)",
+              "price": 289,
+              "description": "Fragrant rice cooked with flavorful spices, and toped with boiled eggs.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.7,
+              "ratingCount": 178
+          },
+          {
+              "id": "bz-24",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Veg Biriyani",
+              "price": 289,
+              "description": "Enjoy a royal feast with our Hyderabadi vegitable Biryani, A vegetarian delight where succulent Vegitables pieces are layered with fragrant Basmati rice and traditional Hyderabadi spices.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.4,
+              "ratingCount": 181,
+              "addons": [
+                  {
+                      "id": "addon-bz-24-1",
+                      "name": "Family Pack",
+                      "price": 260
+                  }
+              ]
+          },
+          {
+              "id": "bz-25",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Biriyani Rice",
+              "price": 239,
+              "description": "Aromatic biriyani dum cooked with layers of basmati rice. Originating in the kitchens of the Nizam of Hyderabad, it combines elements of Hyderabadi and Mughlai cuisines. Served along with Salan & Raitha.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Authentic",
+              "rating": 4.8,
+              "ratingCount": 83
+          },
+          {
+              "id": "bz-26",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Drumstick Special Biriyani",
+              "price": 419,
+              "description": "Enjoy a royal feast with our Hyderabadi Drumstick Chicken Biryani, featuring Tendered Chicken Drumstick layered with saffron-infused Basmati rice and specially made Biriyanizone Hyderabadi Masala.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Specials",
+              "rating": 4.6,
+              "ratingCount": 162
+          },
+          {
+              "id": "bz-27",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Tikka Biriyani (Boneless)",
+              "price": 419,
+              "description": "Experience the rich flavors of Lucknow with our aromatic Chicken Boneless Biryani, where tender Chicken meets fragrant Basmati rice, cooked to perfection.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Specials",
+              "rating": 4.9,
+              "ratingCount": 197,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-28",
+              "storeId": "store-biriyani-zone",
+              "name": "Lucknowi Chicken Biriyani (Boneless)",
+              "price": 419,
+              "description": "Experience the rich flavors of Lucknow with our aromatic Chicken Boneless Biryani, where tender Chicken meets fragrant Basmati rice, cooked to perfection.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Specials",
+              "rating": 4.7,
+              "ratingCount": 69
+          },
+          {
+              "id": "bz-29",
+              "storeId": "store-biriyani-zone",
+              "name": "Lucknowi Mutton Biriyani",
+              "price": 499,
+              "description": "Experience the rich flavors of Lucknow with our aromatic Mutton Biryani, where tender mutton meets fragrant Basmati rice, cooked to perfection.",
+              "image": "/images/Biryani Zone/hyderabadi_mutton_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Specials",
+              "rating": 4.7,
+              "ratingCount": 54
+          },
+          {
+              "id": "bz-30",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Paneer Biriyani",
+              "price": 389,
+              "description": "Enjoy a royal feast with our Hyderabadi Paneer Biryani, A vegetarian delight where succulent paneer pieces are layered with fragrant Basmati rice and traditional Hyderabadi spices.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Specials",
+              "rating": 4.8,
+              "ratingCount": 219
+          },
+          {
+              "id": "bz-31",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Mushroom Biriyani",
+              "price": 389,
+              "description": "A delicious vegetarian biryani made with fresh tender mushrooms layered with fragrant Basmati rice and traditional Nizami spices.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Specials",
+              "rating": 4.8,
+              "ratingCount": 302
+          },
+          {
+              "id": "bz-32",
+              "storeId": "store-biriyani-zone",
+              "name": "Soya Chaap Biriyani",
+              "price": 389,
+              "description": "Aromatic Hyderabadi biryani cooked with marinated soya chaap pieces and saffron-infused basmati rice.",
+              "image": "/images/Biryani Zone/hyderabadi_veg_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Biriyanis - Specials",
+              "rating": 4.8,
+              "ratingCount": 290
+          },
+          {
+              "id": "bz-33",
+              "storeId": "store-biriyani-zone",
+              "name": "Guntur Chicken Biriyani (Boneless)",
+              "price": 419,
+              "description": "A spicy and aromatic biryani where boneless chicken meets fragrant Basmati rice, inspired by Guntur cuisine.",
+              "image": "/images/Biryani Zone/hyderabadi_chicken_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Chef Recommended",
+              "rating": 4.5,
+              "ratingCount": 130,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-34",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Keema Biriyani",
+              "price": 489,
+              "description": "A rich delicacy of spiced minced mutton layered with fragrant long-grain basmati rice and royal spices.",
+              "image": "/images/Biryani Zone/hyderabadi_mutton_dum_biriyani.jpeg",
+              "isVeg": false,
+              "category": "Biriyanis - Chef Recommended",
+              "rating": 4.5,
+              "ratingCount": 47
+          },
+          {
+              "id": "bz-35",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Sholay Kebab",
+              "price": 389,
+              "description": "A southern delicacy. Batter fried chicken sauteed with rich spices & yoghurt.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.8,
+              "ratingCount": 132
+          },
+          {
+              "id": "bz-36",
+              "storeId": "store-biriyani-zone",
+              "name": "Lemon Chicken",
+              "price": 389,
+              "description": "Juicy chicken breast dressed in tangy lemon flavour tossed in our secret spices.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 327
+          },
+          {
+              "id": "bz-37",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Lollipop",
+              "price": 379,
+              "description": "Juicy chicken drummets crisp fried with in house andhra spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.7,
+              "ratingCount": 64,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-38",
+              "storeId": "store-biriyani-zone",
+              "name": "Guntur Chicken Fry",
+              "price": 379,
+              "description": "Juicy chicken drummets roasted with Andhra spices, speciality of Guntur (andhra) region.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 64,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-39",
+              "storeId": "store-biriyani-zone",
+              "name": "Chilli Chicken (Andhra Style)",
+              "price": 379,
+              "description": "Juicy chicken pieces tossed in spicy Andhra style green chilli masala.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.3,
+              "ratingCount": 284
+          },
+          {
+              "id": "bz-40",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Pepper Dry",
+              "price": 379,
+              "description": "Juicy bonelesss chunks of chicken sauteed in black pepper.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.9,
+              "ratingCount": 73
+          },
+          {
+              "id": "bz-41",
+              "storeId": "store-biriyani-zone",
+              "name": "Honey Chilli Chicken",
+              "price": 379,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.8,
+              "ratingCount": 110
+          },
+          {
+              "id": "bz-42",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Pepper Fry",
+              "price": 479,
+              "description": "Enjoy the bold flavours of pepper in tender meat seasoned with our secret spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 83
+          },
+          {
+              "id": "bz-43",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Fry",
+              "price": 479,
+              "description": "Tender goat meat slow cooked and fried with aromatic South Indian spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.8,
+              "ratingCount": 101
+          },
+          {
+              "id": "bz-44",
+              "storeId": "store-biriyani-zone",
+              "name": "Chilli Chicken (Boneless)",
+              "price": 379,
+              "description": "Batter fried juicy chicken chunks tossed in our special chisnese sauce with a dash of bell peppers & onions.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.7,
+              "ratingCount": 201
+          },
+          {
+              "id": "bz-45",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Manchurian",
+              "price": 379,
+              "description": "Crispy chicken in a savory and tangy Manchurian sauce, a delightful Indo-Chinese fusion.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.7,
+              "ratingCount": 234
+          },
+          {
+              "id": "bz-46",
+              "storeId": "store-biriyani-zone",
+              "name": "Garlic Chicken",
+              "price": 379,
+              "description": "Tender chicken cooked with rich garlic flavors, a savory delight for the taste buds.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.3,
+              "ratingCount": 253
+          },
+          {
+              "id": "bz-47",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken 65",
+              "price": 379,
+              "description": "Juicy tender chicken chunks marinated in rich yogurt sauce, deep fried & served hot.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.8,
+              "ratingCount": 62
+          },
+          {
+              "id": "bz-48",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Satey",
+              "price": 389,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 211
+          },
+          {
+              "id": "bz-49",
+              "storeId": "store-biriyani-zone",
+              "name": "Crunchy Chicken Dry",
+              "price": 389,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.4,
+              "ratingCount": 154
+          },
+          {
+              "id": "bz-50",
+              "storeId": "store-biriyani-zone",
+              "name": "Dumka Chicken (Semi gravy)",
+              "price": 379,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.7,
+              "ratingCount": 309
+          },
+          {
+              "id": "bz-51",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Ghee Roast",
+              "price": 379,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 118
+          },
+          {
+              "id": "bz-52",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Ghee Roast",
+              "price": 479,
+              "description": "Tender succulent peices of goat meat cooked in a spicy secret sauce with a dash of ghee & butter.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.4,
+              "ratingCount": 158
+          },
+          {
+              "id": "bz-53",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Kebab",
+              "price": 359,
+              "description": "Juicy tender chicken with bone deep fried with our freshly made in house masala mix.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 252
+          },
+          {
+              "id": "bz-54",
+              "storeId": "store-biriyani-zone",
+              "name": "Dragon Chicken",
+              "price": 389,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.5,
+              "ratingCount": 318
+          },
+          {
+              "id": "bz-55",
+              "storeId": "store-biriyani-zone",
+              "name": "Crispy Chicken",
+              "price": 389,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.9,
+              "ratingCount": 336
+          },
+          {
+              "id": "bz-56",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Kheema Balls",
+              "price": 489,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Non Veg",
+              "rating": 4.6,
+              "ratingCount": 112
+          },
+          {
+              "id": "bz-57",
+              "storeId": "store-biriyani-zone",
+              "name": "Chilli Garlic Fish",
+              "price": 409,
+              "description": "Fragrant and flavorful fish coated in a zesty chilli-garlic sauce.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.6,
+              "ratingCount": 57
+          },
+          {
+              "id": "bz-58",
+              "storeId": "store-biriyani-zone",
+              "name": "Fish Pepper Fry",
+              "price": 409,
+              "description": "A zesty blend of fish tossed in aromatic spices and black pepper.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.8,
+              "ratingCount": 169
+          },
+          {
+              "id": "bz-59",
+              "storeId": "store-biriyani-zone",
+              "name": "Fish Koliwada",
+              "price": 409,
+              "description": "Crispy, flavorful spiced fried fish fillets, a popular coastal delicacy.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.7,
+              "ratingCount": 146
+          },
+          {
+              "id": "bz-60",
+              "storeId": "store-biriyani-zone",
+              "name": "Fish Tikka",
+              "price": 409,
+              "description": "Boneless fish chunks marinated in ajwain and yogurt spices, grilled in the tandoor.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.5,
+              "ratingCount": 85
+          },
+          {
+              "id": "bz-61",
+              "storeId": "store-biriyani-zone",
+              "name": "Ajwaini Fish Tikka",
+              "price": 409,
+              "description": "Boneless fish chunks marinated in aromatic ajwain, curd, and tandoori spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.5,
+              "ratingCount": 172
+          },
+          {
+              "id": "bz-62",
+              "storeId": "store-biriyani-zone",
+              "name": "Fish Manchurian/Chilli",
+              "price": 409,
+              "description": "Indo-Chinese fusion with juicy fish in a tangy and flavorful Manchurian sauce.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.7,
+              "ratingCount": 72
+          },
+          {
+              "id": "bz-63",
+              "storeId": "store-biriyani-zone",
+              "name": "Apollo Fish",
+              "price": 409,
+              "description": "Spiced, tender fish fillets stir-fried in a spicy Hyderabad-style seasoning with curry leaves.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.5,
+              "ratingCount": 334
+          },
+          {
+              "id": "bz-64",
+              "storeId": "store-biriyani-zone",
+              "name": "Prawns Manchurian/Chilli",
+              "price": 439,
+              "description": "Batter fried fresh prawns sauteed in a sweet & spicy Manchurian sauce with bell peppers & onions.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.8,
+              "ratingCount": 132
+          },
+          {
+              "id": "bz-65",
+              "storeId": "store-biriyani-zone",
+              "name": "Prawns Salt n Pepper",
+              "price": 439,
+              "description": "Crispy fried prawns tossed with crunchy bell peppers, garlic, and cracked black pepper.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.5,
+              "ratingCount": 229
+          },
+          {
+              "id": "bz-66",
+              "storeId": "store-biriyani-zone",
+              "name": "Satay Prawns",
+              "price": 439,
+              "description": "Skewered succulent prawns grilled with flavorful Asian marinade.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.8,
+              "ratingCount": 173
+          },
+          {
+              "id": "bz-67",
+              "storeId": "store-biriyani-zone",
+              "name": "Prawn Pepper Fry",
+              "price": 439,
+              "description": "Juicy prawns seared with aromatic peppers, delivering a fiery and zesty experience that tantalizes the taste buds.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Starters Seafood",
+              "rating": 4.5,
+              "ratingCount": 81
+          },
+          {
+              "id": "bz-68",
+              "storeId": "store-biriyani-zone",
+              "name": "Egg Chilli/Manchurian",
+              "price": 239,
+              "description": "Batter fried eggs, tossed in spicy chinese style chilly sauce seasoned with garlic & spices.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Egg",
+              "rating": 4.8,
+              "ratingCount": 305
+          },
+          {
+              "id": "bz-69",
+              "storeId": "store-biriyani-zone",
+              "name": "Egg Pepper Dry",
+              "price": 239,
+              "description": "Batter fried eggs, tossed in spicy chinese style black pepper sauce.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Egg",
+              "rating": 4.8,
+              "ratingCount": 243
+          },
+          {
+              "id": "bz-70",
+              "storeId": "store-biriyani-zone",
+              "name": "Egg 65",
+              "price": 239,
+              "description": "Spicy and tangy deep-fried eggs, bursting with flavor.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Starters Egg",
+              "rating": 4.7,
+              "ratingCount": 236
+          },
+          {
+              "id": "bz-71",
+              "storeId": "store-biriyani-zone",
+              "name": "Tandoori Chicken",
+              "price": 379,
+              "description": "Tender, marinated chicken roasted to perfection in our traditional clay oven.",
+              "image": "/images/Biryani Zone/tandoori_chicken.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.8,
+              "ratingCount": 69,
+              "isBestseller": true,
+              "addons": [
+                  {
+                      "id": "addon-bz-71-1",
+                      "name": "Full",
+                      "price": 320
+                  }
+              ]
+          },
+          {
+              "id": "bz-72",
+              "storeId": "store-biriyani-zone",
+              "name": "Kalmi Kebab (2 Pieces)",
+              "price": 279,
+              "description": "Chicken thigh marinated in a mixture of yogurt, divine spices, then char grilled and served with mint dip and onion rings.",
+              "image": "/images/Biryani Zone/tandoori_chicken.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.7,
+              "ratingCount": 339
+          },
+          {
+              "id": "bz-73",
+              "storeId": "store-biriyani-zone",
+              "name": "Murg Malai Kebab",
+              "price": 389,
+              "description": "Succulent chicken marinated & char grilled with rich yogurt mixture of cream & exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.6,
+              "ratingCount": 168
+          },
+          {
+              "id": "bz-74",
+              "storeId": "store-biriyani-zone",
+              "name": "Hariyali Kebab",
+              "price": 389,
+              "description": "Succulent chicken marinated & char grilled with rich yogurt mixture of herbs & exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.6,
+              "ratingCount": 306
+          },
+          {
+              "id": "bz-75",
+              "storeId": "store-biriyani-zone",
+              "name": "Reshmi Kebab",
+              "price": 389,
+              "description": "Succulent chicken marinated & char grilled with hung yogurt mixture flavoured with pepper, cardamom & exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.6,
+              "ratingCount": 265
+          },
+          {
+              "id": "bz-76",
+              "storeId": "store-biriyani-zone",
+              "name": "Afghani Tikka",
+              "price": 389,
+              "description": "Succulent chicken marinated & char grilled with hung yogurt mixture flavoured with cashew paste, cardamom & exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.4,
+              "ratingCount": 101
+          },
+          {
+              "id": "bz-77",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Tikka",
+              "price": 389,
+              "description": "Succulent chicken marinated & char grilled with rich yogurt mixture of our secret masala & exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Premium Tandoor Starters",
+              "rating": 4.9,
+              "ratingCount": 245,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-78",
+              "storeId": "store-biriyani-zone",
+              "name": "Masala Papad | Roasted Papad",
+              "price": 89,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.3,
+              "ratingCount": 119
+          },
+          {
+              "id": "bz-79",
+              "storeId": "store-biriyani-zone",
+              "name": "Gobi Manchurian /Chilli/65",
+              "price": 279,
+              "description": "Crispy cauliflower florets tossed in tangy Manchurian sauce.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.5,
+              "ratingCount": 115
+          },
+          {
+              "id": "bz-80",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Manchurian/Chilli/65",
+              "price": 349,
+              "description": "Indulge in the fusion of Indian and Chinese flavors with crispy paneer cubes in a tangy, flavorful Manchurian sauce.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.8,
+              "ratingCount": 106
+          },
+          {
+              "id": "bz-81",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Sholey Kabab",
+              "price": 349,
+              "description": "A southern delicacy. Batter fried paneer cubes sauteed with rich spices & yoghurt seasoned with our secret spices.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.7,
+              "ratingCount": 181
+          },
+          {
+              "id": "bz-82",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Satay",
+              "price": 359,
+              "description": "Skewered cottage cheese cubes grilled with rich Indonesian style peanut-spice marinade.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.7,
+              "ratingCount": 282
+          },
+          {
+              "id": "bz-83",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Pepper Dry",
+              "price": 349,
+              "description": "A delightful dish of paneer tossed in a fragrant mix of peppers and spices, offering a tantalizing crunch with every bite.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.9,
+              "ratingCount": 292
+          },
+          {
+              "id": "bz-84",
+              "storeId": "store-biriyani-zone",
+              "name": "Mushroom Manchurian/Chilli/65",
+              "price": 349,
+              "description": "Tender button mushrooms tossed in spicy Manchurian sauce.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.6,
+              "ratingCount": 230
+          },
+          {
+              "id": "bz-85",
+              "storeId": "store-biriyani-zone",
+              "name": "Mushroom Pepper Dry",
+              "price": 349,
+              "description": "Fresh button mushrooms sauteed with freshly crushed black pepper and onions.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.6,
+              "ratingCount": 255
+          },
+          {
+              "id": "bz-86",
+              "storeId": "store-biriyani-zone",
+              "name": "Baby Corn Manchurian/Chilli/65",
+              "price": 299,
+              "description": "Crispy golden baby corn tossed in flavorful Manchurian sauce.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.8,
+              "ratingCount": 194
+          },
+          {
+              "id": "bz-87",
+              "storeId": "store-biriyani-zone",
+              "name": "Baby Corn Pepper Dry",
+              "price": 299,
+              "description": "Golden baby corn tossed with freshly ground pepper and curry leaves.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.5,
+              "ratingCount": 271
+          },
+          {
+              "id": "bz-88",
+              "storeId": "store-biriyani-zone",
+              "name": "Baby Corn Lemon",
+              "price": 299,
+              "description": "Crispy baby corn tossed in a tangy lemon and spice seasoning.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.7,
+              "ratingCount": 339
+          },
+          {
+              "id": "bz-89",
+              "storeId": "store-biriyani-zone",
+              "name": "Corn Salt & Pepper",
+              "price": 299,
+              "description": "Crispy golden corn kernels tossed with crunchy bell peppers and black pepper.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.4,
+              "ratingCount": 54
+          },
+          {
+              "id": "bz-90",
+              "storeId": "store-biriyani-zone",
+              "name": "Harabara Kabab",
+              "price": 299,
+              "description": "Nutritious spinach and green pea patties subtly spiced and pan fried.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.8,
+              "ratingCount": 269
+          },
+          {
+              "id": "bz-91",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Tikka",
+              "price": 369,
+              "description": "Succulent paneer cubes marinated in yogurt and tandoori spices, char-grilled with capsicum and onions.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.3,
+              "ratingCount": 97,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-92",
+              "storeId": "store-biriyani-zone",
+              "name": "Stuffed Mushroom Tikka",
+              "price": 369,
+              "description": "Plump button mushrooms stuffed with spiced cottage cheese and roasted in clay oven.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.7,
+              "ratingCount": 105
+          },
+          {
+              "id": "bz-93",
+              "storeId": "store-biriyani-zone",
+              "name": "Malai Paneer Tikka",
+              "price": 369,
+              "description": "Tender paneer cubes marinated in rich cashew cream and aromatic mild spices, grilled to perfection.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Starters Veg",
+              "rating": 4.6,
+              "ratingCount": 313,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-94",
+              "storeId": "store-biriyani-zone",
+              "name": "Roti",
+              "price": 79,
+              "description": "Authentic Biriyani Zone speciality (Plain / Methi / Butter). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.4,
+              "ratingCount": 237,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-94-0",
+                      "name": "Option: Plain",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-94-1",
+                      "name": "Option: Methi",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-94-2",
+                      "name": "Option: Butter",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-95",
+              "storeId": "store-biriyani-zone",
+              "name": "Naan",
+              "price": 89,
+              "description": "Authentic Biriyani Zone speciality (Plain / Butter). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.4,
+              "ratingCount": 184,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-95-0",
+                      "name": "Option: Plain",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-95-1",
+                      "name": "Option: Butter",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-96",
+              "storeId": "store-biriyani-zone",
+              "name": "Kulcha",
+              "price": 79,
+              "description": "Is a rich, buttery, and fluffy bread made with love, a perfect accompaniment to any curry.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.4,
+              "ratingCount": 329,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-96-0",
+                      "name": "Option: Plain",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-96-1",
+                      "name": "Option: Butter",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-97",
+              "storeId": "store-biriyani-zone",
+              "name": "Paratha",
+              "price": 89,
+              "description": "Flaky and delicious paratha, a versatile Indian bread that pairs perfectly with a variety of dishes.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.4,
+              "ratingCount": 280,
+              "addons": [
+                  {
+                      "id": "addon-bz-opt-97-0",
+                      "name": "Option: Plain",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-97-1",
+                      "name": "Option: Methi",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-97-2",
+                      "name": "Option: Butter",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-98",
+              "storeId": "store-biriyani-zone",
+              "name": "Aloo Paratha",
+              "price": 99,
+              "description": "Delicious Paratha made with whole wheat flour, boilled Potatos, Spices and Herbs topped with White Butter and server along side of Curd and Pickle",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.5,
+              "ratingCount": 337
+          },
+          {
+              "id": "bz-99",
+              "storeId": "store-biriyani-zone",
+              "name": "Stuffed Kulcha",
+              "price": 99,
+              "description": "Soft bread stuffed with a medley of savory fillings, a perfect complement to any main dish.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.9,
+              "ratingCount": 332
+          },
+          {
+              "id": "bz-100",
+              "storeId": "store-biriyani-zone",
+              "name": "Stuffed Naan",
+              "price": 99,
+              "description": "Oven-baked naan filled with a flavorful surprise, a must-try for naan enthusiasts.",
+              "image": "/images/Biryani Zone/paneer_tikka.jpeg",
+              "isVeg": true,
+              "category": "Tandoor Breads",
+              "rating": 4.8,
+              "ratingCount": 247
+          },
+          {
+              "id": "bz-101",
+              "storeId": "store-biriyani-zone",
+              "name": "Veg Fried Rice / Noodles",
+              "price": 269,
+              "description": "Fragrant basmati rice or noodles wok-tossed with garden fresh crunchy vegetables.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Rice & Noodles",
+              "rating": 4.6,
+              "ratingCount": 224
+          },
+          {
+              "id": "bz-102",
+              "storeId": "store-biriyani-zone",
+              "name": "Egg Fried Rice / Noodles",
+              "price": 289,
+              "description": "Wok-tossed rice or noodles with scrambled eggs, scallions, and savory seasonings.",
+              "image": "/images/Biryani Zone/lemon_chicken.jpeg",
+              "isVeg": false,
+              "category": "Rice & Noodles",
+              "rating": 4.5,
+              "ratingCount": 98
+          },
+          {
+              "id": "bz-103",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Fried Rice / Noodles",
+              "price": 309,
+              "description": "Stir-fried rice or noodles tossed with seasoned chicken and assorted veggies for a flavorsome delight.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Rice & Noodles",
+              "rating": 4.6,
+              "ratingCount": 298
+          },
+          {
+              "id": "bz-104",
+              "storeId": "store-biriyani-zone",
+              "name": "Schezwan Chicken Fried Rice/Noodles",
+              "price": 299,
+              "description": "Spicy wok-tossed chicken fried rice or noodles in fiery Schezwan sauce.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Rice & Noodles",
+              "rating": 4.5,
+              "ratingCount": 296
+          },
+          {
+              "id": "bz-105",
+              "storeId": "store-biriyani-zone",
+              "name": "Ghee Rice / Jeera Rice",
+              "price": 249,
+              "description": "Fragrant basmati rice tempered with aromatic cumin seeds and pure desi ghee.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Rice & Noodles",
+              "rating": 4.5,
+              "ratingCount": 123
+          },
+          {
+              "id": "bz-106",
+              "storeId": "store-biriyani-zone",
+              "name": "Curd Rice",
+              "price": 169,
+              "description": "A Refreshing And Soothing Dish, Curd Rice Combines Yogurt And Rice, Tempered With Mustard Seeds And Curry Leaves.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Rice & Noodles",
+              "rating": 4.9,
+              "ratingCount": 179
+          },
+          {
+              "id": "bz-107",
+              "storeId": "store-biriyani-zone",
+              "name": "Biriyani Zone Spl Chicken Curry",
+              "price": 399,
+              "description": "Signature house special chicken curry slow cooked in rich royal spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.5,
+              "ratingCount": 287,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-108",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Masala (Bone)",
+              "price": 399,
+              "description": "Tender bone-in chicken cooked in a luscious, aromatic masala gravy.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.4,
+              "ratingCount": 132
+          },
+          {
+              "id": "bz-109",
+              "storeId": "store-biriyani-zone",
+              "name": "Kadhai Murgh",
+              "price": 399,
+              "description": "Aromatic and bold chicken curry cooked with a medley of traditional Indian spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.3,
+              "ratingCount": 242
+          },
+          {
+              "id": "bz-110",
+              "storeId": "store-biriyani-zone",
+              "name": "Butter Chicken",
+              "price": 399,
+              "description": "Aromatic golden chicken pieces in an incredible creamy curry sauce, is a one-pot-wonder and is full of rich, flavoursome spices and tender slow cooked meat.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.9,
+              "ratingCount": 264,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-111",
+              "storeId": "store-biriyani-zone",
+              "name": "Hyderabadi Chicken Masala",
+              "price": 399,
+              "description": "Aromatic golden chicken pieces in an incredible creamy curry sauce, is a one-pot-wonder and is full of rich, flavoursome spices and tender slow cooked meat.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.7,
+              "ratingCount": 71
+          },
+          {
+              "id": "bz-112",
+              "storeId": "store-biriyani-zone",
+              "name": "Murgh Kali Mirch",
+              "price": 399,
+              "description": "Tender chicken cooked in a rich, creamy gravy flavored with freshly cracked black peppercorns.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.8,
+              "ratingCount": 59
+          },
+          {
+              "id": "bz-113",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Tikka Masala",
+              "price": 399,
+              "description": "A rich, creamy curry of tender chicken tikka in a flavorful tomato-based sauce.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.5,
+              "ratingCount": 197,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-114",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Kolhapuri",
+              "price": 399,
+              "description": "A spicy, authentic dish with tender chicken cooked in a bold Kolhapuri masala.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.8,
+              "ratingCount": 275
+          },
+          {
+              "id": "bz-115",
+              "storeId": "store-biriyani-zone",
+              "name": "Chicken Lababdar (BL)",
+              "price": 399,
+              "description": "Savor the creamy and rich Chicken Lababdar, a delightful curry infused with Indian spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.5,
+              "ratingCount": 180
+          },
+          {
+              "id": "bz-116",
+              "storeId": "store-biriyani-zone",
+              "name": "Anda Curry",
+              "price": 269,
+              "description": "Hard-boiled eggs simmered in a spiced onion-tomato gravy.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.7,
+              "ratingCount": 109
+          },
+          {
+              "id": "bz-117",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Pepper Masala",
+              "price": 489,
+              "description": "Succulent mutton pieces cooked in a fiery black pepper infused gravy.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.9,
+              "ratingCount": 123
+          },
+          {
+              "id": "bz-118",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Hyderabadi",
+              "price": 489,
+              "description": "A traditional Hyderabadi-style mutton dish, slow-cooked to tender perfection with a blend of exotic spices.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.3,
+              "ratingCount": 304
+          },
+          {
+              "id": "bz-119",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Rogan Josh",
+              "price": 489,
+              "description": "Enjoy the rich and aromatic flavors of our Mutton Rogan Josh, a classic Indian curry.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.7,
+              "ratingCount": 216
+          },
+          {
+              "id": "bz-120",
+              "storeId": "store-biriyani-zone",
+              "name": "Mutton Kheema Masala",
+              "price": 489,
+              "description": "Minced mutton slow cooked with aromatic ground spices and herbs.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.7,
+              "ratingCount": 40
+          },
+          {
+              "id": "bz-121",
+              "storeId": "store-biriyani-zone",
+              "name": "Fish Curry",
+              "price": 419,
+              "description": "Fresh fish steaks cooked in a tangy and fragrant coastal curry.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.8,
+              "ratingCount": 294
+          },
+          {
+              "id": "bz-122",
+              "storeId": "store-biriyani-zone",
+              "name": "Prawns Masala",
+              "price": 489,
+              "description": "Juicy prawns simmered in an aromatic onion-tomato spiced gravy.",
+              "image": "/images/Biryani Zone/chicken_tikka.jpeg",
+              "isVeg": false,
+              "category": "Indian Curry - Non Veg",
+              "rating": 4.8,
+              "ratingCount": 77
+          },
+          {
+              "id": "bz-123",
+              "storeId": "store-biriyani-zone",
+              "name": "Dal Fry",
+              "price": 299,
+              "description": "A flavorful Indian lentil preparation tempered with aromatic spices.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.4,
+              "ratingCount": 272
+          },
+          {
+              "id": "bz-124",
+              "storeId": "store-biriyani-zone",
+              "name": "Biriyani Zone Spl Tadka Dal",
+              "price": 299,
+              "description": "A comforting and flavorful dish, our Tadka Dal is a delightful blend of lentils tempered with aromatic spices.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.8,
+              "ratingCount": 318,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-125",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Tikka Masala",
+              "price": 389,
+              "description": "A symphony of flavors featuring marinated paneer, grilled to smoky perfection, and served in a luscious, spiced tomato-based gravy.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.8,
+              "ratingCount": 123,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-126",
+              "storeId": "store-biriyani-zone",
+              "name": "Kadhai Paneer",
+              "price": 389,
+              "description": "A flavorful vegetarian dish featuring paneer cubes cooked in a rich and aromatic kadhai masala.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.4,
+              "ratingCount": 259
+          },
+          {
+              "id": "bz-127",
+              "storeId": "store-biriyani-zone",
+              "name": "Mix Veg Curry",
+              "price": 389,
+              "description": "Delicately spiced medley of seasonal vegetables in a luscious, flavorful gravy.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.9,
+              "ratingCount": 184
+          },
+          {
+              "id": "bz-128",
+              "storeId": "store-biriyani-zone",
+              "name": "Palak Paneer",
+              "price": 389,
+              "description": "A rich and creamy spinach-infused delicacy with succulent cubes of paneer, simmered in aromatic Indian spices.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.4,
+              "ratingCount": 95
+          },
+          {
+              "id": "bz-129",
+              "storeId": "store-biriyani-zone",
+              "name": "Kaju Masala (Spicy/Sweet)",
+              "price": 389,
+              "description": "Cashews simmered in a fiery, aromatic masala for a rich flavor burst.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.9,
+              "ratingCount": 315
+          },
+          {
+              "id": "bz-130",
+              "storeId": "store-biriyani-zone",
+              "name": "Veg Kadhai",
+              "price": 299,
+              "description": "A savory blend of garden-fresh vegetables cooked to perfection in a traditional Indian kadhai.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.5,
+              "ratingCount": 195
+          },
+          {
+              "id": "bz-131",
+              "storeId": "store-biriyani-zone",
+              "name": "Veg Hyderabadi",
+              "price": 299,
+              "description": "A rich and aromatic vegetarian delicacy inspired by the flavors of Hyderabad.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.5,
+              "ratingCount": 88
+          },
+          {
+              "id": "bz-132",
+              "storeId": "store-biriyani-zone",
+              "name": "Malai Kofta",
+              "price": 399,
+              "description": "Vegetable and cheese dumplings in a creamy, aromatic sauce, a vegetarian delicacy.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.8,
+              "ratingCount": 168
+          },
+          {
+              "id": "bz-133",
+              "storeId": "store-biriyani-zone",
+              "name": "Dal Makhni",
+              "price": 299,
+              "description": "Black lentils slow-cooked overnight with cream and butter in royal Punjabi style.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.6,
+              "ratingCount": 62
+          },
+          {
+              "id": "bz-134",
+              "storeId": "store-biriyani-zone",
+              "name": "Paneer Butter Masala",
+              "price": 389,
+              "description": "A classic North Indian delight, featuring soft paneer chunks in a velvety tomato-based gravy, exquisitely spiced and finished with a touch of butter.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.5,
+              "ratingCount": 283
+          },
+          {
+              "id": "bz-135",
+              "storeId": "store-biriyani-zone",
+              "name": "Aloo Mutter Masala",
+              "price": 299,
+              "description": "Prepared with simple onion and tomato based sauce and tempered with dried fenugreek leaves or methi leaves with cumin seeds.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.7,
+              "ratingCount": 227
+          },
+          {
+              "id": "bz-136",
+              "storeId": "store-biriyani-zone",
+              "name": "Veg Kolhapuri",
+              "price": 299,
+              "description": "A spicy and flavorful dish packed with a melange of vegetables, a tribute to the Kolhapuri cuisine.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.6,
+              "ratingCount": 240
+          },
+          {
+              "id": "bz-137",
+              "storeId": "store-biriyani-zone",
+              "name": "Baby Corn Masala",
+              "price": 389,
+              "description": "Its is a crunchy and versatile vegetable that gets easily blended with any masala / gravy.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.7,
+              "ratingCount": 254
+          },
+          {
+              "id": "bz-138",
+              "storeId": "store-biriyani-zone",
+              "name": "Mushroom Masala",
+              "price": 389,
+              "description": "A flavorful vegetarian dish featuring mushrooms cooked in a rich and aromatic masala sauce.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Indian Curry - Veg",
+              "rating": 4.8,
+              "ratingCount": 290
+          },
+          {
+              "id": "bz-139",
+              "storeId": "store-biriyani-zone",
+              "name": "Green Salad",
+              "price": 110,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Salads & Raita",
+              "rating": 4.8,
+              "ratingCount": 141
+          },
+          {
+              "id": "bz-140",
+              "storeId": "store-biriyani-zone",
+              "name": "Mix Veg Raita",
+              "price": 140,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Salads & Raita",
+              "rating": 4.6,
+              "ratingCount": 240
+          },
+          {
+              "id": "bz-141",
+              "storeId": "store-biriyani-zone",
+              "name": "Boondi Raita",
+              "price": 140,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/hyderabadi_paneer_biriyani.jpeg",
+              "isVeg": true,
+              "category": "Salads & Raita",
+              "rating": 4.7,
+              "ratingCount": 109
+          },
+          {
+              "id": "bz-142",
+              "storeId": "store-biriyani-zone",
+              "name": "Gajar Halwa",
+              "price": 169,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Desserts",
+              "rating": 4.3,
+              "ratingCount": 67
+          },
+          {
+              "id": "bz-143",
+              "storeId": "store-biriyani-zone",
+              "name": "Drunken Gulab Jamun (2 Nos.)",
+              "price": 169,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Desserts",
+              "rating": 4.8,
+              "ratingCount": 77
+          },
+          {
+              "id": "bz-144",
+              "storeId": "store-biriyani-zone",
+              "name": "Drunken Gulab Jamun",
+              "price": 169,
+              "description": "Authentic Biriyani Zone speciality (1 No. with Vanilla Ice Cream). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Desserts",
+              "rating": 4.8,
+              "ratingCount": 128
+          },
+          {
+              "id": "bz-145",
+              "storeId": "store-biriyani-zone",
+              "name": "Qurbani ka Meetha",
+              "price": 199,
+              "description": "Authentic Biriyani Zone speciality (with Vanilla Ice Cream). Freshly prepared with fragrant spices and royal Nizami recipe.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Desserts",
+              "rating": 4.8,
+              "ratingCount": 263,
+              "isBestseller": true
+          },
+          {
+              "id": "bz-146",
+              "storeId": "store-biriyani-zone",
+              "name": "Vanilla",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.6,
+              "ratingCount": 164
+          },
+          {
+              "id": "bz-147",
+              "storeId": "store-biriyani-zone",
+              "name": "Chocolate",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.8,
+              "ratingCount": 318
+          },
+          {
+              "id": "bz-148",
+              "storeId": "store-biriyani-zone",
+              "name": "Butterscotch",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.7,
+              "ratingCount": 257
+          },
+          {
+              "id": "bz-149",
+              "storeId": "store-biriyani-zone",
+              "name": "Strawberry",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.5,
+              "ratingCount": 295
+          },
+          {
+              "id": "bz-150",
+              "storeId": "store-biriyani-zone",
+              "name": "Kesar-pista",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.5,
+              "ratingCount": 59
+          },
+          {
+              "id": "bz-151",
+              "storeId": "store-biriyani-zone",
+              "name": "Kulfi",
+              "price": 149,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Ice cream",
+              "rating": 4.7,
+              "ratingCount": 141
+          },
+          {
+            "id": "bz-152",
+            "storeId": "store-biriyani-zone",
+            "name": "Japanese Lime Refresher",
+              "price": 125,
+            "description": "",
+            "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+            "isVeg": true,
+            "category": "Refreshers",
+            "rating": 4.4,
+            "ratingCount": 74,
+            "addons": [
+                  {
+                      "id": "addon-bz-opt-152-0",
+                      "name": "Option: Sweet",
+                      "price": 0
+                  },
+                  {
+                      "id": "addon-bz-opt-152-1",
+                      "name": "Option: Salt",
+                      "price": 0
+                  }
+              ]
+          },
+          {
+              "id": "bz-153",
+              "storeId": "store-biriyani-zone",
+              "name": "Coconut Refresher",
+              "price": 125,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Refreshers",
+              "rating": 4.6,
+              "ratingCount": 155
+          },
+          {
+              "id": "bz-154",
+              "storeId": "store-biriyani-zone",
+              "name": "Ba-Na-Na",
+              "price": 150,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Refreshers",
+              "rating": 4.3,
+              "ratingCount": 199
+          },
+          {
+              "id": "bz-155",
+              "storeId": "store-biriyani-zone",
+              "name": "Green Apple Refresher",
+              "price": 150,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Refreshers",
+              "rating": 4.8,
+              "ratingCount": 117
+          },
+          {
+              "id": "bz-156",
+              "storeId": "store-biriyani-zone",
+              "name": "Virgin Colada",
+              "price": 199,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Mocktails",
+              "rating": 4.6,
+              "ratingCount": 265
+          },
+          {
+              "id": "bz-157",
+              "storeId": "store-biriyani-zone",
+              "name": "Yuzu Highball",
+              "price": 250,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Mocktails",
+              "rating": 4.9,
+              "ratingCount": 156
+          },
+          {
+              "id": "bz-158",
+              "storeId": "store-biriyani-zone",
+              "name": "Melon Basil Smash",
+              "price": 250,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Mocktails",
+              "rating": 4.6,
+              "ratingCount": 99
+          },
+          {
+              "id": "bz-159",
+              "storeId": "store-biriyani-zone",
+              "name": "Ame-O-Up",
+              "price": 350,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Zero Alcohol Cocktails",
+              "rating": 4.6,
+              "ratingCount": 295
+          },
+          {
+              "id": "bz-160",
+              "storeId": "store-biriyani-zone",
+              "name": "Mexican Sour",
+              "price": 350,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Zero Alcohol Cocktails",
+              "rating": 4.9,
+              "ratingCount": 224
+          },
+          {
+              "id": "bz-161",
+              "storeId": "store-biriyani-zone",
+              "name": "BZ Itali-Op",
+              "price": 400,
+              "description": "Authentic signature preparation from Biriyani Zone master chefs using premium spices and fresh ingredients.",
+              "image": "/images/Biryani Zone/qurbani_ka_meetha.jpeg",
+              "isVeg": true,
+              "category": "Zero Alcohol Cocktails",
+              "rating": 4.9,
+              "ratingCount": 205
+          }
+      ]
+  },
   {
     id: 'store-kfc',
     name: 'KFC',
     rating: 4.2,
     reviewsCount: 1420,
     deliveryTime: '25-30 mins',
-    deliveryFee: 21,
+    deliveryFee: 20,
     distance: '2.8 km',
     image: '/images/storeImage/kfc.jpeg',
     cuisines: ['Crispy Chicken', 'Burgers', 'Fast Food', 'Wings', 'Chicken', 'Snacks'],
@@ -1993,8 +4196,8 @@ export const STORES: Store[] = [
     name: 'Pizza Hut',
     rating: 4.5,
     reviewsCount: 3850,
-    deliveryTime: '25-35 mins',
-    deliveryFee: 21,
+    deliveryTime: '35-45 mins',
+    deliveryFee: 20,
     distance: '2.8 km',
     image: '/images/storeImage/pizzahut.png',
     cuisines: ['Pizzas', 'Italian', 'Wings & Sides', 'Pastas', 'Garlic Breads', 'Desserts'],
@@ -3215,1058 +5418,12 @@ export const STORES: Store[] = [
     ]
   },
   {
-    id: 'store-bbk',
-    name: 'Biryani By Kilo',
-    rating: 4.7,
-    reviewsCount: 3410,
-    deliveryTime: '45-50 mins',
-    deliveryFee: 21,
-    distance: '2.8 km',
-    image: '/images/storeImage/biryani by kilooo.jpeg',
-    cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Chicken', 'Desserts'],
-    tags: ['Biryani', 'Mughlai', 'Kebabs', 'Chicken', 'Desserts'],
-    menuCategories: [
-      "Biriyani",
-      "Kebab",
-      "Quick Meals",
-      "Rolls",
-      "Meal for Two",
-      "Biryani Combos",
-      "Roll Combos",
-      "Dessert",
-      "Beverages",
-      "Add Ons",
-      "Extras"
-],
-    items: [
-      {
-            "id": "bbk-1",
-            "storeId": "store-bbk",
-            "name": "Veg Hyderabadi Biriyani",
-            "price": 219,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-            "image": "/images/Biriyani by kilo/veg_hyderabadi_biriyani.jpg",
-            "isVeg": true,
-            "category": "Biriyani"
-      },
-      {
-            "id": "bbk-2",
-            "storeId": "store-bbk",
-            "name": "Paneer Hyderabadi Biriyani",
-            "price": 279,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-            "image": "/images/Biriyani by kilo/paneer_hyderabadi_biriyani.jpg",
-            "isVeg": true,
-            "category": "Biriyani"
-      },
-      {
-            "id": "bbk-3",
-            "storeId": "store-bbk",
-            "name": "Soya Chaap Biriyani",
-            "price": 289,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-            "image": "/images/Biriyani by kilo/soya_chaap_biriyani.jpg",
-            "isVeg": true,
-            "category": "Biriyani"
-      },
-      {
-            "id": "bbk-4",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biriyani",
-            "price": 309,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biriyani.jpg",
-            "isVeg": false,
-            "category": "Biriyani"
-      },
-      {
-            "id": "bbk-5",
-            "storeId": "store-bbk",
-            "name": "Chicken Tikka Biriyani",
-            "price": 369,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-            "image": "/images/Biriyani by kilo/chicken_tikka_biriyani.jpg",
-            "isVeg": false,
-            "category": "Biriyani"
-      },
-      {
-            "id": "bbk-6",
-            "storeId": "store-bbk",
-            "name": "Veg Galouti Kebab",
-            "price": 199,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/veg_galouti_kebab.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-7",
-            "storeId": "store-bbk",
-            "name": "Hara Bhara Kebab",
-            "price": 199,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/hara_bhara_kebab.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-8",
-            "storeId": "store-bbk",
-            "name": "Corn Cheese Stick",
-            "price": 249,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/corn_cheese_stick.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-9",
-            "storeId": "store-bbk",
-            "name": "Dahi Ke Kebab",
-            "price": 289,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/dahi_ke_kebab.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-10",
-            "storeId": "store-bbk",
-            "name": "Paneer 65 with Paratha",
-            "price": 289,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/paneer_65_with_paratha.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-11",
-            "storeId": "store-bbk",
-            "name": "Paneer Tikka",
-            "price": 309,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/paneer_tikka.jpg",
-            "isVeg": true,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-12",
-            "storeId": "store-bbk",
-            "name": "Chicken Giloti Kebab",
-            "price": 259,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_giloti_kebab.jpg",
-            "isVeg": false,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-13",
-            "storeId": "store-bbk",
-            "name": "Chicken Seekh Kebab",
-            "price": 259,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_seekh_kebab.jpg",
-            "isVeg": false,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-14",
-            "storeId": "store-bbk",
-            "name": "Chicken Tikka",
-            "price": 309,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_tikka.jpg",
-            "isVeg": false,
-            "category": "Kebab"
-      },
-      {
-            "id": "bbk-15",
-            "storeId": "store-bbk",
-            "name": "Dal Makhani with Flavoured Rice / 2 Paratha",
-            "price": 289,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/dal_makhani_with_flavoured_rice_2_paratha.jpg",
-            "isVeg": true,
-            "category": "Quick Meals"
-      },
-      {
-            "id": "bbk-16",
-            "storeId": "store-bbk",
-            "name": "Butter Paneer with Flavoured Rice / 2 Paratha",
-            "price": 309,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/butter_paneer_with_flavoured_rice_2_paratha.jpg",
-            "isVeg": true,
-            "category": "Quick Meals"
-      },
-      {
-            "id": "bbk-17",
-            "storeId": "store-bbk",
-            "name": "Butter Chicken Boneless with Flavoured Rice / 2 Paratha",
-            "price": 339,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/butter_chicken_boneless_with_flavoured_rice_2_paratha.jpg",
-            "isVeg": false,
-            "category": "Quick Meals"
-      },
-      {
-            "id": "bbk-18",
-            "storeId": "store-bbk",
-            "name": "Mutton Nihari with Flavoured Rice / 2 Paratha",
-            "price": 409,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/mutton_nihari_with_flavoured_rice_2_paratha.jpg",
-            "isVeg": false,
-            "category": "Quick Meals"
-      },
-      {
-            "id": "bbk-19",
-            "storeId": "store-bbk",
-            "name": "Paneer Tikka Roll",
-            "price": 209,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/paneer_tikka_roll.jpg",
-            "isVeg": true,
-            "category": "Rolls"
-      },
-      {
-            "id": "bbk-20",
-            "storeId": "store-bbk",
-            "name": "Chicken Seekh Roll",
-            "price": 189,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_seekh_roll.jpg",
-            "isVeg": false,
-            "category": "Rolls"
-      },
-      {
-            "id": "bbk-21",
-            "storeId": "store-bbk",
-            "name": "Chicken Tikka Roll",
-            "price": 209,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_tikka_roll.jpg",
-            "isVeg": false,
-            "category": "Rolls"
-      },
-      {
-            "id": "bbk-22",
-            "storeId": "store-bbk",
-            "name": "Veg Biryani + Paneer Tikka Roll + Phirni + Any 2 Beverages",
-            "price": 589,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll_phirni_any_2_beverages.jpg",
-            "isVeg": true,
-            "category": "Meal for Two"
-      },
-      {
-            "id": "bbk-23",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biryani + Chicken Seekh Roll + Phirni + Any 2 Beverages",
-            "price": 609,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll_phirni_any_2_beverages.jpg",
-            "isVeg": false,
-            "category": "Meal for Two"
-      },
-      {
-            "id": "bbk-24",
-            "storeId": "store-bbk",
-            "name": "Veg Biryani + Any 1 Beverage",
-            "price": 269,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/veg_biryani_any_1_beverage.jpg",
-            "isVeg": true,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-25",
-            "storeId": "store-bbk",
-            "name": "Veg Biryani + Veg Galouti",
-            "price": 279,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/veg_biryani_veg_galouti.jpg",
-            "isVeg": true,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-26",
-            "storeId": "store-bbk",
-            "name": "Veg Biryani + Paneer Tikka Roll",
-            "price": 399,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll.jpg",
-            "isVeg": true,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-27",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biryani + Any 1 Beverage",
-            "price": 359,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_any_1_beverage.jpg",
-            "isVeg": false,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-28",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biryani + Chicken Galouti",
-            "price": 359,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_galouti.jpg",
-            "isVeg": false,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-29",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biryani + Chicken Seekh Kebab",
-            "price": 359,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_kebab.jpg",
-            "isVeg": false,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-30",
-            "storeId": "store-bbk",
-            "name": "Chicken Boneless Biryani + Chicken Seekh Roll",
-            "price": 409,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll.jpg",
-            "isVeg": false,
-            "category": "Biryani Combos"
-      },
-      {
-            "id": "bbk-31",
-            "storeId": "store-bbk",
-            "name": "Paneer Tikka Roll + Any 1 Beverage",
-            "price": 239,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/paneer_tikka_roll_any_1_beverage.jpg",
-            "isVeg": true,
-            "category": "Roll Combos"
-      },
-      {
-            "id": "bbk-32",
-            "storeId": "store-bbk",
-            "name": "Chicken Tikka Roll + Any 1 Beverage",
-            "price": 239,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/chicken_tikka_roll_any_1_beverage.jpg",
-            "isVeg": false,
-            "category": "Roll Combos"
-      },
-      {
-            "id": "bbk-33",
-            "storeId": "store-bbk",
-            "name": "Gulab Jamun",
-            "price": 59,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/gulab_jamun.jpg",
-            "isVeg": true,
-            "category": "Dessert"
-      },
-      {
-            "id": "bbk-34",
-            "storeId": "store-bbk",
-            "name": "Phirni",
-            "price": 109,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/phirni.jpg",
-            "isVeg": true,
-            "category": "Dessert"
-      },
-      {
-            "id": "bbk-35",
-            "storeId": "store-bbk",
-            "name": "Imli Adraki Lemonade",
-            "price": 89,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
-            "isVeg": true,
-            "category": "Beverages"
-      },
-      {
-            "id": "bbk-36",
-            "storeId": "store-bbk",
-            "name": "Packaged Drinking Water",
-            "price": 30,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/packaged_drinking_water.jpg",
-            "isVeg": true,
-            "category": "Beverages"
-      },
-      {
-            "id": "bbk-37",
-            "storeId": "store-bbk",
-            "name": "Soft Beverages",
-            "price": 70,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/soft_beverages.jpg",
-            "isVeg": true,
-            "category": "Beverages"
-      },
-      {
-            "id": "bbk-38",
-            "storeId": "store-bbk",
-            "name": "Imli Adraki Lemonade",
-            "price": 69,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
-            "isVeg": true,
-            "category": "Add Ons"
-      },
-      {
-            "id": "bbk-39",
-            "storeId": "store-bbk",
-            "name": "Phirni",
-            "price": 89,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/phirni.jpg",
-            "isVeg": true,
-            "category": "Add Ons"
-      },
-      {
-            "id": "bbk-40",
-            "storeId": "store-bbk",
-            "name": "Mint Chutney",
-            "price": 29,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/mint_chutney.jpg",
-            "isVeg": true,
-            "category": "Extras"
-      },
-      {
-            "id": "bbk-41",
-            "storeId": "store-bbk",
-            "name": "Raita",
-            "price": 59,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/raita.jpg",
-            "isVeg": true,
-            "category": "Extras"
-      },
-      {
-            "id": "bbk-42",
-            "storeId": "store-bbk",
-            "name": "Salan",
-            "price": 59,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/salan.jpg",
-            "isVeg": true,
-            "category": "Extras"
-      },
-      {
-            "id": "bbk-43",
-            "storeId": "store-bbk",
-            "name": "Paratha",
-            "price": 69,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/paratha.jpg",
-            "isVeg": true,
-            "category": "Extras"
-      },
-      {
-            "id": "bbk-44",
-            "storeId": "store-bbk",
-            "name": "Rice",
-            "price": 109,
-            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-            "image": "/images/Biriyani by kilo/rice.jpg",
-            "isVeg": true,
-            "category": "Extras"
-      }
-]
-    },
-  {
-    id: 'store-goila',
-    name: 'Goila Butter Chicken',
-    rating: 4.6,
-    reviewsCount: 1940,
-    deliveryTime: '35-45 mins',
-    deliveryFee: 21,
-    distance: '2.8 km',
-    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=1000&q=85',
-    cuisines: ['North Indian', 'Chicken', 'Curries', 'Rolls', 'Kathi Rolls', 'Naan & Breads', 'Thalis'],
-    tags: ['North Indian', 'Chicken', 'Rolls', 'Curries', 'Thalis'],
-    menuCategories: [
-      "Curries",
-      "Kebabs",
-      "Breads",
-      "Rice",
-      "Rolls",
-      "Beverages",
-      "Dessert",
-      "GBC Curry Rice Bowl"
-],
-    items: [
-      {
-            "id": "goila-1",
-            "storeId": "store-goila",
-            "name": "24/7 Dal Makhani",
-            "price": 259,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/24_7_dal_makhani.jpg",
-            "isVeg": true,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-2",
-            "storeId": "store-goila",
-            "name": "Goila Butter Paneer",
-            "price": 309,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/goila_butter_paneer.jpg",
-            "isVeg": true,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-3",
-            "storeId": "store-goila",
-            "name": "Soya Makhani Wala",
-            "price": 259,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/soya_makhani_wala.jpg",
-            "isVeg": true,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-4",
-            "storeId": "store-goila",
-            "name": "Desi Egg Curry",
-            "price": 259,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/desi_egg_curry.jpg",
-            "isVeg": false,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-5",
-            "storeId": "store-goila",
-            "name": "Goila Butter Chicken with Bone",
-            "price": 359,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/goila_butter_chicken_with_bone.jpg",
-            "isVeg": false,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-6",
-            "storeId": "store-goila",
-            "name": "Chicken Tikka Masala",
-            "price": 369,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/chicken_tikka_masala.jpg",
-            "isVeg": false,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-7",
-            "storeId": "store-goila",
-            "name": "Goila Butter Chicken Boneless",
-            "price": 379,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/goila_butter_chicken_boneless.jpg",
-            "isVeg": false,
-            "category": "Curries"
-      },
-      {
-            "id": "goila-8",
-            "storeId": "store-goila",
-            "name": "Tandoori Soya Chaap",
-            "price": 209,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/tandoori_soya_chaap.jpg",
-            "isVeg": true,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-9",
-            "storeId": "store-goila",
-            "name": "Classic Paneer Tikka",
-            "price": 299,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/classic_paneer_tikka.jpg",
-            "isVeg": true,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-10",
-            "storeId": "store-goila",
-            "name": "Murgh Galouti Kebab",
-            "price": 259,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/murgh_galouti_kebab.jpg",
-            "isVeg": false,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-11",
-            "storeId": "store-goila",
-            "name": "Classic Chicken Tikka",
-            "price": 309,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/classic_chicken_tikka.jpg",
-            "isVeg": false,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-12",
-            "storeId": "store-goila",
-            "name": "Chicken Makhmali Seekh Kebab",
-            "price": 239,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/chicken_makhmali_seekh_kebab.jpg",
-            "isVeg": false,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-13",
-            "storeId": "store-goila",
-            "name": "Delhi Tandoori Chicken",
-            "price": 339,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/delhi_tandoori_chicken.jpg",
-            "isVeg": false,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-14",
-            "storeId": "store-goila",
-            "name": "Murgh Malai Tikka",
-            "price": 339,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/murgh_malai_tikka.jpg",
-            "isVeg": false,
-            "category": "Kebabs"
-      },
-      {
-            "id": "goila-15",
-            "storeId": "store-goila",
-            "name": "Tandoori Roti (Plain/Butter)",
-            "price": 49,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/tandoori_roti_plain_butter.jpg",
-            "isVeg": true,
-            "category": "Breads",
-            "addons": [
-                  {
-                        "id": "ad-g-butter",
-                        "name": "Butter",
-                        "price": 10
-                  }
-            ]
-      },
-      {
-            "id": "goila-16",
-            "storeId": "store-goila",
-            "name": "Naan (Plain/Butter/Garlic)",
-            "price": 79,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/naan_plain_butter_garlic.jpg",
-            "isVeg": true,
-            "category": "Breads",
-            "addons": [
-                  {
-                        "id": "ad-g-naanbutter",
-                        "name": "Butter",
-                        "price": 10
-                  },
-                  {
-                        "id": "ad-g-naangarlic",
-                        "name": "Garlic",
-                        "price": 10
-                  }
-            ]
-      },
-      {
-            "id": "goila-17",
-            "storeId": "store-goila",
-            "name": "Lachha Paratha",
-            "price": 79,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/lachha_paratha.jpg",
-            "isVeg": true,
-            "category": "Breads"
-      },
-      {
-            "id": "goila-18",
-            "storeId": "store-goila",
-            "name": "Steam Rice",
-            "price": 109,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/steam_rice.jpg",
-            "isVeg": true,
-            "category": "Rice"
-      },
-      {
-            "id": "goila-19",
-            "storeId": "store-goila",
-            "name": "Jeera Rice",
-            "price": 119,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/jeera_rice.jpg",
-            "isVeg": true,
-            "category": "Rice"
-      },
-      {
-            "id": "goila-20",
-            "storeId": "store-goila",
-            "name": "Malai Soya Roll",
-            "price": 189,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/malai_soya_roll.jpg",
-            "isVeg": true,
-            "category": "Rolls"
-      },
-      {
-            "id": "goila-21",
-            "storeId": "store-goila",
-            "name": "Butter Paneer Roll",
-            "price": 199,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/butter_paneer_roll.jpg",
-            "isVeg": true,
-            "category": "Rolls"
-      },
-      {
-            "id": "goila-22",
-            "storeId": "store-goila",
-            "name": "Butter Chicken Roll",
-            "price": 209,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/butter_chicken_roll.jpg",
-            "isVeg": false,
-            "category": "Rolls"
-      },
-      {
-            "id": "goila-23",
-            "storeId": "store-goila",
-            "name": "Malai Chicken Tikka Roll",
-            "price": 239,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/malai_chicken_tikka_roll.jpg",
-            "isVeg": false,
-            "category": "Rolls"
-      },
-      {
-            "id": "goila-24",
-            "storeId": "store-goila",
-            "name": "Butter Milk",
-            "price": 109,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/butter_milk.jpg",
-            "isVeg": true,
-            "category": "Beverages"
-      },
-      {
-            "id": "goila-25",
-            "storeId": "store-goila",
-            "name": "Sweet Lassi",
-            "price": 109,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/sweet_lassi.jpg",
-            "isVeg": true,
-            "category": "Beverages"
-      },
-      {
-            "id": "goila-27",
-            "storeId": "store-goila",
-            "name": "Gulab Jamun with Rabri",
-            "price": 209,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/gulab_jamun_with_rabri.jpg",
-            "isVeg": true,
-            "category": "Dessert"
-      },
-      {
-            "id": "goila-40",
-            "storeId": "store-goila",
-            "name": "Dal Makhani Rice Bowl",
-            "price": 209,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/dal_makhani_rice_bowl.jpg",
-            "isVeg": true,
-            "category": "GBC Curry Rice Bowl"
-      },
-      {
-            "id": "goila-41",
-            "storeId": "store-goila",
-            "name": "Butter Paneer Rice Bowl",
-            "price": 239,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/butter_paneer_rice_bowl.jpg",
-            "isVeg": true,
-            "category": "GBC Curry Rice Bowl"
-      },
-      {
-            "id": "goila-42",
-            "storeId": "store-goila",
-            "name": "Desi Egg Curry Rice Bowl",
-            "price": 209,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/desi_egg_curry_rice_bowl.jpg",
-            "isVeg": false,
-            "category": "GBC Curry Rice Bowl"
-      },
-      {
-            "id": "goila-43",
-            "storeId": "store-goila",
-            "name": "Chicken Tikka Masala Rice Bowl",
-            "price": 259,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/chicken_tikka_masala_rice_bowl.jpg",
-            "isVeg": false,
-            "category": "GBC Curry Rice Bowl"
-      },
-      {
-            "id": "goila-44",
-            "storeId": "store-goila",
-            "name": "Goila Butter Chicken Rice Bowl",
-            "price": 279,
-            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
-            "image": "/images/Goila butter chicken/goila_butter_chicken_rice_bowl.jpg",
-            "isVeg": false,
-            "category": "GBC Curry Rice Bowl"
-      }
-]
-    },
-  {
-    id: 'store-baskinrobbins',
-    name: 'Baskin Robbins',
-    rating: 4.8,
-    reviewsCount: 3120,
-    deliveryTime: '20-25 mins',
-    deliveryFee: 21,
-    distance: '2.8 km',
-    image: '/images/storeImage/baskinrobbins.jpg',
-    cuisines: ['Ice Cream', 'Celebration Cakes', 'Desserts', 'Cake Toppers'],
-    discountOffer: 'Premium Celebration Cakes from ₹699',
-    tags: ['Celebration Cakes', 'Desserts', 'Gifting', 'Premium', 'Trending'],
-    menuCategories: ['Celebration Cakes', 'Cake Toppers', 'Party Candles'],
-    items: [
-      // ── Celebration Cakes ──
-      {
-        id: 'br-pistachio-caramel',
-        storeId: 'store-baskinrobbins',
-        name: 'Pistachio & Caramel',
-        price: 749,
-        description: 'Creamy pistachio ice cream layered with salted caramel swirls and crushed pistachio bits. A premium, nutty delight.',
-        image: '/images/Baskin Robbins/Pistachio & Caramel.jpg',
-        isVeg: true,
-        isBestseller: true,
-        category: 'Celebration Cakes',
-        rating: 4.8,
-        ratingCount: 780,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-blueberry-cheesecake',
-        storeId: 'store-baskinrobbins',
-        name: 'Blueberry Cheesecake',
-        price: 749,
-        description: 'Luscious blueberry cheesecake-flavoured ice cream cake with a tangy blueberry ribbon and creamy cheesecake base.',
-        image: '/images/Baskin Robbins/Blueberry Cheesecake.jpg',
-        isVeg: true,
-        category: 'Celebration Cakes',
-        rating: 4.7,
-        ratingCount: 650,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-red-velvet-fantasy',
-        storeId: 'store-baskinrobbins',
-        name: 'Red Velvet Fantasy',
-        price: 749,
-        description: 'Rich red velvet ice cream cake with velvety cream cheese swirls and delicate red velvet cake pieces.',
-        image: '/images/Baskin Robbins/Red Velvet Fantasy.jpg',
-        isVeg: true,
-        isBestseller: true,
-        category: 'Celebration Cakes',
-        rating: 4.8,
-        ratingCount: 870,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-alphonso-mango',
-        storeId: 'store-baskinrobbins',
-        name: 'Alphonso Mango',
-        price: 699,
-        description: 'Made with genuine Ratnagiri Alphonso mango pulp for an intensely rich and tropical ice cream cake experience.',
-        image: '/images/Baskin Robbins/Alphonso Mango cake.jpg',
-        isVeg: true,
-        category: 'Celebration Cakes',
-        rating: 4.9,
-        ratingCount: 740,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-black-forest',
-        storeId: 'store-baskinrobbins',
-        name: 'Black Forest',
-        price: 699,
-        description: 'Classic Black Forest ice cream cake with layers of chocolate, cherry and whipped cream – a timeless favourite.',
-        image: '/images/Baskin Robbins/Black Forest.jpg',
-        isVeg: true,
-        category: 'Celebration Cakes',
-        rating: 4.7,
-        ratingCount: 690,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-chocolate-truffle',
-        storeId: 'store-baskinrobbins',
-        name: 'Chocolate Truffle',
-        price: 699,
-        description: 'Decadent triple chocolate truffle ice cream cake with dark chocolate ganache and chocolate shavings.',
-        image: '/images/Baskin Robbins/Chocolate Truffle.jpg',
-        isVeg: true,
-        isBestseller: true,
-        category: 'Celebration Cakes',
-        rating: 4.8,
-        ratingCount: 960,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-cotton-candy',
-        storeId: 'store-baskinrobbins',
-        name: 'Cotton Candy',
-        price: 699,
-        description: 'Whimsical cotton candy-flavoured ice cream cake in vibrant pink and blue swirls – a fun-filled treat for all ages.',
-        image: '/images/Baskin Robbins/Cotton Candy.jpg',
-        isVeg: true,
-        category: 'Celebration Cakes',
-        rating: 4.6,
-        ratingCount: 520,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      {
-        id: 'br-pineapple',
-        storeId: 'store-baskinrobbins',
-        name: 'Pineapple',
-        price: 699,
-        description: 'Refreshing pineapple-flavoured ice cream cake with tangy pineapple chunks and a creamy base.',
-        image: '/images/Baskin Robbins/Pineapple cake.jpg',
-        isVeg: true,
-        category: 'Celebration Cakes',
-        rating: 4.6,
-        ratingCount: 480,
-        addons: [
-          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
-          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
-          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
-          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
-        ]
-      },
-      // ── Cake Toppers ──
-      {
-        id: 'br-topper-happy-birthday',
-        storeId: 'store-baskinrobbins',
-        name: 'Chocolate Message Toppers - Happy Birthday',
-        price: 10,
-        description: 'Decorative chocolate message topper that reads "Happy Birthday" – the perfect finishing touch for your celebration cake.',
-        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Birthday.jpg',
-        isVeg: true,
-        category: 'Cake Toppers',
-        rating: 4.5,
-        ratingCount: 320,
-      },
-      {
-        id: 'br-topper-happy-anniversary',
-        storeId: 'store-baskinrobbins',
-        name: 'Chocolate Message Toppers - Happy Anniversary',
-        price: 10,
-        description: 'Decorative chocolate message topper that reads "Happy Anniversary" – add a sweet personal touch to your cake.',
-        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Anniversary.jpg',
-        isVeg: true,
-        category: 'Cake Toppers',
-        rating: 4.5,
-        ratingCount: 280,
-      },
-      {
-        id: 'br-topper-congratulations',
-        storeId: 'store-baskinrobbins',
-        name: 'Chocolate Message Toppers - Congratulations',
-        price: 10,
-        description: 'Decorative chocolate message topper that reads "Congratulations" – celebrate every milestone in style.',
-        image: '/images/Baskin Robbins/Chocolate Message Toppers - Congratulations.jpg',
-        isVeg: true,
-        category: 'Cake Toppers',
-        rating: 4.5,
-        ratingCount: 250,
-      },
-      // ── Party Candles ──
-      {
-        id: 'br-number-candle',
-        storeId: 'store-baskinrobbins',
-        name: 'Number Candle',
-        price: 25,
-        description: 'Choose your age number candle to complete the birthday celebration. Available in all numbers (0-9).',
-        image: '/images/Baskin Robbins/Number Candle.jpg',
-        isVeg: true,
-        category: 'Party Candles',
-        rating: 4.4,
-        ratingCount: 410,
-      },
-      {
-        id: 'br-heart-candles',
-        storeId: 'store-baskinrobbins',
-        name: 'Heart Candles',
-        price: 65,
-        description: 'Set of 4 adorable heart-shaped candles – perfect for anniversaries, Valentine\'s Day, or any romantic celebration.',
-        image: '/images/Baskin Robbins/Heart Candles.jpg',
-        isVeg: true,
-        category: 'Party Candles',
-        rating: 4.6,
-        ratingCount: 350,
-      }
-    ]
-  },
-  {
     id: 'store-vengo',
     name: 'Vaango',
     rating: 4.6,
     reviewsCount: 2310,
       deliveryTime: '35-45 mins',
-    deliveryFee: 21,
+    deliveryFee: 20,
     distance: '2.8 km',
     image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1000&q=85',
     cuisines: ['South Indian', 'Crispy Dosas', 'Healthy', 'Idli & Vada', 'Pure Veg', 'North Indian', 'Thalis', 'Desserts', 'Indo-Chinese'],
@@ -4773,9 +5930,1054 @@ export const STORES: Store[] = [
                         ratingCount: 280,
                   }
     ]
+  },
+  {
+    id: 'store-bbk',
+    name: 'Biryani By Kilo',
+    rating: 4.7,
+    reviewsCount: 3410,
+    deliveryTime: '45-50 mins',
+    deliveryFee: 20,
+    distance: '2.8 km',
+    image: '/images/storeImage/biryani by kilooo.jpeg',
+    cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Chicken', 'Desserts'],
+    tags: ['Biryani', 'Mughlai', 'Kebabs', 'Chicken', 'Desserts'],
+    menuCategories: [
+      "Biriyani",
+      "Kebab",
+      "Quick Meals",
+      "Rolls",
+      "Meal for Two",
+      "Biryani Combos",
+      "Roll Combos",
+      "Dessert",
+      "Beverages",
+      "Add Ons",
+      "Extras"
+],
+    items: [
+      {
+            "id": "bbk-1",
+            "storeId": "store-bbk",
+            "name": "Veg Hyderabadi Biriyani",
+            "price": 219,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
+            "image": "/images/Biriyani by kilo/veg_hyderabadi_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-2",
+            "storeId": "store-bbk",
+            "name": "Paneer Hyderabadi Biriyani",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
+            "image": "/images/Biriyani by kilo/paneer_hyderabadi_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-3",
+            "storeId": "store-bbk",
+            "name": "Soya Chaap Biriyani",
+            "price": 289,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
+            "image": "/images/Biriyani by kilo/soya_chaap_biriyani.jpg",
+            "isVeg": true,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-4",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biriyani",
+            "price": 309,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biriyani.jpg",
+            "isVeg": false,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-5",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Biriyani",
+            "price": 369,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_biriyani.jpg",
+            "isVeg": false,
+            "category": "Biriyani"
+      },
+      {
+            "id": "bbk-6",
+            "storeId": "store-bbk",
+            "name": "Veg Galouti Kebab",
+            "price": 199,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_galouti_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-7",
+            "storeId": "store-bbk",
+            "name": "Hara Bhara Kebab",
+            "price": 199,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/hara_bhara_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-8",
+            "storeId": "store-bbk",
+            "name": "Corn Cheese Stick",
+            "price": 249,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/corn_cheese_stick.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-9",
+            "storeId": "store-bbk",
+            "name": "Dahi Ke Kebab",
+            "price": 289,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/dahi_ke_kebab.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-10",
+            "storeId": "store-bbk",
+            "name": "Paneer 65 with Paratha",
+            "price": 289,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_65_with_paratha.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-11",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka",
+            "price": 309,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka.jpg",
+            "isVeg": true,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-12",
+            "storeId": "store-bbk",
+            "name": "Chicken Giloti Kebab",
+            "price": 259,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_giloti_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-13",
+            "storeId": "store-bbk",
+            "name": "Chicken Seekh Kebab",
+            "price": 259,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-14",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka",
+            "price": 309,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebab"
+      },
+      {
+            "id": "bbk-15",
+            "storeId": "store-bbk",
+            "name": "Dal Makhani with Flavoured Rice / 2 Paratha",
+            "price": 289,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/dal_makhani_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": true,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-16",
+            "storeId": "store-bbk",
+            "name": "Butter Paneer with Flavoured Rice / 2 Paratha",
+            "price": 309,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/butter_paneer_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": true,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-17",
+            "storeId": "store-bbk",
+            "name": "Butter Chicken Boneless with Flavoured Rice / 2 Paratha",
+            "price": 339,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/butter_chicken_boneless_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": false,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-18",
+            "storeId": "store-bbk",
+            "name": "Mutton Nihari with Flavoured Rice / 2 Paratha",
+            "price": 409,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/mutton_nihari_with_flavoured_rice_2_paratha.jpg",
+            "isVeg": false,
+            "category": "Quick Meals"
+      },
+      {
+            "id": "bbk-19",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka Roll",
+            "price": 209,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-20",
+            "storeId": "store-bbk",
+            "name": "Chicken Seekh Roll",
+            "price": 189,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_seekh_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-21",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Roll",
+            "price": 209,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "bbk-22",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Paneer Tikka Roll + Phirni + Any 2 Beverages",
+            "price": 589,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll_phirni_any_2_beverages.jpg",
+            "isVeg": true,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "bbk-23",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Roll + Phirni + Any 2 Beverages",
+            "price": 609,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll_phirni_any_2_beverages.jpg",
+            "isVeg": false,
+            "category": "Meal for Two"
+      },
+      {
+            "id": "bbk-24",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Any 1 Beverage",
+            "price": 269,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_any_1_beverage.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-25",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Veg Galouti",
+            "price": 279,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_veg_galouti.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-26",
+            "storeId": "store-bbk",
+            "name": "Veg Biryani + Paneer Tikka Roll",
+            "price": 399,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll.jpg",
+            "isVeg": true,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-27",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Any 1 Beverage",
+            "price": 359,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_any_1_beverage.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-28",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Galouti",
+            "price": 359,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_galouti.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-29",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Kebab",
+            "price": 359,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-30",
+            "storeId": "store-bbk",
+            "name": "Chicken Boneless Biryani + Chicken Seekh Roll",
+            "price": 409,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll.jpg",
+            "isVeg": false,
+            "category": "Biryani Combos"
+      },
+      {
+            "id": "bbk-31",
+            "storeId": "store-bbk",
+            "name": "Paneer Tikka Roll + Any 1 Beverage",
+            "price": 239,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paneer_tikka_roll_any_1_beverage.jpg",
+            "isVeg": true,
+            "category": "Roll Combos"
+      },
+      {
+            "id": "bbk-32",
+            "storeId": "store-bbk",
+            "name": "Chicken Tikka Roll + Any 1 Beverage",
+            "price": 239,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/chicken_tikka_roll_any_1_beverage.jpg",
+            "isVeg": false,
+            "category": "Roll Combos"
+      },
+      {
+            "id": "bbk-33",
+            "storeId": "store-bbk",
+            "name": "Gulab Jamun",
+            "price": 59,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/gulab_jamun.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "bbk-34",
+            "storeId": "store-bbk",
+            "name": "Phirni",
+            "price": 109,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/phirni.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "bbk-35",
+            "storeId": "store-bbk",
+            "name": "Imli Adraki Lemonade",
+            "price": 89,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-36",
+            "storeId": "store-bbk",
+            "name": "Packaged Drinking Water",
+            "price": 30,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/packaged_drinking_water.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-37",
+            "storeId": "store-bbk",
+            "name": "Soft Beverages",
+            "price": 70,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/soft_beverages.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "bbk-38",
+            "storeId": "store-bbk",
+            "name": "Imli Adraki Lemonade",
+            "price": 69,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
+            "isVeg": true,
+            "category": "Add Ons"
+      },
+      {
+            "id": "bbk-39",
+            "storeId": "store-bbk",
+            "name": "Phirni",
+            "price": 89,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/phirni.jpg",
+            "isVeg": true,
+            "category": "Add Ons"
+      },
+      {
+            "id": "bbk-40",
+            "storeId": "store-bbk",
+            "name": "Mint Chutney",
+            "price": 29,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/mint_chutney.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-41",
+            "storeId": "store-bbk",
+            "name": "Raita",
+            "price": 59,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/raita.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-42",
+            "storeId": "store-bbk",
+            "name": "Salan",
+            "price": 59,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/salan.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-43",
+            "storeId": "store-bbk",
+            "name": "Paratha",
+            "price": 69,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/paratha.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      },
+      {
+            "id": "bbk-44",
+            "storeId": "store-bbk",
+            "name": "Rice",
+            "price": 109,
+            "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
+            "image": "/images/Biriyani by kilo/rice.jpg",
+            "isVeg": true,
+            "category": "Extras"
+      }
+]
+    },
+  {
+    id: 'store-goila',
+    name: 'Goila Butter Chicken',
+    rating: 4.6,
+    reviewsCount: 1940,
+    deliveryTime: '35-45 mins',
+    deliveryFee: 20,
+    distance: '2.8 km',
+    image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=1000&q=85',
+    cuisines: ['North Indian', 'Chicken', 'Curries', 'Rolls', 'Kathi Rolls', 'Naan & Breads', 'Thalis'],
+    tags: ['North Indian', 'Chicken', 'Rolls', 'Curries', 'Thalis'],
+    menuCategories: [
+      "Curries",
+      "Kebabs",
+      "Breads",
+      "Rice",
+      "Rolls",
+      "Beverages",
+      "Dessert",
+      "GBC Curry Rice Bowl"
+],
+    items: [
+      {
+            "id": "goila-1",
+            "storeId": "store-goila",
+            "name": "24/7 Dal Makhani",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/24_7_dal_makhani.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-2",
+            "storeId": "store-goila",
+            "name": "Goila Butter Paneer",
+            "price": 309,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_paneer.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-3",
+            "storeId": "store-goila",
+            "name": "Soya Makhani Wala",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/soya_makhani_wala.jpg",
+            "isVeg": true,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-4",
+            "storeId": "store-goila",
+            "name": "Desi Egg Curry",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/desi_egg_curry.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-5",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken with Bone",
+            "price": 359,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_with_bone.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-6",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Masala",
+            "price": 369,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_masala.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-7",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken Boneless",
+            "price": 379,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_boneless.jpg",
+            "isVeg": false,
+            "category": "Curries"
+      },
+      {
+            "id": "goila-8",
+            "storeId": "store-goila",
+            "name": "Tandoori Soya Chaap",
+            "price": 209,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/tandoori_soya_chaap.jpg",
+            "isVeg": true,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-9",
+            "storeId": "store-goila",
+            "name": "Classic Paneer Tikka",
+            "price": 299,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/classic_paneer_tikka.jpg",
+            "isVeg": true,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-10",
+            "storeId": "store-goila",
+            "name": "Murgh Galouti Kebab",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/murgh_galouti_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-11",
+            "storeId": "store-goila",
+            "name": "Classic Chicken Tikka",
+            "price": 309,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/classic_chicken_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-12",
+            "storeId": "store-goila",
+            "name": "Chicken Makhmali Seekh Kebab",
+            "price": 239,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_makhmali_seekh_kebab.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-13",
+            "storeId": "store-goila",
+            "name": "Delhi Tandoori Chicken",
+            "price": 339,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/delhi_tandoori_chicken.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-14",
+            "storeId": "store-goila",
+            "name": "Murgh Malai Tikka",
+            "price": 339,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/murgh_malai_tikka.jpg",
+            "isVeg": false,
+            "category": "Kebabs"
+      },
+      {
+            "id": "goila-15",
+            "storeId": "store-goila",
+            "name": "Tandoori Roti (Plain/Butter)",
+            "price": 49,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/tandoori_roti_plain_butter.jpg",
+            "isVeg": true,
+            "category": "Breads",
+            "addons": [
+                  {
+                        "id": "ad-g-butter",
+                        "name": "Butter",
+                        "price": 10
+                  }
+            ]
+      },
+      {
+            "id": "goila-16",
+            "storeId": "store-goila",
+            "name": "Naan (Plain/Butter/Garlic)",
+            "price": 79,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/naan_plain_butter_garlic.jpg",
+            "isVeg": true,
+            "category": "Breads",
+            "addons": [
+                  {
+                        "id": "ad-g-naanbutter",
+                        "name": "Butter",
+                        "price": 10
+                  },
+                  {
+                        "id": "ad-g-naangarlic",
+                        "name": "Garlic",
+                        "price": 10
+                  }
+            ]
+      },
+      {
+            "id": "goila-17",
+            "storeId": "store-goila",
+            "name": "Lachha Paratha",
+            "price": 79,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/lachha_paratha.jpg",
+            "isVeg": true,
+            "category": "Breads"
+      },
+      {
+            "id": "goila-18",
+            "storeId": "store-goila",
+            "name": "Steam Rice",
+            "price": 109,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/steam_rice.jpg",
+            "isVeg": true,
+            "category": "Rice"
+      },
+      {
+            "id": "goila-19",
+            "storeId": "store-goila",
+            "name": "Jeera Rice",
+            "price": 119,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/jeera_rice.jpg",
+            "isVeg": true,
+            "category": "Rice"
+      },
+      {
+            "id": "goila-20",
+            "storeId": "store-goila",
+            "name": "Malai Soya Roll",
+            "price": 189,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/malai_soya_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-21",
+            "storeId": "store-goila",
+            "name": "Butter Paneer Roll",
+            "price": 199,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_paneer_roll.jpg",
+            "isVeg": true,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-22",
+            "storeId": "store-goila",
+            "name": "Butter Chicken Roll",
+            "price": 209,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_chicken_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-23",
+            "storeId": "store-goila",
+            "name": "Malai Chicken Tikka Roll",
+            "price": 239,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/malai_chicken_tikka_roll.jpg",
+            "isVeg": false,
+            "category": "Rolls"
+      },
+      {
+            "id": "goila-24",
+            "storeId": "store-goila",
+            "name": "Butter Milk",
+            "price": 109,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_milk.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "goila-25",
+            "storeId": "store-goila",
+            "name": "Sweet Lassi",
+            "price": 109,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/sweet_lassi.jpg",
+            "isVeg": true,
+            "category": "Beverages"
+      },
+      {
+            "id": "goila-27",
+            "storeId": "store-goila",
+            "name": "Gulab Jamun with Rabri",
+            "price": 209,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/gulab_jamun_with_rabri.jpg",
+            "isVeg": true,
+            "category": "Dessert"
+      },
+      {
+            "id": "goila-40",
+            "storeId": "store-goila",
+            "name": "Dal Makhani Rice Bowl",
+            "price": 209,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/dal_makhani_rice_bowl.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-41",
+            "storeId": "store-goila",
+            "name": "Butter Paneer Rice Bowl",
+            "price": 239,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/butter_paneer_rice_bowl.jpg",
+            "isVeg": true,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-42",
+            "storeId": "store-goila",
+            "name": "Desi Egg Curry Rice Bowl",
+            "price": 209,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/desi_egg_curry_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-43",
+            "storeId": "store-goila",
+            "name": "Chicken Tikka Masala Rice Bowl",
+            "price": 259,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/chicken_tikka_masala_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      },
+      {
+            "id": "goila-44",
+            "storeId": "store-goila",
+            "name": "Goila Butter Chicken Rice Bowl",
+            "price": 279,
+            "description": "Chef Saransh Goilas signature recipe prepared with authentic spices and fresh ingredients.",
+            "image": "/images/Goila butter chicken/goila_butter_chicken_rice_bowl.jpg",
+            "isVeg": false,
+            "category": "GBC Curry Rice Bowl"
+      }
+]
+    },
+  {
+    id: 'store-baskinrobbins',
+    name: 'Baskin Robbins',
+    rating: 4.8,
+    reviewsCount: 3120,
+    deliveryTime: '20-25 mins',
+    deliveryFee: 20,
+    distance: '2.8 km',
+    image: '/images/storeImage/baskinrobbins.jpg',
+    cuisines: ['Ice Cream', 'Celebration Cakes', 'Desserts', 'Cake Toppers'],
+    discountOffer: 'Premium Celebration Cakes from ₹699',
+    tags: ['Celebration Cakes', 'Desserts', 'Gifting', 'Premium', 'Trending'],
+    menuCategories: ['Celebration Cakes', 'Cake Toppers', 'Party Candles'],
+    items: [
+      // ── Celebration Cakes ──
+      {
+        id: 'br-pistachio-caramel',
+        storeId: 'store-baskinrobbins',
+        name: 'Pistachio & Caramel',
+        price: 749,
+        description: 'Creamy pistachio ice cream layered with salted caramel swirls and crushed pistachio bits. A premium, nutty delight.',
+        image: '/images/Baskin Robbins/Pistachio & Caramel.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 780,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-blueberry-cheesecake',
+        storeId: 'store-baskinrobbins',
+        name: 'Blueberry Cheesecake',
+        price: 749,
+        description: 'Luscious blueberry cheesecake-flavoured ice cream cake with a tangy blueberry ribbon and creamy cheesecake base.',
+        image: '/images/Baskin Robbins/Blueberry Cheesecake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.7,
+        ratingCount: 650,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-red-velvet-fantasy',
+        storeId: 'store-baskinrobbins',
+        name: 'Red Velvet Fantasy',
+        price: 749,
+        description: 'Rich red velvet ice cream cake with velvety cream cheese swirls and delicate red velvet cake pieces.',
+        image: '/images/Baskin Robbins/Red Velvet Fantasy.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 870,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-alphonso-mango',
+        storeId: 'store-baskinrobbins',
+        name: 'Alphonso Mango',
+        price: 699,
+        description: 'Made with genuine Ratnagiri Alphonso mango pulp for an intensely rich and tropical ice cream cake experience.',
+        image: '/images/Baskin Robbins/Alphonso Mango cake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.9,
+        ratingCount: 740,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-black-forest',
+        storeId: 'store-baskinrobbins',
+        name: 'Black Forest',
+        price: 699,
+        description: 'Classic Black Forest ice cream cake with layers of chocolate, cherry and whipped cream – a timeless favourite.',
+        image: '/images/Baskin Robbins/Black Forest.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.7,
+        ratingCount: 690,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-chocolate-truffle',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Truffle',
+        price: 699,
+        description: 'Decadent triple chocolate truffle ice cream cake with dark chocolate ganache and chocolate shavings.',
+        image: '/images/Baskin Robbins/Chocolate Truffle.jpg',
+        isVeg: true,
+        isBestseller: true,
+        category: 'Celebration Cakes',
+        rating: 4.8,
+        ratingCount: 960,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-cotton-candy',
+        storeId: 'store-baskinrobbins',
+        name: 'Cotton Candy',
+        price: 699,
+        description: 'Whimsical cotton candy-flavoured ice cream cake in vibrant pink and blue swirls – a fun-filled treat for all ages.',
+        image: '/images/Baskin Robbins/Cotton Candy.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.6,
+        ratingCount: 520,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      {
+        id: 'br-pineapple',
+        storeId: 'store-baskinrobbins',
+        name: 'Pineapple',
+        price: 699,
+        description: 'Refreshing pineapple-flavoured ice cream cake with tangy pineapple chunks and a creamy base.',
+        image: '/images/Baskin Robbins/Pineapple cake.jpg',
+        isVeg: true,
+        category: 'Celebration Cakes',
+        rating: 4.6,
+        ratingCount: 480,
+        addons: [
+          { id: 'ad-br-topper-bday', name: 'Chocolate Topper – Happy Birthday', price: 10 },
+          { id: 'ad-br-topper-anniv', name: 'Chocolate Topper – Happy Anniversary', price: 10 },
+          { id: 'ad-br-number-candle', name: 'Number Candle', price: 25 },
+          { id: 'ad-br-heart-candles', name: 'Heart Candles (4 pcs)', price: 65 }
+        ]
+      },
+      // ── Cake Toppers ──
+      {
+        id: 'br-topper-happy-birthday',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Happy Birthday',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Happy Birthday" – the perfect finishing touch for your celebration cake.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Birthday.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 320,
+      },
+      {
+        id: 'br-topper-happy-anniversary',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Happy Anniversary',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Happy Anniversary" – add a sweet personal touch to your cake.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Happy Anniversary.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 280,
+      },
+      {
+        id: 'br-topper-congratulations',
+        storeId: 'store-baskinrobbins',
+        name: 'Chocolate Message Toppers - Congratulations',
+        price: 10,
+        description: 'Decorative chocolate message topper that reads "Congratulations" – celebrate every milestone in style.',
+        image: '/images/Baskin Robbins/Chocolate Message Toppers - Congratulations.jpg',
+        isVeg: true,
+        category: 'Cake Toppers',
+        rating: 4.5,
+        ratingCount: 250,
+      },
+      // ── Party Candles ──
+      {
+        id: 'br-number-candle',
+        storeId: 'store-baskinrobbins',
+        name: 'Number Candle',
+        price: 25,
+        description: 'Choose your age number candle to complete the birthday celebration. Available in all numbers (0-9).',
+        image: '/images/Baskin Robbins/Number Candle.jpg',
+        isVeg: true,
+        category: 'Party Candles',
+        rating: 4.4,
+        ratingCount: 410,
+      },
+      {
+        id: 'br-heart-candles',
+        storeId: 'store-baskinrobbins',
+        name: 'Heart Candles',
+        price: 65,
+        description: 'Set of 4 adorable heart-shaped candles – perfect for anniversaries, Valentine\'s Day, or any romantic celebration.',
+        image: '/images/Baskin Robbins/Heart Candles.jpg',
+        isVeg: true,
+        category: 'Party Candles',
+        rating: 4.6,
+        ratingCount: 350,
+      }
+    ]
   }
 ];
-
 const KFC_NON_VEG_ITEMS = new Set([
       '2 Shawarmas – Saver Deal',
       '2 Shawarma Meals – Value Deal',
@@ -4845,10 +7047,38 @@ const KFC_NON_VEG_ITEMS = new Set([
       'Pepsi Medium',
 ]);
 
-const kfcStore = STORES.find((store) => store.id === 'store-kfc');
+const kfcStore = RAW_STORES.find((store) => store.id === 'store-kfc');
 kfcStore?.items.forEach((item) => {
       if (KFC_NON_VEG_ITEMS.has(item.name)) item.isVeg = false;
 });
+
+const biriyaniZoneStore = RAW_STORES.find(s => s.id === 'store-biriyani-zone')!;
+const foodCourtOutlets = RAW_STORES.filter(s => s.id !== 'store-biriyani-zone');
+
+const foodStreetItems = foodCourtOutlets.flatMap(s => s.items);
+const foodStreetCategories = Array.from(new Set(foodCourtOutlets.flatMap(s => s.menuCategories)));
+
+export const foodStreetStore: Store = {
+  id: 'store-food-street',
+  name: 'The Food Street',
+  rating: 4.8,
+  reviewsCount: 3200,
+  deliveryTime: '20-35 mins',
+  deliveryFee: 20,
+  distance: '2.8 km',
+  image: '/images/storeImage/food_street_hub.jpg',
+  bannerImage: '/images/storeImage/food_street_hub.jpg',
+  cuisines: ['Burgers', 'Pizza', 'South Indian', 'Biryani', 'North Indian', 'Ice Cream', 'Fast Food'],
+  tags: ['Food Court', '6 Outlets', 'Multi-Brand', 'Bestseller'],
+  outlets: foodCourtOutlets,
+  menuCategories: foodStreetCategories,
+  items: foodStreetItems,
+};
+
+export const STORES: Store[] = [
+  biriyaniZoneStore,
+  foodStreetStore,
+];
 
 export const INITIAL_ADDRESSES: UserAddress[] = [
   {

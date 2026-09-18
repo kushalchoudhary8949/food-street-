@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Star, Sparkles } from 'lucide-react';
+import { Search, Sparkles } from 'lucide-react';
 import { Store, MenuItem } from '../types';
 
 interface SearchTabProps {
@@ -27,7 +27,6 @@ export const SearchTab: React.FC<SearchTabProps> = ({
     { label: 'South Indian', value: 'South Indian' },
     { label: 'Chicken', value: 'Chicken' },
     { label: 'Pure Veg', value: 'veg' },
-    { label: 'Top Rated 4.5+', value: 'rated' },
   ];
 
   // Match stores & dishes
@@ -38,8 +37,7 @@ export const SearchTab: React.FC<SearchTabProps> = ({
       const hasVeg = store.items.some(i => i.isVeg);
       if (!hasVeg) return false;
     }
-    if (selectedFilter === 'rated' && store.rating < 4.5) return false;
-    if (selectedFilter && selectedFilter !== 'veg' && selectedFilter !== 'rated') {
+    if (selectedFilter && selectedFilter !== 'veg') {
       const matchCuisine = store.cuisines.some(c => c.toLowerCase().includes(selectedFilter.toLowerCase()));
       const matchItems = store.items.some(i => i.category.toLowerCase().includes(selectedFilter.toLowerCase()) || i.name.toLowerCase().includes(selectedFilter.toLowerCase()));
       if (!matchCuisine && !matchItems) return false;
@@ -184,10 +182,6 @@ export const SearchTab: React.FC<SearchTabProps> = ({
                       <h4 className="text-base font-extrabold text-gray-900 truncate group-hover:text-red-600">
                         {store.name}
                       </h4>
-                      <div className="flex items-center space-x-1 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg text-xs font-bold shrink-0">
-                        <span>{store.rating}</span>
-                        <Star className="w-3 h-3 fill-emerald-600" />
-                      </div>
                     </div>
 
                     <p className="text-xs text-gray-500 truncate mt-0.5">{store.cuisines.join(', ')}</p>

@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v53_restored_2_8km_distances_2026_09_18';
+export const DATA_VERSION = 'food_street_v54_restored_2_8km_distances_2026_09_18';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -7066,8 +7066,8 @@ export const foodStreetStore: Store = {
   deliveryTime: '20-35 mins',
   deliveryFee: 20,
   distance: '2.8 km',
-  image: 'public/images/storeImage/ChatGPT Image Sep 18, 2026, 09_54_09 PM.png',
-  bannerImage: 'public/images/storeImage/ChatGPT Image Sep 18, 2026, 09_54_09 PM.png',
+  image: 'public/images/storeImage/FoodStreet.png',
+  bannerImage: 'public/images/storeImage/FoodStreet.png',
   cuisines: ['Burgers', 'Pizza', 'South Indian', 'Biryani', 'North Indian', 'Ice Cream', 'Fast Food'],
   tags: ['Food Court', '6 Outlets', 'Multi-Brand', 'Bestseller'],
   outlets: foodCourtOutlets,

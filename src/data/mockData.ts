@@ -7066,7 +7066,7 @@ export const foodStreetStore: Store = {
   deliveryTime: '20-35 mins',
   deliveryFee: 20,
   distance: '2.8 km',
-  image: '/images/storeImage/FoodStreet.png',
+  image: 'images/storeImage/FoodStreet.png',
   bannerImage: '/images/storeImage/FoodStreet.png',
   cuisines: ['Burgers', 'Pizza', 'South Indian', 'Biryani', 'North Indian', 'Ice Cream', 'Fast Food'],
   tags: ['Food Court', '6 Outlets', 'Multi-Brand', 'Bestseller'],

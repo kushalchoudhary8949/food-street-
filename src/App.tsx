@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { getOrderWindowStatus, isOrderWindowOpen } from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -13,7 +14,6 @@ import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
-import { isOrderWindowOpen, getOrderWindowStatus } from './utils/orderTiming';
 
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import {
@@ -573,21 +573,20 @@ export default function App() {
                   cartTotal={totalCartPrice}
                 />
 
+                {/* Order Window Timing Banner */}
                 {(() => {
-                  const windowStatus = getOrderWindowStatus();
-                  if (!windowStatus.isOpen) {
-                    return (
-                      <div className="mx-4 mt-3 flex items-center justify-center px-4 py-2.5 rounded-2xl bg-red-600 text-white shadow-xs font-bold text-xs">
-                        <div className="flex items-center space-x-2">
-                          <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                          <span>Closed for today, resumes tomorrow</span>
-                        </div>
-                      </div>
-                    );
-                  }
+                  const ws = getOrderWindowStatus();
                   return (
-                    <div className="mx-4 mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800">
-                      {windowStatus.bannerMessage}
+                    <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
+                      ws.isOpen
+                        ? 'bg-green-50 border border-green-200 text-green-800'
+                        : 'bg-red-50 border border-red-200 text-red-700'
+                    }`}>
+                      <div className="flex items-center space-x-2">
+                        <span className={`w-2 h-2 rounded-full ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                        <span>{ws.isOpen ? 'Orders open now' : 'Orders currently closed'}</span>
+                      </div>
+                      <span className="opacity-70">⏰ {ws.opensAt} – {ws.closesAt}</span>
                     </div>
                   );
                 })()}

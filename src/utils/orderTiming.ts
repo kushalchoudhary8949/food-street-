@@ -1,50 +1,37 @@
 // Order window timing configuration and utility functions
 
-// Do NOT block every day
-export const BLOCK_ALL_ORDERS_TODAY = false;
-
-// Only this date is blocked for the entire day
-export const BLOCKED_DATES: string[] = [
-  '2026-09-18',
-];
+// Order window: 12:00 PM to 10:30 PM daily
+const ORDER_WINDOW_START_HOUR = 12; // 12:00 PM
+const ORDER_WINDOW_START_MINUTE = 0;
+const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
+const ORDER_WINDOW_END_MINUTE = 30; // 10:30 PM
 
 export interface OrderWindowStatus {
   isOpen: boolean;
   message: string;
-  bannerMessage: string;
-  closedLabel: string;
-  isBlockedDay: boolean;
+  opensAt: string;
+  closesAt: string;
 }
 
 export const getOrderWindowStatus = (
   date: Date = new Date()
 ): OrderWindowStatus => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
 
-  const dateString = `${year}-${month}-${day}`;
+  const currentMinutes = hours * 60 + minutes;
+  const startMinutes = ORDER_WINDOW_START_HOUR * 60 + ORDER_WINDOW_START_MINUTE;
+  const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
 
-  const closedLabel = 'Closed for today, resumes tomorrow';
+  const isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
 
-  // Block orders for the entire blocked date
-  if (BLOCKED_DATES.includes(dateString)) {
-    return {
-      isOpen: false,
-      message: 'Closed for today, resumes tomorrow',
-      bannerMessage: 'Closed for today, resumes tomorrow',
-      closedLabel,
-      isBlockedDay: true,
-    };
-  }
-
-  // All other dates are open all day
   return {
-    isOpen: true,
-    message: 'Orders are open.',
-    bannerMessage: 'Orders are open all day.',
-    closedLabel,
-    isBlockedDay: false,
+    isOpen,
+    message: isOpen
+      ? 'Orders are open until 10:30 PM'
+      : 'Orders open at 12:00 PM',
+    opensAt: '12:00 PM',
+    closesAt: '10:30 PM',
   };
 };
 

@@ -1,6 +1,6 @@
 import { Order } from '../types';
 
-export const WHATSAPP_NUMBER = '918949508256';
+export const WHATSAPP_NUMBER = '+919180468256';
 export const PHONEPE_UPI_URI = 'upi://pay?pa=foodza@upi&pn=FoodZa%20Delivery&cu=INR';
 export const PAYMENT_UPI_ID = '8949508256@axl';
 

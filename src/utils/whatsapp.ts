@@ -36,7 +36,7 @@ ${cancellationNote}📌 *PAYMENT COLLECTION DETAILS:*
 
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress}
-${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}🛵 *Delivery Partner Contact:* ${order.driverPhone || '8549908385'}
+${order.customerPhone ? `📞 *Customer Phone:* ${order.customerPhone}\n` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━
 _Thank you for ordering with FoodZa!_`;

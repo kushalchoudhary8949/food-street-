@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v56_bz_images_updated_2026_09_19';
+export const DATA_VERSION = 'food_street_v58_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -213,7 +213,7 @@ export const RAW_STORES: Store[] = [
               "price": 289,
               "description": "Fragrant rice cooked with flavorful spices, and toped with boiled eggs.",
               "image": "/images/Biryani Zone/Hyderabadi Veg Biriyani.png",
-              "isVeg": true,
+              "isVeg": false,
               "category": "Biriyanis - Authentic",
               "rating": 4.7,
               "ratingCount": 178
@@ -1795,7 +1795,8 @@ export const RAW_STORES: Store[] = [
                   {
                       "id": "addon-bz-14-1",
                       "name": "Chicken",
-                      "price": 30
+                      "price": 30,
+                      "isVeg": false
                   }
               ]
           },
@@ -1814,7 +1815,8 @@ export const RAW_STORES: Store[] = [
                   {
                       "id": "addon-bz-15-1",
                       "name": "Chicken",
-                      "price": 30
+                      "price": 30,
+                      "isVeg": false
                   }
               ]
           },
@@ -1833,7 +1835,8 @@ export const RAW_STORES: Store[] = [
                   {
                       "id": "addon-bz-16-1",
                       "name": "Chicken",
-                      "price": 30
+                      "price": 30,
+                      "isVeg": false
                   }
               ]
           },
@@ -1852,7 +1855,8 @@ export const RAW_STORES: Store[] = [
                   {
                       "id": "addon-bz-17-1",
                       "name": "Chicken",
-                      "price": 30
+                      "price": 30,
+                      "isVeg": false
                   }
               ]
           },

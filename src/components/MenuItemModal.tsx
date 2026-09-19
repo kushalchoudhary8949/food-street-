@@ -32,9 +32,18 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const isAvailableToday = !item.availableOnDays || item.availableOnDays.length === 0 || item.availableOnDays.includes(today);
 
+  // If any selected addon is non-veg, the customised item becomes non-veg
+  const hasNonVegAddon = selectedAddons.some(a => a.isVeg === false);
+  const effectiveIsVeg = item.isVeg && !hasNonVegAddon;
+
   const handleConfirm = () => {
     if (!isAvailableToday) return;
-    onAddToCart(item, quantity, selectedAddons);
+    // Pass item with effectiveIsVeg state so cart and orders reflect non-veg correctly
+    const configuredItem = {
+      ...item,
+      isVeg: effectiveIsVeg,
+    };
+    onAddToCart(configuredItem, quantity, selectedAddons);
     onClose();
   };
 
@@ -58,13 +67,13 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
             <X className="w-5 h-5" />
           </button>
           
-          {/* Veg / Non-Veg badge */}
+          {/* Veg / Non-Veg badge (dynamically reflects selected add-ons) */}
           <div className="absolute top-4 left-4">
-            <span className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-bold ${
-              item.isVeg ? 'bg-emerald-50 text-emerald-700 border border-emerald-300' : 'bg-red-50 text-red-700 border border-red-300'
+            <span className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors duration-200 ${
+              effectiveIsVeg ? 'bg-emerald-50 text-emerald-700 border border-emerald-300' : 'bg-red-50 text-red-700 border border-red-300'
             }`}>
-              <span className={`w-2 h-2 rounded-full ${item.isVeg ? 'bg-emerald-600' : 'bg-red-600'}`}></span>
-              <span>{item.isVeg ? 'Veg' : 'Non-Veg'}</span>
+              <span className={`w-2 h-2 rounded-full ${effectiveIsVeg ? 'bg-emerald-600' : 'bg-red-600'}`}></span>
+              <span>{effectiveIsVeg ? 'Veg' : 'Non-Veg'}</span>
             </span>
           </div>
         </div>
@@ -92,11 +101,12 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
           {item.addons && item.addons.length > 0 && (
             <div className="border-t border-gray-100 pt-4">
               <h4 className="text-sm font-bold text-gray-900 mb-1">Customise Your Dish</h4>
-              <p className="text-xs text-gray-500 mb-3">Select your favorite toppings and dips</p>
+              <p className="text-xs text-gray-500 mb-3">Select your favorite toppings and options</p>
               
               <div className="space-y-2">
                 {item.addons.map((addon) => {
                   const isChecked = selectedAddonIds.includes(addon.id);
+                  const isAddonNonVeg = addon.isVeg === false;
                   return (
                     <div
                       key={addon.id}
@@ -111,7 +121,21 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
                         }`}>
                           {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
+                        {isAddonNonVeg ? (
+                          <span className="w-3.5 h-3.5 border border-red-600 flex items-center justify-center rounded-xs shrink-0" title="Non-Veg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                          </span>
+                        ) : addon.isVeg === true ? (
+                          <span className="w-3.5 h-3.5 border border-emerald-600 flex items-center justify-center rounded-xs shrink-0" title="Veg">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                          </span>
+                        ) : null}
                         <span className="text-xs sm:text-sm font-semibold text-gray-800">{addon.name}</span>
+                        {isAddonNonVeg && (
+                          <span className="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-md border border-red-200">
+                            Non-Veg
+                          </span>
+                        )}
                       </div>
                       <span className="text-xs sm:text-sm font-bold text-gray-900">+₹{addon.price.toFixed(0)}</span>
                     </div>

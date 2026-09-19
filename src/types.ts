@@ -9,6 +9,7 @@ export interface MenuItemAddon {
   id: string;
   name: string;
   price: number;
+  isVeg?: boolean;
 }
 
 export interface MenuItem {

@@ -8,12 +8,16 @@ interface OrdersTabProps {
   stores: Store[];
   onCompleteOrder: (orderId: string) => void;
   onExploreFood: () => void;
+  pendingOrders: Order[];
+  onSendPendingOrder: (order: Order) => void;
 }
 
 export const OrdersTab: React.FC<OrdersTabProps> = ({
   orders,
+  pendingOrders,
   onCompleteOrder,
   onExploreFood,
+  onSendPendingOrder,
 }) => {
   // Retain only the latest 4 orders for the customer panel
   const customerOrders = orders.slice(0, 4);
@@ -122,6 +126,68 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {pendingOrders.length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-lg font-bold mb-4">Pending Bills</h3>
+          <div className="space-y-4">
+            {pendingOrders.map((order) => (
+              <div
+                key={order.id}
+                id={`pending-order-${order.id}`}
+                className="bg-white rounded-3xl p-5 border border-red-200 shadow-sm space-y-4 relative overflow-hidden"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={order.store.image}
+                      alt={order.store.name}
+                      className="w-12 h-12 rounded-2xl object-cover"
+                    />
+                    <div>
+                      <h4 className="text-base font-extrabold text-gray-900">{order.store.name}</h4>
+                      <div className="flex items-center space-x-2 text-xs text-gray-400 font-medium">
+                        <span>{order.placedAt}</span>
+                        <span>•</span>
+                        <span className="font-semibold text-gray-700">{order.orderNumber}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full text-xs font-bold capitalize">
+                    {order.status.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="bg-gray-50 rounded-2xl p-3 text-xs space-y-1">
+                  {order.items.map((it, idx) => (
+                    <div key={idx} className="flex justify-between text-gray-700">
+                      <span>{it.quantity}x {it.name}</span>
+                      <span className="font-semibold">₹{(it.price * it.quantity).toFixed(0)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-gray-600 border-t border-gray-100 pt-3 flex flex-col gap-2.5">
+                  <div className="flex justify-between items-center text-gray-500">
+                    <span className="flex items-center space-x-1">
+                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      <span className="truncate max-w-[220px]">{order.deliveryAddress}</span>
+                    </span>
+                    <span className="font-extrabold text-gray-900 text-sm">Total: ₹{order.grandTotal.toFixed(0)}</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <button
+                      onClick={() => onSendPendingOrder(order)}
+                      className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition-all shadow-xs active:scale-98"
+                    >
+                      <MessageCircle className="w-4 h-4 fill-white text-emerald-600" />
+                      <span>Send 2nd Bill</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

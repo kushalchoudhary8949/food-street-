@@ -11,6 +11,8 @@ interface CartDrawerProps {
   onOpenLocationModal: () => void;
   onUpdateQuantity: (cartItemId: string, delta: number) => void;
   onClearCart: () => void;
+  /** Per-item container charge in ₹. Only pass for stores that charge it (e.g. Biryani Zone = 10). */
+  containerChargePerItem?: number;
   onPlaceOrder: (orderSummary: {
     tip: number;
     discount: number;
@@ -29,6 +31,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onOpenLocationModal,
   onUpdateQuantity,
   onClearCart,
+  containerChargePerItem = 0,
   onPlaceOrder,
 }) => {
   const [selectedTip, setSelectedTip] = useState<number>(20);
@@ -44,9 +47,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return sum + (ci.item.price + addonsCost) * ci.quantity;
   }, 0);
 
+  const totalQuantity = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
+  const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
   const deliveryFee = 20;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-  const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + selectedTip);
+  const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
@@ -87,8 +92,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">Your Cart</h3>
-              {currentStore && (
-                <p className="text-xs text-gray-500 font-medium">From {currentStore.name}</p>
+              {cartItems.length > 0 && (
+                <p className="text-xs text-gray-500 font-medium">
+                  {new Set(cartItems.map(ci => ci.store.id)).size === 1
+                    ? `From ${cartItems[0].store.name}`
+                    : `From ${new Set(cartItems.map(ci => ci.store.id)).size} Stores`}
+                </p>
               )}
             </div>
           </div>
@@ -149,48 +158,61 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </button>
                 </div>
 
-                {cartItems.map((ci) => {
-                  const addonsSum = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
-                  const singlePrice = ci.item.price + addonsSum;
-                  return (
-                    <div key={ci.id} className="flex items-start justify-between py-2 border-b border-gray-50 last:border-0">
-                      <div className="space-y-0.5 flex-1 pr-2">
-                        <div className="flex items-center space-x-1.5">
-                          <span className={`w-3.5 h-3.5 border flex items-center justify-center rounded-xs shrink-0 ${ci.item.isVeg ? 'border-emerald-600' : 'border-red-600'
-                            }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${ci.item.isVeg ? 'bg-emerald-600' : 'bg-red-600'}`}></span>
-                          </span>
-                          <span className="text-xs sm:text-sm font-bold text-gray-900">{ci.item.name}</span>
-                        </div>
-                        {ci.selectedAddons.length > 0 && (
-                          <p className="text-[11px] text-gray-500 pl-5">
-                            + {ci.selectedAddons.map(a => a.name).join(', ')}
-                          </p>
-                        )}
-                        <span className="text-xs font-semibold text-gray-700 block pl-5">
-                          ₹{(singlePrice * ci.quantity).toFixed(0)}
-                        </span>
-                      </div>
-
-                      {/* Quantity Modifier */}
-                      <div className="flex items-center bg-gray-100 rounded-xl p-0.5 shrink-0">
-                        <button
-                          onClick={() => onUpdateQuantity(ci.id, -1)}
-                          className="w-6 h-6 flex items-center justify-center text-gray-700 hover:bg-white rounded-lg transition-colors"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="w-6 text-center text-xs font-bold">{ci.quantity}</span>
-                        <button
-                          onClick={() => onUpdateQuantity(ci.id, 1)}
-                          className="w-6 h-6 flex items-center justify-center text-gray-700 hover:bg-white rounded-lg transition-colors"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
+                {Object.values(
+                  cartItems.reduce((acc, ci) => {
+                    const key = ci.store.id;
+                    if (!acc[key]) acc[key] = { store: ci.store, items: [] };
+                    acc[key].items.push(ci);
+                    return acc;
+                  }, {} as Record<string, { store: any; items: any[] }>)
+                ).map((group) => (
+                  <div key={group.store.id} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs space-y-3 mb-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                      <span className="text-xs font-bold uppercase tracking-wider text-gray-500">From {group.store.name}</span>
                     </div>
-                  );
-                })}
+                    {group.items.map((ci) => {
+                      const addonsSum = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
+                      const singlePrice = ci.item.price + addonsSum;
+                      return (
+                        <div key={ci.id} className="flex items-start justify-between py-2 border-b border-gray-50 last:border-0">
+                          <div className="space-y-0.5 flex-1 pr-2">
+                            <div className="flex items-center space-x-1.5">
+                              <span className={`w-3.5 h-3.5 border flex items-center justify-center rounded-xs shrink-0 ${ci.item.isVeg ? 'border-emerald-600' : 'border-red-600'}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${ci.item.isVeg ? 'bg-emerald-600' : 'bg-red-600'}`} />
+                              </span>
+                              <span className="text-xs sm:text-sm font-bold text-gray-900">{ci.item.name}</span>
+                            </div>
+                            {ci.selectedAddons.length > 0 && (
+                              <p className="text-[11px] text-gray-500 pl-5">
+                                + {ci.selectedAddons.map((a) => a.name).join(', ')}
+                              </p>
+                            )}
+                            <span className="text-xs font-semibold text-gray-700 block pl-5">
+                              ₹{(singlePrice * ci.quantity).toFixed(0)}
+                            </span>
+                          </div>
+
+                          {/* Quantity Modifier */}
+                          <div className="flex items-center bg-gray-100 rounded-xl p-0.5 shrink-0">
+                            <button
+                              onClick={() => onUpdateQuantity(ci.id, -1)}
+                              className="w-6 h-6 flex items-center justify-center text-gray-700 hover:bg-white rounded-lg transition-colors"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-6 text-center text-xs font-bold">{ci.quantity}</span>
+                            <button
+                              onClick={() => onUpdateQuantity(ci.id, 1)}
+                              className="w-6 h-6 flex items-center justify-center text-gray-700 hover:bg-white rounded-lg transition-colors"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
 
 
@@ -258,6 +280,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="flex justify-between text-gray-600">
                     <span>Delivery Partner Tip</span>
                     <span>₹{selectedTip}</span>
+                  </div>
+                )}
+                {containerCharge > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Container Charges <span className="text-gray-400">(₹{containerChargePerItem} × {totalQuantity})</span></span>
+                    <span>₹{containerCharge}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm font-extrabold text-gray-900 pt-2 border-t border-gray-100">

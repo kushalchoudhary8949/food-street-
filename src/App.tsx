@@ -201,12 +201,28 @@ export default function App() {
   const [customizingItem, setCustomizingItem] = useState<MenuItem | null>(null);
   const [customizingItemStore, setCustomizingItemStore] = useState<Store | null>(null);
 
-  // Cart state
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // Separate carts for each top-level store
+  const [bzCartItems, setBzCartItems] = useState<CartItem[]>([]);
+  const [fsCartItems, setFsCartItems] = useState<CartItem[]>([]);
+  const [isBzCartOpen, setIsBzCartOpen] = useState(false);
+  const [isFsCartOpen, setIsFsCartOpen] = useState(false);
 
   // Notification Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Pending orders for multi-bill logic
+  const [pendingOrders, setPendingOrders] = useState<Order[]>([]);
+
+  // IDs that belong to The Food Street hub (parent + its outlets)
+  const FOOD_STREET_IDS = new Set([
+    'store-food-street',
+    'store-kfc',
+    'store-pizzahut',
+    'store-vengo',
+    'store-bbk',
+    'store-goila',
+    'store-baskinrobbins',
+  ]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -240,7 +256,7 @@ export default function App() {
     setIsStoreModalOpen(true);
   };
 
-  // Handle Add to Cart from Store or Search (Multi-Store Support)
+  // Handle Add to Cart — routes to BZ cart or FS cart based on store
   const handleAddToCart = (
     item: MenuItem,
     quantity = 1,
@@ -277,90 +293,94 @@ export default function App() {
     if (!store) store = stores[0];
 
     const uniqueId = `${item.id}-${selectedAddons.map(a => a.id).sort().join('_')}`;
+    const newCartItem: CartItem = { id: uniqueId, item, store: store!, quantity, selectedAddons };
 
-    setCartItems((prev) => {
+    // Route to the correct cart
+    const isFoodStreet = FOOD_STREET_IDS.has(store!.id);
+    const setCart = isFoodStreet ? setFsCartItems : setBzCartItems;
+
+    setCart((prev) => {
       const existingIndex = prev.findIndex(ci => ci.id === uniqueId);
       if (existingIndex > -1) {
         const updated = [...prev];
-        updated[existingIndex].quantity += quantity;
+        updated[existingIndex] = { ...updated[existingIndex], quantity: updated[existingIndex].quantity + quantity };
         return updated;
-      } else {
-        return [
-          ...prev,
-          {
-            id: uniqueId,
-            item,
-            store: store!,
-            quantity,
-            selectedAddons,
-          },
-        ];
       }
+      return [...prev, newCartItem];
     });
 
     showToast(`Added ${quantity}x ${item.name} to cart`);
   };
 
-  // Update Cart Quantity (+ / -)
-  const handleUpdateCartQuantity = (cartItemIdOrItemId: string, delta: number) => {
-    setCartItems((prev) => {
-      // Find matching item either by unique cartItemId or basic item.id
-      const index = prev.findIndex(
-        ci => ci.id === cartItemIdOrItemId || ci.item.id === cartItemIdOrItemId
-      );
-      if (index === -1) return prev;
-
-      const current = prev[index];
-      const newQty = current.quantity + delta;
-
-      if (newQty <= 0) {
-        return prev.filter((_, idx) => idx !== index);
-      } else {
+  // Update Cart Quantity — searches both carts
+  const makeUpdateQuantity = (setCart: React.Dispatch<React.SetStateAction<CartItem[]>>) =>
+    (cartItemIdOrItemId: string, delta: number) => {
+      setCart((prev) => {
+        const index = prev.findIndex(
+          ci => ci.id === cartItemIdOrItemId || ci.item.id === cartItemIdOrItemId
+        );
+        if (index === -1) return prev;
+        const current = prev[index];
+        const newQty = current.quantity + delta;
+        if (newQty <= 0) return prev.filter((_, idx) => idx !== index);
         const copy = [...prev];
         copy[index] = { ...current, quantity: newQty };
         return copy;
-      }
-    });
+      });
+    };
+
+  const handleUpdateBzCartQuantity = makeUpdateQuantity(setBzCartItems);
+  const handleUpdateFsCartQuantity = makeUpdateQuantity(setFsCartItems);
+
+  // Also keep a generic one for StoreDetailModal (will route to the right cart based on store)
+  const handleUpdateCartQuantity = (cartItemIdOrItemId: string, delta: number) => {
+    // Try BZ cart first, then FS cart
+    const inBz = bzCartItems.some(ci => ci.id === cartItemIdOrItemId || ci.item.id === cartItemIdOrItemId);
+    if (inBz) {
+      handleUpdateBzCartQuantity(cartItemIdOrItemId, delta);
+    } else {
+      handleUpdateFsCartQuantity(cartItemIdOrItemId, delta);
+    }
   };
 
-  // Place order & Forward to WhatsApp
-  const handlePlaceOrder = ({
-    tip,
-    discount,
-    couponCode,
-    instructions,
-    paymentMethod,
-    cancellationConfirmed,
-  }: {
-    tip: number;
-    discount: number;
-    couponCode: string;
-    instructions: string;
-    paymentMethod: string;
-    cancellationConfirmed: boolean;
-  }) => {
-    if (cartItems.length === 0) return;
+  // Generic place order — accepts the cart items for the specific store
+  const buildAndPlaceOrder = (
+    cartItemsForOrder: CartItem[],
+    clearCart: () => void,
+    closeCart: () => void,
+    { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }: {
+      tip: number;
+      discount: number;
+      couponCode: string;
+      instructions: string;
+      paymentMethod: string;
+      cancellationConfirmed: boolean;
+    },
+    containerChargePerItem = 0
+  ) => {
+    if (cartItemsForOrder.length === 0) return;
     const windowStatus = getOrderWindowStatus();
     if (!windowStatus.isOpen) {
       showToast(windowStatus.message);
       return;
     }
 
-    const itemTotal = cartItems.reduce((sum, ci) => {
+    const itemTotal = cartItemsForOrder.reduce((sum, ci) => {
       const addonsCost = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
       return sum + (ci.item.price + addonsCost) * ci.quantity;
     }, 0);
 
+    const totalQuantity = cartItemsForOrder.reduce((sum, ci) => sum + ci.quantity, 0);
+    const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
     const deliveryFee = 20;
     const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-    const grandTotal = Math.max(0, itemTotal + deliveryFee + taxesAndPacking + tip - discount);
+    const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + tip - discount);
 
-    // Support multi-store order headers
     const storeMap = new Map<string, Store>();
-    cartItems.forEach(ci => storeMap.set(ci.store.id, ci.store));
+    cartItemsForOrder.forEach(ci => storeMap.set(ci.store.id, ci.store));
     const uniqueStores = Array.from(storeMap.values());
-    const storeName = uniqueStores.length === 1 
-      ? uniqueStores[0].name 
+    const storeName = uniqueStores.length === 1
+      ? uniqueStores[0].name
       : uniqueStores.map(s => s.name).join(' & ');
     const storeImage = uniqueStores[0].image;
     const storeId = uniqueStores.map(s => s.id).join('_');
@@ -378,13 +398,8 @@ export default function App() {
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
       orderNumber: `#FD-${Math.floor(10000 + Math.random() * 90000)}`,
-      store: {
-        id: storeId,
-        name: storeName,
-        image: storeImage,
-        deliveryTime: uniqueStores[0].deliveryTime,
-      },
-      items: cartItems.map(ci => ({
+      store: { id: storeId, name: storeName, image: storeImage, deliveryTime: uniqueStores[0].deliveryTime },
+      items: cartItemsForOrder.map(ci => ({
         name: `${ci.item.name} (${ci.store.name})`,
         quantity: ci.quantity,
         price: ci.item.price,
@@ -410,23 +425,32 @@ export default function App() {
       cancellationConfirmed,
     };
 
-    setOrders([newOrder, ...orders]);
-    setCartItems([]);
-    setIsCartOpen(false);
+    setOrders(prev => [newOrder, ...prev]);
+    clearCart();
+    closeCart();
     setIsStoreModalOpen(false);
-
-    // Forward receipt directly to WhatsApp (+91 8949508256)
     sendOrderToWhatsApp(newOrder);
-
-    // Switch to orders tab and show confirmation toast
     setActiveTab('orders');
     showToast('🎉 Order placed & sent to WhatsApp (+91 8949508256)!');
   };
+
+  const handlePlaceBzOrder = (opts: { tip: number; discount: number; couponCode: string; instructions: string; paymentMethod: string; cancellationConfirmed: boolean }) =>
+    buildAndPlaceOrder(bzCartItems, () => setBzCartItems([]), () => setIsBzCartOpen(false), opts, 10);
+
+  const handlePlaceFsOrder = (opts: { tip: number; discount: number; couponCode: string; instructions: string; paymentMethod: string; cancellationConfirmed: boolean }) =>
+    buildAndPlaceOrder(fsCartItems, () => setFsCartItems([]), () => setIsFsCartOpen(false), opts);
 
   // Complete & remove order from list
   const handleCompleteOrder = (orderId: string) => {
     setOrders(prev => prev.filter(o => o.id !== orderId));
     showToast('✅ Order completed & removed');
+  };
+
+  // Send pending (second) bill via WhatsApp
+  const handleSendPendingOrder = (order: Order) => {
+    sendOrderToWhatsApp(order);
+    setPendingOrders(prev => prev.filter(o => o.id !== order.id));
+    showToast('📩 Second bill sent via WhatsApp');
   };
 
   // Keywords mapping for robust category filtering
@@ -493,11 +517,17 @@ export default function App() {
     return dishes;
   }, [selectedCategory, categoryKeywords, stores]);
 
-  // Calculate cart counts
-  const totalCartCount = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
-  const totalCartPrice = cartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
+  // Calculate per-store cart counts/totals
+  const bzCartCount = bzCartItems.reduce((sum, ci) => sum + ci.quantity, 0);
+  const bzCartPrice = bzCartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
+  const fsCartCount = fsCartItems.reduce((sum, ci) => sum + ci.quantity, 0);
+  const fsCartPrice = fsCartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
+  const totalCartCount = bzCartCount + fsCartCount;
   // Only track active orders among the customer's top 4 recent orders
   const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
+
+  // Combined cartItems for StoreDetailModal compatibility
+  const cartItems = [...bzCartItems, ...fsCartItems];
 
   // Handlers to synchronize Admin updates to local state
   // Handlers to synchronize Admin updates to local state
@@ -568,9 +598,12 @@ export default function App() {
                   onSearchChange={setSearchQuery}
                   onSearchFocus={() => {}}
                   onAvatarClick={() => setActiveTab('profile')}
-                  onOpenCart={() => setIsCartOpen(true)}
+                  onOpenCart={() => {
+                    if (bzCartCount > 0) setIsBzCartOpen(true);
+                    else if (fsCartCount > 0) setIsFsCartOpen(true);
+                  }}
                   cartCount={totalCartCount}
-                  cartTotal={totalCartPrice}
+                  cartTotal={bzCartPrice + fsCartPrice}
                 />
 
                 {/* Order Window Timing Banner */}
@@ -664,8 +697,10 @@ export default function App() {
                 <OrdersTab
                   orders={orders}
                   stores={stores}
+                  pendingOrders={pendingOrders}
                   onCompleteOrder={handleCompleteOrder}
                   onExploreFood={() => setActiveTab('home')}
+                  onSendPendingOrder={handleSendPendingOrder}
                 />
               </div>
             )}
@@ -682,27 +717,40 @@ export default function App() {
               </div>
             )}
 
-            {/* Floating Cart Button if active tab is Home or Search and cart has items (Sticky when scrolling) */}
-            {totalCartCount > 0 && activeTab !== 'orders' && !isStoreModalOpen && (
+            {/* Floating Cart Buttons — one per store */}
+            {(bzCartCount > 0 || fsCartCount > 0) && activeTab !== 'orders' && !isStoreModalOpen && (
               <div className="fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200">
-                <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
-                  <button
-                    id="global-floating-cart-btn"
-                    onClick={() => setIsCartOpen(true)}
-                    className="w-full min-h-[52px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-2xl shadow-red-600/30 active:scale-98 transition-all"
-                  >
-                  <div className="flex items-center gap-2.5 min-w-0 leading-none">
-                    <span className="inline-flex items-center justify-center h-7 px-2.5 bg-white/20 text-white text-[10px] sm:text-xs font-black rounded-lg shrink-0 leading-none">
-                      {totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}
-                    </span>
-                    <span className="text-sm font-extrabold text-white leading-none">
-                      ₹{totalCartPrice.toFixed(0)}
-                    </span>
-                  </div>
-                    <span className="flex items-center text-xs sm:text-sm font-black uppercase tracking-wider leading-none whitespace-nowrap">
-                      View Cart <span aria-hidden="true">→</span>
-                    </span>
-                  </button>
+                <div className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2">
+                  {bzCartCount > 0 && (
+                    <button
+                      id="bz-floating-cart-btn"
+                      onClick={() => setIsBzCartOpen(true)}
+                      className="w-full min-h-[48px] py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0 leading-none">
+                        <span className="inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0">
+                          {bzCartCount} {bzCartCount === 1 ? 'ITEM' : 'ITEMS'}
+                        </span>
+                        <span className="text-sm font-extrabold text-white leading-none">₹{bzCartPrice.toFixed(0)}</span>
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-wider whitespace-nowrap">Biriyani Zone Cart →</span>
+                    </button>
+                  )}
+                  {fsCartCount > 0 && (
+                    <button
+                      id="fs-floating-cart-btn"
+                      onClick={() => setIsFsCartOpen(true)}
+                      className="w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0 leading-none">
+                        <span className="inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0">
+                          {fsCartCount} {fsCartCount === 1 ? 'ITEM' : 'ITEMS'}
+                        </span>
+                        <span className="text-sm font-extrabold text-white leading-none">₹{fsCartPrice.toFixed(0)}</span>
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-wider whitespace-nowrap">Food Street Cart →</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -716,7 +764,10 @@ export default function App() {
               }}
               activeOrdersCount={activeOrdersCount}
               cartItemsCount={totalCartCount}
-              onOpenCart={() => setIsCartOpen(true)}
+              onOpenCart={() => {
+                if (bzCartCount > 0) setIsBzCartOpen(true);
+                else if (fsCartCount > 0) setIsFsCartOpen(true);
+              }}
               showAdmin={false}
             />
 
@@ -733,7 +784,11 @@ export default function App() {
                 setCustomizingItem(item);
               }}
               onUpdateCartQuantity={handleUpdateCartQuantity}
-              onOpenCart={() => setIsCartOpen(true)}
+              onOpenCart={() => {
+                const isFoodStreet = selectedStore ? FOOD_STREET_IDS.has(selectedStore.id) : false;
+                if (isFoodStreet) setIsFsCartOpen(true);
+                else setIsBzCartOpen(true);
+              }}
             />
 
             {/* Menu Item Customization Modal */}
@@ -746,18 +801,29 @@ export default function App() {
               onAddToCart={handleAddToCart}
             />
 
-            {/* Cart Drawer & Checkout */}
+            {/* Biriyani Zone Cart Drawer */}
             <CartDrawer
-              isOpen={isCartOpen}
-              onClose={() => setIsCartOpen(false)}
-              cartItems={cartItems}
+              isOpen={isBzCartOpen}
+              onClose={() => setIsBzCartOpen(false)}
+              cartItems={bzCartItems}
               currentAddress={currentAddress}
-              onOpenLocationModal={() => {
-                setIsLocationModalOpen(true);
-              }}
-              onUpdateQuantity={(cartItemId, delta) => handleUpdateCartQuantity(cartItemId, delta)}
-              onClearCart={() => setCartItems([])}
-              onPlaceOrder={handlePlaceOrder}
+              onOpenLocationModal={() => setIsLocationModalOpen(true)}
+              onUpdateQuantity={handleUpdateBzCartQuantity}
+              onClearCart={() => setBzCartItems([])}
+              containerChargePerItem={10}
+              onPlaceOrder={handlePlaceBzOrder}
+            />
+
+            {/* The Food Street Cart Drawer */}
+            <CartDrawer
+              isOpen={isFsCartOpen}
+              onClose={() => setIsFsCartOpen(false)}
+              cartItems={fsCartItems}
+              currentAddress={currentAddress}
+              onOpenLocationModal={() => setIsLocationModalOpen(true)}
+              onUpdateQuantity={handleUpdateFsCartQuantity}
+              onClearCart={() => setFsCartItems([])}
+              onPlaceOrder={handlePlaceFsOrder}
             />
 
             {/* Location Picker Modal */}

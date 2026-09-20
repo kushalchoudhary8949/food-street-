@@ -4384,7 +4384,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 186 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },

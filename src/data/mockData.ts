@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v60_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v61_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -2444,16 +2444,6 @@ export const RAW_STORES: Store[] = [
             "category": "Gold Edition"
       },
       {
-            "id": "kfc-44",
-            "storeId": "store-kfc",
-            "name": "Big 12",
-            "price": 739,
-            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk| 579 Kcal | Wt 910 g",
-            "image": "/images/KFC/Big 12.jpg",
-            "isVeg": false,
-            "category": "Variety Buckets"
-      },
-      {
             "id": "kfc-48",
             "storeId": "store-kfc",
             "name": "5 Peri Peri Leg Pc",
@@ -3315,16 +3305,6 @@ export const RAW_STORES: Store[] = [
             "category": "Variety Buckets"
       },
       {
-            "id": "kfc-csv-44",
-            "storeId": "store-kfc",
-            "name": "Big 12",
-            "price": 749,
-            "description": "23% off on 6pc Hot & Crispy Chicken,6 Wings & 2 Dips. Allergen Wheat,Soy,Milk| 579 Kcal | Wt 910 g",
-            "image": "/images/KFC/Big 12.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
-      },
-      {
             "id": "kfc-csv-45",
             "storeId": "store-kfc",
             "name": "Big 8 With 2 Pepsi Zero Sugar",
@@ -3953,16 +3933,6 @@ export const RAW_STORES: Store[] = [
             "image": "/images/KFC/Grilled Chicken Rice Bowlz.jpg",
             "isVeg": true,
             "category": "Rice Bowlz"
-      },
-      {
-            "id": "kfc-csv-108",
-            "storeId": "store-kfc",
-            "name": "Very Berry Strawberry Cup",
-            "price": 86.66,
-            "description": "Crunchy, juicy signature KFC favourite. (69 Kcal • 60g)",
-            "image": "/images/KFC/Very Berry Strawberry Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-109",

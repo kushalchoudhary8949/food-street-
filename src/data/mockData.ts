@@ -4237,7 +4237,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 180 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4256,7 +4256,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 180 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4274,7 +4274,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 200 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4292,7 +4292,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 200 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4310,7 +4310,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 220 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4328,7 +4328,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 220 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4347,7 +4347,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 180 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4365,7 +4365,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 174 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4402,7 +4402,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 186 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4420,7 +4420,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 200 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4438,7 +4438,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 230 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4457,7 +4457,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 240 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4475,7 +4475,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 240 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4494,7 +4494,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 240 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4512,7 +4512,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 300 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4531,7 +4531,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 300 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4550,7 +4550,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 264 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4568,7 +4568,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 280 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4586,7 +4586,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 186 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4604,7 +4604,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 216 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4622,7 +4622,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 276 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4640,7 +4640,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 280 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4658,7 +4658,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 270 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4676,7 +4676,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 270 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4694,7 +4694,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 270 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4713,7 +4713,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 290 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4732,7 +4732,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 290 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4751,7 +4751,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 300 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },
@@ -4769,7 +4769,7 @@ export const RAW_STORES: Store[] = [
         addons: [
           { id: 'ad-ph-med-upgrade', name: 'Upgrade to Medium Pizza', price: 300 },
           { id: 'ad-ph-cheese-crust', name: 'Ultimate Cheese Stuffed Crust', price: 79 },
-          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 50 },
+          { id: 'ad-ph-extra-cheese', name: 'Extra 100% Mozzarella Cheese', price: 89 },
           { id: 'ad-ph-dip-mayo', name: 'Creamy Veg Mayo Dip', price: 30 },
         ],
       },

@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v19991_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v11_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -2297,7 +2297,7 @@ export const RAW_STORES: Store[] = [
     name: 'KFC',
     rating: 4.2,
     reviewsCount: 1420,
-    deliveryTime: '25-30 mins',
+    deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.8 km',
     image: '/images/storeImage/kfc.jpeg',
@@ -3599,7 +3599,7 @@ export const RAW_STORES: Store[] = [
     name: 'Pizza Hut',
     rating: 4.5,
     reviewsCount: 3850,
-    deliveryTime: '35-45 mins',
+    deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.8 km',
     image: '/images/storeImage/pizzahut.png',
@@ -4825,7 +4825,7 @@ export const RAW_STORES: Store[] = [
     name: 'Vaango',
     rating: 4.6,
     reviewsCount: 2310,
-      deliveryTime: '35-45 mins',
+      deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.8 km',
     image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1000&q=85',
@@ -5806,7 +5806,7 @@ export const RAW_STORES: Store[] = [
     name: 'Goila Butter Chicken',
     rating: 4.6,
     reviewsCount: 1940,
-    deliveryTime: '35-45 mins',
+    deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.8 km',
     image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=1000&q=85',
@@ -6159,7 +6159,7 @@ export const RAW_STORES: Store[] = [
     name: 'Baskin Robbins',
     rating: 4.8,
     reviewsCount: 3120,
-    deliveryTime: '20-25 mins',
+    deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.8 km',
     image: '/images/storeImage/baskinrobbins.jpg',

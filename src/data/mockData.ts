@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v191_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v19991_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -3154,7 +3154,7 @@ export const RAW_STORES: Store[] = [
             "name": "Epic Feast Grand Bucket",
             "price": 839,
             "description": "Get 30% off on 5 Hot & Crispy, 8 Pc Strips, 4 Dips, 2 Reg Fries & 2 Reg Pepsi",
-            "image": "/images/KFC/Epic Feast Grand Bucket.webp",
+            "image": "/images/KFC/Epic Feast Grand Bucket.jpg",
             "isVeg": false,
             "category": "Combos & Meals"
       },

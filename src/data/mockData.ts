@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v61_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v1991_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -10,6 +10,20 @@ const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
             seenNames.add(item.name);
             return true;
       });
+};
+
+const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): MenuItem[] => {
+      const categoryOrder = new Map(categories.map((category, index) => [category, index]));
+
+      return items
+            .map((item, index) => ({ item, index }))
+            .sort((first, second) => {
+                  const firstCategory = categoryOrder.get(first.item.category) ?? categories.length;
+                  const secondCategory = categoryOrder.get(second.item.category) ?? categories.length;
+
+                  return firstCategory - secondCategory || first.index - second.index;
+            })
+            .map(({ item }) => item);
 };
 
 export const CATEGORIES: Category[] = [
@@ -2290,48 +2304,48 @@ export const RAW_STORES: Store[] = [
     cuisines: ['Crispy Chicken', 'Burgers', 'Fast Food', 'Wings', 'Chicken', 'Snacks'],
     tags: ['Chicken', 'Burgers', 'Fast Delivery', 'Bestseller'],
     menuCategories: [
-      "Veg",
-      "Shawarma Specials",
-      "Epic Savers",
-      "Gold Edition",
-      "Box Meals",
-      "Variety Buckets",
-      "Chicken Buckets",
-      "Burgers",
-      "Snacks",
-      "Rice Bowlz",
-      "Desserts & Beverages"
-],
-      items: deduplicateMenuItems([
+      'Veg Burgers',
+      'Chicken Burgers',
+      'Shawarma Specials',
+      'Chicken Buckets',
+      'Wings & Strips',
+      'Rolls & Wraps',
+      'Fries & Sides',
+      'Rice Bowlz',
+      'Dips & Sauces',
+      'Combos & Meals',
+      'Desserts & Beverages',
+    ],
+      items: orderMenuItemsByCategory(deduplicateMenuItems([
       {
             "id": "kfc-1",
             "storeId": "store-kfc",
             "name": "Chana Burger",
             "price": 74,
-            "description": "Signature KFC preparation.",
+            "description": "Discover our all-new Chatpata Chana Burger—bursting with flavor!",
             "image": "/images/KFC/Chana Burger.jpg",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-10",
             "storeId": "store-kfc",
             "name": "Spicy Veg Krisper - With Cheese",
             "price": 124,
-            "description": "Crunchy, juicy signature KFC favourite. (472 Kcal • 156g)",
-            "image": "/images/KFC/Spicy Veg Krisper - With Cheese.jpg",
+            "description": "Cheese slice filled Spicy Veg Krisper.",
+            "image": "/images/KFC/Spicy Veg Krisper - with Cheese.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-11",
             "storeId": "store-kfc",
             "name": "Classic Veg Krisper - With Cheese",
             "price": 124,
-            "description": "Crunchy, juicy signature KFC favourite. (532 Kcal • 156g)",
-            "image": "/images/KFC/Classic Veg Krisper - With Cheese.jpg",
+            "description": "Cheese slice filled Classic Veg Krisper.",
+            "image": "/images/KFC/lassic Veg Krisper - with Cheese.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-12",
@@ -2339,39 +2353,39 @@ export const RAW_STORES: Store[] = [
             "name": "Veg Roll",
             "price": 104,
             "description": "Crunchy, juicy signature KFC favourite. (447 Kcal • 145g)",
-            "image": "/images/KFC/Veg Roll.jpg",
+            "image": "/images/KFC/Classic Chicken Roll.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-13",
             "storeId": "store-kfc",
             "name": "Longer Veg Burger",
             "price": 94,
-            "description": "Crunchy, juicy signature KFC favourite. (259 Kcal • 110g)",
-            "image": "/images/KFC/Longer Veg Burger.jpg",
+            "description": "Long burger with veg strip, onion & sauce.",
+            "image": "/images/KFC/Longer Veg Burger.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-14",
             "storeId": "store-kfc",
             "name": "Spicy Veg Krisper",
             "price":94,
-            "description": "Crunchy, juicy signature KFC favourite. (436 Kcal • 145g)",
-            "image": "/images/KFC/Spicy Veg Krisper.jpg",
+            "description": "The spicy veg krisper is up for grabs.",
+            "image": "/images/KFC/Spicy Veg Krisper.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-15",
             "storeId": "store-kfc",
             "name": "Classic Veg Krisper",
             "price": 94,
-            "description": "Crunchy, juicy signature KFC favourite. (496 Kcal • 145g)",
-            "image": "/images/KFC/Classic Veg Krisper.jpg",
+            "description": "Relish the Classic Veg Krisper.",
+            "image": "/images/KFC/Classic Veg Krisper.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-20",
@@ -2379,7 +2393,7 @@ export const RAW_STORES: Store[] = [
             "name": "2 Shawarmas – Saver Deal",
             "price": 259,
             "description": "Crunchy, juicy signature KFC favourite. (904 Kcal • 330g)",
-            "image": "/images/KFC/Shawarma.jpg",
+            "image": "",
             "isVeg": false,
             "category": "Shawarma Specials"
       },
@@ -2389,7 +2403,7 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma",
             "price": 179,
             "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Shawarma.jpg",
+            "image": "/images/KFC/Classic Chicken Roll.webp",
             "isVeg": false,
             "category": "Shawarma Specials"
       },
@@ -2398,58 +2412,58 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Epic Savers Bucket",
             "price": 519,
-            "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips Allergen Wheat, Soy, Milk| 479 Kcal| Wt 670g",
-            "image": "/images/KFC/Epic Savers Bucket.jpg",
+            "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips",
+            "image": "/images/KFC/Ultimate Savings Bucket.webp",
             "isVeg": false,
-            "category": "Epic Savers"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-31",
             "storeId": "store-kfc",
             "name": "Gold Edition – Chicken Zinger",
             "price": 279,
-            "description": "Crunchy, juicy signature KFC favourite. (678 Kcal • 250g)",
-            "image": "/images/KFC/Gold Edition – Chicken Zinger.jpg",
+            "description": "Signature Zinger Dunked in Sauce with Bun",
+            "image": "/images/KFC/Gold Edition – Chicken Zinger.webp",
             "isVeg": false,
-            "category": "Gold Edition"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-32",
             "storeId": "store-kfc",
             "name": "Gold Edition – Chicken Zinger & Fries",
             "price": 309,
-            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 325g)",
-            "image": "/images/KFC/Gold Edition – Chicken Zinger & Fries.jpg",
+            "description": "Zinger Dunked in Sauce with Bun & Reg Fries",
+            "image": "/images/KFC/Gold Edition – Chicken Zinger & Fries.webp",
             "isVeg": false,
-            "category": "Gold Edition"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-34",
             "storeId": "store-kfc",
             "name": "Gold Edition – 3pc Boneless Strips",
             "price": 219,
-            "description": "Crunchy, juicy signature KFC favourite. (387 Kcal • 146g)",
-            "image": "/images/KFC/Gold Edition – 3pc Boneless Strips.jpg",
+            "description": "Cheesy 3 Pc Boneless Strips",
+            "image": "/images/KFC/Gold Edition – 3pc Boneless Strips.webp",
             "isVeg": false,
-            "category": "Gold Edition"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-36",
             "storeId": "store-kfc",
             "name": "Gold Edition – Veg Zinger",
             "price": 219,
-            "description": "Crunchy, juicy signature KFC favourite. (765 Kcal • 250g)",
-            "image": "/images/KFC/Gold Edition – Veg Zinger.jpg",
+            "description": "Cheesy Veg Zinger.",
+            "image": "/images/KFC/Gold Edition – Veg Zinger.webp",
             "isVeg": true,
-            "category": "Gold Edition"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-48",
             "storeId": "store-kfc",
             "name": "5 Peri Peri Leg Pc",
             "price": 489,
-            "description": "Save Rs. 120 on 5 Peri Peri Leg pc Allergen Wheat, Soy, Milk| 748 Kcal| Wt 500 g",
-            "image": "/images/KFC/5 Peri Peri Leg Pc.jpg",
+            "description": "Save Rs. 120 on 5 Peri Peri Leg pc",
+            "image": "/images/KFC/5 Peri Peri Leg pc.webp",
             "isVeg": false,
             "category": "Chicken Buckets"
       },
@@ -2458,8 +2472,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Bucket",
             "price": 689,
-            "description": "8 pc Hot & Cripsy Allergen Wheat| 160 Kcal | Wt 880 g",
-            "image": "/images/KFC/8 Pc Bucket.jpg",
+            "description": "Rs. 152 off! 8 pc Hot & Cripsy",
+            "image": "/images/KFC/8 pc Bucket.webp",
             "isVeg": false,
             "category": "Chicken Buckets"
       },
@@ -2469,7 +2483,7 @@ export const RAW_STORES: Store[] = [
             "name": "Wednesday Specials 15 Pc Bucket",
             "price": 429,
             "description": "7 Strips, 6 Wings and 2 Hot & Crispy",
-            "image": "/images/KFC/KFC-category-EPIC-Bucket-3_Wednesday-Special-15-PC-Bucket_-28th-JAN.jpg",
+            "image": "",
             "isVeg": false,
             "category": "Chicken Buckets",
             "availableOnDays": ["Wednesday"]
@@ -2479,8 +2493,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "6pc Hot & Crispy",
             "price": 559,
-            "description": "Get 6 piece Hot & Crispy Chicken. Allergen Wheat| 213 Kcal | Wt 660 g",
-            "image": "/images/KFC/6pc Hot & Crispy.jpg",
+            "description": "Get 6 piece Hot & Crispy Chicken.",
+            "image": "/images/KFC/6pc Hot & Crispy.webp",
             "isVeg": false,
             "category": "Chicken Buckets"
       },
@@ -2489,190 +2503,190 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "8 Pc Boneless Meal",
             "price": 459,
-            "description": "8 Peri Peri Strips with 2 Dips! Allergen Wheat,Milk| 374 Kcal | Wt 500 g",
-            "image": "/images/KFC/8 Pc Bucket.jpg",
+            "description": "8 Peri Peri Strips with 2 Dips!",
+            "image": "/images/KFC/8 pc Boneless Meal.webp",
             "isVeg": false,
-            "category": "Chicken Buckets"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-54",
             "storeId": "store-kfc",
             "name": "Classic Chicken Krisper",
             "price": 104,
-            "description": "Crunchy, juicy signature KFC favourite. (405 Kcal • 150g)",
-            "image": "/images/KFC/Chicken Krisper.jpeg",
+            "description": "Crispy chicken",
+            "image": "/images/KFC/Classic Chicken Krisper.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-55",
             "storeId": "store-kfc",
             "name": "Spicy Chicken Krisper",
             "price": 104,
-            "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 145g)",
-            "image": "/images/KFC/Chicken Krisper.jpeg",
+            "description": "The spicy chicken krisper is up for grabs",
+            "image": "/images/KFC/Spicy Chicken Krisper.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-56",
             "storeId": "store-kfc",
             "name": "Spicy Zinger Burger",
             "price": 209,
-            "description": "Crunchy, juicy signature KFC favourite. (439 Kcal • 215g)",
-            "image": "/images/KFC/Spicy Zinger Burger.jpg",
+            "description": "Relish the spicy zinger",
+            "image": "/images/KFC/Spicy Zinger Burger.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-58",
             "storeId": "store-kfc",
             "name": "Zinger Pro Burger",
             "price": 249,
-            "description": "Crunchy, juicy signature KFC favourite. (529 Kcal • 225g)",
-            "image": "/images/KFC/Zinger Pro Burger.jpg",
+            "description": "Zinger fillet, cheese, lettuce, tomatoes, sauce",
+            "image": "/images/KFC/Zinger Pro Burger.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-60",
             "storeId": "store-kfc",
             "name": "Tandoori Zinger Burger",
             "price": 209,
-            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 230g)",
-            "image": "/images/KFC/Tandoori Zinger Burger.jpg",
+            "description": "Zinger Burger with Onions & Tangy sauce",
+            "image": "/images/KFC/Tandoori Zinger Burger.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-62",
             "storeId": "store-kfc",
             "name": "American Classic Zinger Burger",
             "price": 199,
-            "description": "Crunchy, juicy signature KFC favourite. (971 Kcal • 360g)",
-            "image": "/images/KFC/American Classic Zinger Burger.jpg",
+            "description": "Classic Zinger-lettuce, mayo & Zinger patty",
+            "image": "/images/KFC/American Classic Zinger Burger.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-68",
             "storeId": "store-kfc",
             "name": "Chicken Longer Burger",
             "price": 94,
-            "description": "Crunchy, juicy signature KFC favourite. (356 Kcal • 120g)",
-            "image": "/images/KFC/Chicken Longer Burger.jpg",
+            "description": "Chicken Longer Burger",
+            "image": "/images/KFC/Chicken Longer Burger.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-71",
             "storeId": "store-kfc",
             "name": "Spicy Chicken Krisper - With Cheese",
             "price": 134,
-            "description": "Crunchy, juicy signature KFC favourite. (378 Kcal • 156g)",
-            "image": "/images/KFC/Chicken Krisper.jpeg",
+            "description": "Cheese slice filled Spicy Chicken Krisper",
+            "image": "/images/KFC/Spicy Chicken Krisper - with Cheese.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-72",
             "storeId": "store-kfc",
             "name": "Classic Chicken Krisper - With Cheese",
             "price": 134,
-            "description": "Crunchy, juicy signature KFC favourite. (441 Kcal • 161g)",
-            "image": "/images/KFC/Chicken Krisper.jpeg",
+            "description": "Cheese slice filled Classic Chicken Krisper",
+            "image": "/images/KFC/Classic Chicken Krisper - with Cheese.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Chicken Burgers"
       },
       {
             "id": "kfc-73",
             "storeId": "store-kfc",
             "name": "Regular Popcorn",
             "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (306 Kcal • 90g)",
-            "image": "/images/KFC/Regular Popcorn.jpg",
+            "description": "Regular bite sized Chicken Popcorn",
+            "image": "/images/KFC/Popcorn.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-74",
             "storeId": "store-kfc",
             "name": "Medium Popcorn",
             "price": 159,
-            "description": "Crunchy, juicy signature KFC favourite. (476 Kcal • 140g)",
-            "image": "/images/KFC/Medium Popcorn.jpg",
+            "description": "Med Chicken Popcorn with Chili Lime flavours.",
+            "image": "/images/KFC/Popcorn.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-75",
             "storeId": "store-kfc",
             "name": "Large Popcorn",
             "price": 209,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Large Popcorn.jpg",
+            "description": "Large Pack of Chicken Popcorn seasoned with the Chili Lime flavours",
+            "image": "/images/KFC/Popcorn.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-76",
             "storeId": "store-kfc",
             "name": "4pc Hot Wings",
             "price": 169,
-            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
-            "image": "/images/KFC/4pc Hot Wings.jpg",
+            "description": "4 pc Chicken Wings Snack with KFC Meal.",
+            "image": "/images/KFC/4pc Hot wings.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-77",
             "storeId": "store-kfc",
             "name": "3 Pc Peri Peri Strips",
             "price": 169,
-            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
-            "image": "/images/KFC/3 Pc Peri Peri Strips.jpg",
+            "description": "Chicken Strips with Peri Peri- 3 Peri Peri Strips.",
+            "image": "/images/KFC/3 pc Peri Peri Strips.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-78",
             "storeId": "store-kfc",
             "name": "6 Peri Peri Strips",
             "price": 289,
-            "description": "Crunchy, juicy signature KFC favourite. (202 Kcal • 270g)",
-            "image": "/images/KFC/6 Peri Peri Strips.jpg",
+            "description": "Save 16% on 6 Peri Peri chicken boneless strips",
+            "image": "/images/KFC/6 Peri Peri Strips.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-79",
             "storeId": "store-kfc",
             "name": "1 Pc Hot & Crispy",
             "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (320 Kcal • 110g)",
-            "image": "/images/KFC/1 Pc Hot & Crispy.jpg",
+            "description": "Get the 1 pc Hot & Crispy Chicken.",
+            "image": "/images/KFC/1 pc Hot & Crispy.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-80",
             "storeId": "store-kfc",
             "name": "2pc Hot & Crispy",
             "price": 205,
-            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 220g)",
-            "image": "/images/KFC/2pc Hot & Crispy.jpg",
+            "description": "Get 2 piece Hot & Crispy Chicken.",
+            "image": "/images/KFC/2pc Hot & Crispy.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-81",
             "storeId": "store-kfc",
             "name": "4pc Hot & Crispy",
             "price": 389,
-            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 440g)",
-            "image": "/images/KFC/4pc Hot & Crispy.jpg",
+            "description": "Get 4 piece Hot & Crispy Chicken.",
+            "image": "/images/KFC/4pc Hot & Crispy.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-82",
@@ -2680,9 +2694,9 @@ export const RAW_STORES: Store[] = [
             "name": "1pc Smoky Red",
             "price": 109,
             "description": "Crunchy, juicy signature KFC favourite. (171 Kcal • 90g)",
-            "image": "/images/KFC/1pc Smoky Red.jpg",
+            "image": "/images/KFC/1 pc Hot & Crispy.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-83",
@@ -2690,157 +2704,157 @@ export const RAW_STORES: Store[] = [
             "name": "2pc Smoky Red",
             "price": 205,
             "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 180g)",
-            "image": "/images/KFC/2pc Smoky Red.jpg",
+            "image": "/images/KFC/2pc Hot & Crispy.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-84",
             "storeId": "store-kfc",
             "name": "Regular Fries",
             "price": 84,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Regular Fries.jpg",
+            "description": "Regular size Fries.",
+            "image": "/images/KFC/Regular Fries.webp",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Fries & Sides"
       },
       {
             "id": "kfc-85",
             "storeId": "store-kfc",
             "name": "Medium Fries",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Medium Fries.jpg",
+            "description": "Jazz up your meal with crispy Fries",
+            "image": "/images/KFC/Regular Fries.webp",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Fries & Sides"
       },
       {
             "id": "kfc-86",
             "storeId": "store-kfc",
             "name": "Large Fries",
             "price": 109,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Large Fries.jpg",
+            "description": "Jazz up your meal with crispy Fries.",
+            "image": "/images/KFC/Regular Fries.webp",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Fries & Sides"
       },
       {
             "id": "kfc-87",
             "storeId": "store-kfc",
             "name": "Plain Rice Bowlz",
             "price": 139,
-            "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 250g)",
-            "image": "/images/KFC/Plain Rice Bowlz.jpg",
+            "description": "Aromatic Plain Rice meal.",
+            "image": "/images/KFC/Plain Rice Bowlz.webp",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Rice Bowlz"
       },
       {
             "id": "kfc-88",
             "storeId": "store-kfc",
             "name": "Tandoori Chicken Roll",
             "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
-            "image": "/images/KFC/Tandoori Chicken Roll.jpg",
+            "description": "Roll made with flaky lachha paratha, chicken & sauce",
+            "image": "/images/KFC/Tandoori Chicken Roll.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-90",
             "storeId": "store-kfc",
             "name": "Thai Spicy Chicken Roll",
             "price": 129,
-            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
-            "image": "/images/KFC/Thai Spicy Chicken Roll.jpg",
+            "description": "Thai sauces in a flaky paratha, strips & veggies",
+            "image": "/images/KFC/Thai Spicy chicken roll.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-91",
             "storeId": "store-kfc",
             "name": "Classic Chicken Roll",
             "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (461 Kcal • 150g)",
-            "image": "/images/KFC/Double Chicken Roll.jpg",
+            "description": "Paratha with Strips & sauce topped with onions",
+            "image": "/images/KFC/Classic Chicken Roll.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-92",
             "storeId": "store-kfc",
             "name": "Double Chicken Roll",
             "price": 159,
-            "description": "Crunchy, juicy signature KFC favourite. (526 Kcal • 190g)",
-            "image": "/images/KFC/Double Chicken Roll.jpg",
+            "description": "Chicken Roll, paratha+Strips & sauce with onion.",
+            "image": "/images/KFC/Double Chicken Roll.webp",
             "isVeg": false,
-            "category": "Snacks"
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-96",
             "storeId": "store-kfc",
             "name": "Dynamite Spicy Mayo Dip",
             "price": 34,
-            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 20g)",
+            "description": "Try KFC Signature Dip",
             "image": "/images/KFC/Dynamite Spicy Mayo Dip.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-97",
             "storeId": "store-kfc",
             "name": "Nashville Hot Pepper Dip",
             "price": 34,
-            "description": "Signature KFC preparation.",
+            "description": "Try KFC Signature Dip",
             "image": "/images/KFC/Nashville Hot Pepper Dip.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-98",
             "storeId": "store-kfc",
             "name": "Eggless Mayo Dip",
             "price": 34,
-            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
+            "description": "Try KFC Signature Dip.",
             "image": "/images/KFC/Eggless Mayo Dip.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-99",
             "storeId": "store-kfc",
             "name": "Tandoori Masala Dip",
             "price": 34,
-            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
+            "description": "Add Tandoori Masala Dip to your meal.",
             "image": "/images/KFC/Tandoori Masala Dip.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-100",
             "storeId": "store-kfc",
             "name": "Naagin Sauce – The Original",
             "price": 34,
-            "description": "Crunchy, juicy signature KFC favourite. (20 Kcal • 20g)",
+            "description": "Homage to the classic South flavour, with a twist!",
             "image": "/images/KFC/Naagin Sauce – The Original.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-101",
             "storeId": "store-kfc",
             "name": "Naagin Sauce – The 65 Variant",
             "price": 34,
-            "description": "Signature KFC preparation.",
+            "description": "Sauce that isn't too spicy. It's extremely family-friendly!",
             "image": "/images/KFC/Naagin Sauce – The 65 Variant.jpg",
             "isVeg": true,
-            "category": "Snacks"
+            "category": "Dips & Sauces"
       },
       {
             "id": "kfc-105",
             "storeId": "store-kfc",
             "name": "Classic Chicken Rice Bowlz",
             "price": 209,
-            "description": "Crunchy, juicy signature KFC favourite. (547 Kcal • 360g)",
-            "image": "/images/KFC/Classic Chicken Rice Bowlz.jpg",
+            "description": "Aromatic Rice Bowlz rice with 1 Leg piece",
+            "image": "/images/KFC/Classic Chicken Rice Bowlz.webp",
             "isVeg": false,
             "category": "Rice Bowlz"
       },
@@ -2849,8 +2863,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Popcorn Chicken Rice Bowlz",
             "price": 219,
-            "description": "Crunchy, juicy signature KFC favourite. (615 Kcal • 340g)",
-            "image": "/images/KFC/Popcorn Chicken Rice Bowlz.jpg",
+            "description": "Aromatic Rice Bowlz with chicken popcorn",
+            "image": "/images/KFC/Popcorn Chicken Rice Bowlz.webp",
             "isVeg": false,
             "category": "Rice Bowlz"
       },
@@ -2860,7 +2874,7 @@ export const RAW_STORES: Store[] = [
             "name": "Grilled Chicken Rice Bowlz",
             "price": 209,
             "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 340g)",
-            "image": "/images/KFC/Grilled Chicken Rice Bowlz.jpg",
+            "image": "",
             "isVeg": false,
             "category": "Rice Bowlz"
       },
@@ -2869,8 +2883,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Redbull Energy Drink",
             "price": 191,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Redbull Sugarfree.jpg",
+            "description": "Enjoy! RedBull Energy Drink",
+            "image": "/images/KFC/Redbull_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -2879,8 +2893,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Redbull Sugarfree",
             "price": 191,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Redbull Sugarfree.jpg",
+            "description": "Enjoy! Sugarfree RedBull",
+            "image": "/images/KFC/Redbull_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -2889,8 +2903,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Coolberg Cranberry",
             "price": 153,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Coolberg Cranberry.jpg",
+            "description": "Relish Coolberg Cranberry",
+            "image": "/images/KFC/Fresh_Lime_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -2899,8 +2913,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Coolberg Peach",
             "price": 153,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Coolberg Peach.jpg",
+            "description": "Relish Coolberg Peach",
+            "image": "/images/KFC/Fresh_Lime_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -2909,80 +2923,70 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Choco Lava Cake",
             "price": 119,
-            "description": "Crunchy, juicy signature KFC favourite. (343 Kcal • 60g)",
+            "description": "Soft Chocolate cake with a gooey center.",
             "image": "/images/KFC/Choco Lava Cake.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-csv-1",
-            "storeId": "store-kfc",
-            "name": "Chana Burger",
-            "price": 79,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Chana Burger.jpg",
-            "isVeg": true,
-            "category": "Veg"
       },
       {
             "id": "kfc-csv-2",
             "storeId": "store-kfc",
             "name": "Chana Burger & Pepsi",
             "price": 99,
-            "description": "Signature KFC preparation.",
+            "description": "Chatpata Chana Burger & Pepsi—refreshing, spicy, and delicious!",
             "image": "/images/KFC/Chana Burger & Pepsi.jpg",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-3",
             "storeId": "store-kfc",
             "name": "Chana Burger Meal",
             "price": 149,
-            "description": "Signature KFC preparation.",
+            "description": "Try Chatpata Chana Burger, Fries & Pepsi—full-on taste trio!",
             "image": "/images/KFC/Chana Burger Meal.jpg",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-4",
             "storeId": "store-kfc",
             "name": "Veg Zinger Meal",
             "price": 298,
-            "description": "Crunchy, juicy signature KFC favourite. (985 Kcal • 635g)",
-            "image": "/images/KFC/Veg Zinger Meal.jpg",
+            "description": "Veg Zinger Burger and upgrade to this meal now.",
+            "image": "/images/KFC/Veg Zinger Meal.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-5",
             "storeId": "store-kfc",
             "name": "Veg Rice Bowlz & Pepsi Combo",
             "price": 249,
-            "description": "Get this deal of Veg Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 560 Kcal | Wt 635 g",
-            "image": "/images/KFC/Veg Rice Bowlz & Pepsi Combo.jpg",
+            "description": "Get this deal of Veg Rice Bowlz with Reg Pepsi",
+            "image": "/images/KFC/Veg Rice Bowlz & Pepsi combo.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Rice Bowlz"
       },
       {
             "id": "kfc-csv-6",
             "storeId": "store-kfc",
             "name": "Veg Rice Bowlz",
             "price": 189,
-            "description": "Crunchy, juicy signature KFC favourite. (408 Kcal • 305g)",
-            "image": "/images/KFC/Veg Rice Bowlz.jpg",
+            "description": "Aromatic Rice Bowlz with gravy now! (Serves-1)",
+            "image": "/images/KFC/Veg Rice Bowlz.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Rice Bowlz"
       },
       {
             "id": "kfc-csv-7",
             "storeId": "store-kfc",
             "name": "Veg Longer Meal",
             "price": 198,
-            "description": "Crunchy, juicy signature KFC favourite. (625 Kcal • 515g)",
-            "image": "/images/KFC/Longer Veg Burger.jpg",
+            "description": "Veg Longer & Reg. Fries & Reg Pepsi",
+            "image": "/images/KFC/Veg Longer Meal.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-8",
@@ -2990,9 +2994,9 @@ export const RAW_STORES: Store[] = [
             "name": "Classic Veg Krisper, Fries & Pepsi Combo",
             "price": 198,
             "description": "Crunchy, juicy signature KFC favourite. (771 Kcal • 555g)",
-            "image": "/images/KFC/Classic Veg Krisper, Fries & Pepsi Combo.jpg",
+            "image": "/images/KFC/Classic Chicken Krisper, fries & Pepsi combo.webp",
             "isVeg": true,
-            "category": "Veg"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-9",
@@ -3000,89 +3004,19 @@ export const RAW_STORES: Store[] = [
             "name": "Spicy Veg Krisper, Fries & Pepsi Combo",
             "price": 198,
             "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
-            "image": "/images/KFC/Spicy Veg Krisper, Fries & Pepsi Combo.jpg",
+            "image": "/images/KFC/Spicy Chicken Krisper, Fries & Pepsi combo.webp",
             "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-10",
-            "storeId": "store-kfc",
-            "name": "Spicy Veg Krisper - With Cheese",
-            "price": 124,
-            "description": "Crunchy, juicy signature KFC favourite. (472 Kcal • 156g)",
-            "image": "/images/KFC/Spicy Veg Krisper.jpg",
-            "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-11",
-            "storeId": "store-kfc",
-            "name": "Classic Veg Krisper - With Cheese",
-            "price": 124,
-            "description": "Crunchy, juicy signature KFC favourite. (532 Kcal • 156g)",
-            "image": "/images/KFC/Classic Veg Krisper.jpg",
-            "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-12",
-            "storeId": "store-kfc",
-            "name": "Veg Roll",
-            "price": 119,
-            "description": "Crunchy, juicy signature KFC favourite. (447 Kcal • 145g)",
-            "image": "/images/KFC/Veg Roll.jpg",
-            "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-13",
-            "storeId": "store-kfc",
-            "name": "Longer Veg Burger",
-            "price": 99,
-            "description": "Crunchy, juicy signature KFC favourite. (259 Kcal • 110g)",
-            "image": "/images/KFC/Longer Veg Burger.jpg",
-            "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-14",
-            "storeId": "store-kfc",
-            "name": "Spicy Veg Krisper",
-            "price": 99,
-            "description": "Crunchy, juicy signature KFC favourite. (436 Kcal • 145g)",
-            "image": "/images/KFC/Spicy Veg Krisper.jpg",
-            "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-15",
-            "storeId": "store-kfc",
-            "name": "Classic Veg Krisper",
-            "price": 99,
-            "description": "Crunchy, juicy signature KFC favourite. (496 Kcal • 145g)",
-            "image": "/images/KFC/Classic Veg Krisper.jpg",
-            "isVeg": true,
-            "category": "Veg"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-16",
             "storeId": "store-kfc",
             "name": "Fries + Pepsi",
             "price": 129,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Fries + Pepsi.jpg",
+            "description": "Add Fries & Reg Pepsi to any meal.",
+            "image": "/images/KFC/Fries + Pepsi.webp",
             "isVeg": true,
-            "category": "Veg"
-      },
-      {
-            "id": "kfc-csv-21",
-            "storeId": "store-kfc",
-            "name": "2 Shawarmas – Saver Deal",
-            "price": 259,
-            "description": "Crunchy, juicy signature KFC favourite. (904 Kcal • 330g)",
-            "image": "/images/KFC/2 Shawarmas – Saver Deal.jpg",
-            "isVeg": true,
-            "category": "Shawarma Specials"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-22",
@@ -3090,18 +3024,8 @@ export const RAW_STORES: Store[] = [
             "name": "2 Shawarma Meals – Value Deal",
             "price": 429,
             "description": "Enjoy 2 shawarmas with 2 reg fries and 2 reg Pepsi Serve 2 | Avg wt. 1140g | 1636",
-            "image": "/images/KFC/2 Shawarma Meals – Value Deal.jpg",
-            "isVeg": true,
-            "category": "Shawarma Specials"
-      },
-      {
-            "id": "kfc-csv-23",
-            "storeId": "store-kfc",
-            "name": "Shawarma",
-            "price": 179,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Shawarma.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
       },
       {
@@ -3110,8 +3034,8 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma & Pepsi Combo",
             "price": 229,
             "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
       },
       {
@@ -3120,8 +3044,8 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma Regular Meal",
             "price": 289,
             "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Shawarma Regular Meal.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
       },
       {
@@ -3130,8 +3054,8 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma Snack Box",
             "price": 329,
             "description": "Shawarma with popcorn chicken and a regular Pepsi – perfect for snack",
-            "image": "/images/KFC/Shawarma Snack Box.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
       },
       {
@@ -3140,8 +3064,8 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma Box Meal",
             "price": 319,
             "description": "Shawarma served with 2 hot wings, regular fries and Pepsi for a hearty feast.",
-            "image": "/images/KFC/Shawarma Big Box.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
       },
       {
@@ -3150,19 +3074,9 @@ export const RAW_STORES: Store[] = [
             "name": "Shawarma Big Box",
             "price": 339,
             "description": "Loaded box with shawarma, 2 hot wings, 2 strips & Pepsi – big on flavour & satisfaction",
-            "image": "/images/KFC/Shawarma Big Box.jpg",
-            "isVeg": true,
+            "image": "",
+            "isVeg": false,
             "category": "Shawarma Specials"
-      },
-      {
-            "id": "kfc-csv-29",
-            "storeId": "store-kfc",
-            "name": "Epic Savers Bucket",
-            "price": 509,
-            "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips Allergen Wheat, Soy, Milk| 479 Kcal| Wt 670g",
-            "image": "/images/KFC/Epic Savers Bucket.jpg",
-            "isVeg": true,
-            "category": "Epic Savers"
       },
       {
             "id": "kfc-csv-30",
@@ -3171,48 +3085,18 @@ export const RAW_STORES: Store[] = [
             "price": 359,
             "description": "30% Off on Gold Zinger, Reg Fries, Reg Popcorn & Reg Pepsi",
             "image": "/images/KFC/Gold Zinger and Popcorn Meal.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
-      },
-      {
-            "id": "kfc-csv-31",
-            "storeId": "store-kfc",
-            "name": "Gold Edition – Chicken Zinger",
-            "price": 279,
-            "description": "Crunchy, juicy signature KFC favourite. (678 Kcal • 250g)",
-            "image": "/images/KFC/Gold Edition – Chicken Zinger.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
-      },
-      {
-            "id": "kfc-csv-32",
-            "storeId": "store-kfc",
-            "name": "Gold Edition – Chicken Zinger & Fries",
-            "price": 319,
-            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 325g)",
-            "image": "/images/KFC/Gold Edition – Chicken Zinger & Fries.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-33",
             "storeId": "store-kfc",
             "name": "Gold Edition – Chicken Zinger, Fries & Pepsi Meal",
             "price": 388,
-            "description": "Crunchy, juicy signature KFC favourite. (1044 Kcal • 655g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
-      },
-      {
-            "id": "kfc-csv-34",
-            "storeId": "store-kfc",
-            "name": "Gold Edition – 3pc Boneless Strips",
-            "price": 219,
-            "description": "Crunchy, juicy signature KFC favourite. (387 Kcal • 146g)",
-            "image": "/images/KFC/Gold Edition – 3pc Boneless Strips.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
+            "description": "Cheesy Zinger with Reg Fries & reg Pepsi.",
+            "image": "/images/KFC/Gold Edition – Chicken Zinger, Fries & Pepsi Meal.webp",
+            "isVeg": false,
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-35",
@@ -3220,59 +3104,49 @@ export const RAW_STORES: Store[] = [
             "name": "Gold Edition – Regular Fries",
             "price": 139,
             "description": "Crunchy, juicy signature KFC favourite. (362 Kcal • 150g)",
-            "image": "/images/KFC/Gold Edition – Regular Fries.jpg",
+            "image": "/images/KFC/Regular Fries.webp",
             "isVeg": true,
-            "category": "Gold Edition"
-      },
-      {
-            "id": "kfc-csv-36",
-            "storeId": "store-kfc",
-            "name": "Gold Edition – Veg Zinger",
-            "price": 219,
-            "description": "Crunchy, juicy signature KFC favourite. (765 Kcal • 250g)",
-            "image": "/images/KFC/Gold Edition – Veg Zinger.jpg",
-            "isVeg": true,
-            "category": "Gold Edition"
+            "category": "Veg Burgers"
       },
       {
             "id": "kfc-csv-37",
             "storeId": "store-kfc",
             "name": "Gold Edition – Veg Zinger, Fries & Pepsi Meal",
             "price": 338,
-            "description": "Crunchy, juicy signature KFC favourite. (1131 Kcal • 655g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Cheesy Veg Zinger with reg Fries & Reg Pepsi.",
+            "image": "/images/KFC/Gold Edition – Veg Zinger, Fries & Pepsi Meal.jpg",
             "isVeg": true,
-            "category": "Gold Edition"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-38",
             "storeId": "store-kfc",
             "name": "All Chicken Box Meal",
             "price": 219,
-            "description": "All in one meal box with 1pc Hot & Crispy,2 Hot Wings & Reg Pepsi.",
-            "image": "/images/KFC/All Chicken Box Meal.jpg",
-            "isVeg": true,
-            "category": "Box Meals"
+            "description": "All in one meal box with 1pc Hot & Crispy, 2 Hot Wings & Reg Pepsi.",
+            "image": "/images/KFC/Classic Zinger Box Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-39",
             "storeId": "store-kfc",
             "name": "Classic Zinger Box Meal",
             "price": 349,
-            "description": "1 Zinger,2 Wings,Veg Patty,1 Reg Pepsi. Allergen Wheat,Soy,Milk| 1227Kcal | Wt",
-            "image": "/images/KFC/Classic Zinger Box Meal.jpg",
-            "isVeg": true,
-            "category": "Box Meals"
+            "description": "1 Zinger, 2 Wings, Veg Patty, 1 Reg Pepsi.",
+            "image": "/images/KFC/Classic Zinger Box Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-40",
             "storeId": "store-kfc",
             "name": "Tandoori Zinger Box Meal",
             "price": 359,
-            "description": "Box Meal -Zinger,2 Wings,Fries & Reg Pepsi",
-            "image": "/images/KFC/Tandoori Zinger Box Meal.jpg",
-            "isVeg": true,
-            "category": "Box Meals"
+            "description": "Box Meal -Zinger, 2 Wings, Fries & Reg Pepsi.",
+            "image": "/images/KFC/Tandoori Zinger Box Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-41",
@@ -3280,29 +3154,29 @@ export const RAW_STORES: Store[] = [
             "name": "Epic Feast Grand Bucket",
             "price": 839,
             "description": "Get 30% off on 5 Hot & Crispy, 8 Pc Strips, 4 Dips, 2 Reg Fries & 2 Reg Pepsi",
-            "image": "/images/KFC/Epic Feast Grand Bucket.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
+            "image": "/images/KFC/Epic Feast Grand Bucket.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-42",
             "storeId": "store-kfc",
             "name": "All In One Bucket",
             "price": 589,
-            "description": "2Wings,2Strip,1 HC,1 Leg pc/HC,1 Zinger,3 Dips,2Reg Pepsi Allergen",
-            "image": "/images/KFC/All In One Bucket.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
+            "description": "2Wings, 2Strip, 1 HC, 1 Leg pc/HC, 1 Zinger, 3 Dips, 2Reg Pepsi",
+            "image": "/images/KFC/All in One Bucket.webp",
+            "isVeg": false,
+            "category": "Chicken Buckets"
       },
       {
             "id": "kfc-csv-43",
             "storeId": "store-kfc",
             "name": "Ultimate Savings Bucket",
             "price": 749,
-            "description": "43% Off on 4 pc Hot & Crispy, 6 Hot Wings, 4pc Peri Peri Strips, 3 Pepsi & 2",
-            "image": "/images/KFC/Ultimate Savings Bucket.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
+            "description": "43% Off on 4 pc Hot & Crispy, 6 Hot Wings, 4pc Peri Peri Strips, 3 Pepsi & 2 dips",
+            "image": "/images/KFC/Ultimate Savings Bucket.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-45",
@@ -3310,9 +3184,9 @@ export const RAW_STORES: Store[] = [
             "name": "Big 8 With 2 Pepsi Zero Sugar",
             "price": 749,
             "description": "Crunchy, juicy signature KFC favourite. (608 Kcal • 1490g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
+            "image": "/images/KFC/8 pc Bucket.webp",
+            "isVeg": false,
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-46",
@@ -3320,59 +3194,19 @@ export const RAW_STORES: Store[] = [
             "name": "Big 8",
             "price": 599,
             "description": "Crunchy, juicy signature KFC favourite. (602 Kcal • 670g)",
-            "image": "/images/KFC/Big 8.jpg",
-            "isVeg": true,
-            "category": "Variety Buckets"
+            "image": "/images/KFC/8 pc Bucket.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-47",
             "storeId": "store-kfc",
             "name": "5 Leg Pc & Pepsi Combo",
             "price": 609,
-            "description": "5 Leg Pc & 2 Reg. Reg Pepsi Combo Allergen Wheat| 1004 Kcal | Wt 1160 g",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
-      },
-      {
-            "id": "kfc-csv-48",
-            "storeId": "store-kfc",
-            "name": "5 Peri Peri Leg Pc",
-            "price": 489,
-            "description": "Save Rs. 120 on 5 Peri Peri Leg pc Allergen Wheat, Soy, Milk| 748 Kcal| Wt 500 g",
-            "image": "/images/KFC/5 Peri Peri Leg Pc.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
-      },
-      {
-            "id": "kfc-csv-49",
-            "storeId": "store-kfc",
-            "name": "8 Pc Bucket",
-            "price": 689,
-            "description": "8 pc Hot & Cripsy Allergen Wheat| 160 Kcal | Wt 880 g",
-            "image": "/images/KFC/8 Pc Bucket.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
-      },
-      {
-            "id": "kfc-csv-50",
-            "storeId": "store-kfc",
-            "name": "6pc Hot & Crispy",
-            "price": 559,
-            "description": "Get 6 piece Hot & Crispy Chicken. Allergen Wheat| 213 Kcal | Wt 660 g",
-            "image": "/images/KFC/6pc Hot & Crispy.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
-      },
-      {
-            "id": "kfc-csv-51",
-            "storeId": "store-kfc",
-            "name": "8 Pc Boneless Meal",
-            "price": 459,
-            "description": "8 Peri Peri Strips with 2 Dips! Allergen Wheat,Milk| 374 Kcal | Wt 500 g",
-            "image": "/images/KFC/8 Pc Boneless Meal.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
+            "description": "5 Leg Pc & 2 Reg. Reg Pepsi Combo",
+            "image": "/images/KFC/5 Leg Pc & Pepsi Combo.jpg",
+            "isVeg": false,
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-52",
@@ -3380,9 +3214,9 @@ export const RAW_STORES: Store[] = [
             "name": "5pc Smoky Red With 2 Pepsi",
             "price": 559,
             "description": "Crunchy, juicy signature KFC favourite. (569 Kcal • 780g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
-            "category": "Chicken Buckets"
+            "image": "/images/KFC/5 Leg Pc & Pepsi Combo.jpg",
+            "isVeg": false,
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-53",
@@ -3390,498 +3224,158 @@ export const RAW_STORES: Store[] = [
             "name": "5pc Smoky Red",
             "price": 489,
             "description": "Crunchy, juicy signature KFC favourite. (428 Kcal • 450g)",
-            "image": "/images/KFC/5pc Smoky Red.jpg",
-            "isVeg": true,
+            "image": "/images/KFC/5 Peri Peri Leg pc.webp",
+            "isVeg": false,
             "category": "Chicken Buckets"
-      },
-      {
-            "id": "kfc-csv-54",
-            "storeId": "store-kfc",
-            "name": "Classic Chicken Krisper",
-            "price": 104,
-            "description": "Crunchy, juicy signature KFC favourite. (405 Kcal • 150g)",
-            "image": "/images/KFC/Classic Chicken Krisper.jpg",
-            "isVeg": true,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-55",
-            "storeId": "store-kfc",
-            "name": "Spicy Chicken Krisper",
-            "price": 104,
-            "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 145g)",
-            "image": "/images/KFC/Spicy Chicken Krisper.jpg",
-            "isVeg": true,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-56",
-            "storeId": "store-kfc",
-            "name": "Spicy Zinger Burger",
-            "price": 209,
-            "description": "Crunchy, juicy signature KFC favourite. (439 Kcal • 215g)",
-            "image": "/images/KFC/Spicy Zinger Burger.jpg",
-            "isVeg": true,
-            "category": "Burgers"
       },
       {
             "id": "kfc-csv-57",
             "storeId": "store-kfc",
             "name": "Spicy Zinger Meal",
             "price": 319,
-            "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
-            "image": "/images/KFC/Spicy Zinger Meal.jpg",
-            "isVeg": true,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-58",
-            "storeId": "store-kfc",
-            "name": "Zinger Pro Burger",
-            "price": 249,
-            "description": "Crunchy, juicy signature KFC favourite. (529 Kcal • 225g)",
-            "image": "/images/KFC/Zinger Pro Burger.jpg",
-            "isVeg": true,
-            "category": "Burgers"
+            "description": "Spicy zinger, reg. fries and Reg Pepsi!",
+            "image": "/images/KFC/Spicy Zinger Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-59",
             "storeId": "store-kfc",
             "name": "Zinger Pro Meal",
             "price": 368,
-            "description": "Crunchy, juicy signature KFC favourite. (895 Kcal • 630g)",
-            "image": "/images/KFC/Zinger Pro Meal.jpg",
-            "isVeg": true,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-60",
-            "storeId": "store-kfc",
-            "name": "Tandoori Zinger Burger",
-            "price": 209,
-            "description": "Crunchy, juicy signature KFC favourite. (902 Kcal • 230g)",
-            "image": "/images/KFC/Tandoori Zinger Burger.jpg",
-            "isVeg": true,
-            "category": "Burgers"
+            "description": "Zinger Pro Burger with reg. fries and Reg Pepsi",
+            "image": "/images/KFC/Zinger Pro Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-61",
             "storeId": "store-kfc",
             "name": "Tandoori Zinger Meal",
             "price": 308,
-            "description": "Crunchy, juicy signature KFC favourite. (1268 Kcal • 635g)",
-            "image": "/images/KFC/Tandoori Zinger Meal.jpg",
-            "isVeg": true,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-62",
-            "storeId": "store-kfc",
-            "name": "American Classic Zinger Burger",
-            "price": 199,
-            "description": "Crunchy, juicy signature KFC favourite. (971 Kcal • 360g)",
-            "image": "/images/KFC/American Classic Zinger Burger.jpg",
-            "isVeg": true,
-            "category": "Burgers"
+            "description": "Tandoori Zinger with Fries & Reg Pepsi.",
+            "image": "/images/KFC/Tandoori Zinger Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-63",
             "storeId": "store-kfc",
             "name": "American Classic Zinger Meal",
             "price": 288,
-            "description": "Crunchy, juicy signature KFC favourite. (978 Kcal • 630g)",
-            "image": "/images/KFC/American Classic Zinger Meal.jpg",
-            "isVeg": true,
-            "category": "Burgers"
+            "description": "Classic Zinger Burger Meal",
+            "image": "/images/KFC/American Classic Zinger Meal.webp",
+            "isVeg": false,
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-64",
             "storeId": "store-kfc",
             "name": "Paneer Zinger Meal",
             "price": 298,
-            "description": "Crunchy, juicy signature KFC favourite. (1009 Kcal • 620g)",
+            "description": "Paneer zinger with reg fries and Reg Pepsi!",
             "image": "/images/KFC/Paneer Zinger Meal.jpg",
             "isVeg": true,
-            "category": "Burgers"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-65",
             "storeId": "store-kfc",
             "name": "Spicy Chicken Krisper, Popcorn & Pepsi Combo",
             "price": 259,
-            "description": "Crunchy, juicy signature KFC favourite. (648 Kcal • 235g)",
-            "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.png",
+            "description": "Spicy Chicken Krisper with Popcorn & Reg Pepsi",
+            "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-66",
             "storeId": "store-kfc",
             "name": "Classic Chicken Krisper, Popcorn & Pepsi Combo",
             "price": 279,
-            "description": "Chicken Krisper with Popcorn & Reg Pepsi Allergen Wheat,Soy,Milk| 853 Kcal | Wt 570 g",
-            "image": "/images/KFC/Spicy Chicken Krisper, Popcorn & Pepsi combo.png",
+            "description": "Chicken Krisper with Popcorn & Reg Pepsi",
+            "image": "/images/KFC/Classic Chicken Krisper, Popcorn & Pepsi combo.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-67",
             "storeId": "store-kfc",
             "name": "Classic Chicken Krisper, Fries & Pepsi Combo",
             "price": 208,
-            "description": "Crunchy, juicy signature KFC favourite. (721 Kcal • 780g)",
-            "image": "/images/KFC/Classic Chicken Krisper, Fries & Pepsi Combo.png",
+            "description": "Chicken Krisper with Fries & Reg Pepsi",
+            "image": "/images/KFC/Classic Chicken Krisper, fries & Pepsi combo.webp",
             "isVeg": false,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-68",
-            "storeId": "store-kfc",
-            "name": "Chicken Longer Burger",
-            "price": 99,
-            "description": "Crunchy, juicy signature KFC favourite. (356 Kcal • 120g)",
-            "image": "/images/KFC/Chicken Longer Burger.jpg",
-            "isVeg": false,
-            "category": "Burgers"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-69",
             "storeId": "store-kfc",
             "name": "Chicken Longer Meal",
             "price": 198,
-            "description": "Crunchy, juicy signature KFC favourite. (723 Kcal • 525g)",
-            "image": "/images/KFC/Chicken Longer Burger.jpg",
+            "description": "Chicken Longer & Reg. Fries & Reg Pepsi",
+            "image": "/images/KFC/Chicken Longer Meal.webp",
             "isVeg": false,
-            "category": "Burgers"
+            "category": "Combos & Meals"
       },
       {
             "id": "kfc-csv-70",
             "storeId": "store-kfc",
             "name": "Spicy Chicken Krisper, Fries & Pepsi Combo",
             "price": 208,
-            "description": "Crunchy, juicy signature KFC favourite. (708 Kcal • 550g)",
-            "image": "/images/KFC/Classic Chicken Krisper, Fries & Pepsi Combo.png",
+            "description": "Spicy Chicken Krisper with Fries & Reg Pepsi",
+            "image": "/images/KFC/Spicy Chicken Krisper, Fries & Pepsi combo.webp",
             "isVeg": false,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-71",
-            "storeId": "store-kfc",
-            "name": "Spicy Chicken Krisper - With Cheese",
-            "price": 134,
-            "description": "Crunchy, juicy signature KFC favourite. (378 Kcal • 156g)",
-            "image": "/images/KFC/Spicy Chicken Krisper - With Cheese.jpg",
-            "isVeg": false,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-72",
-            "storeId": "store-kfc",
-            "name": "Classic Chicken Krisper - With Cheese",
-            "price": 134,
-            "description": "Crunchy, juicy signature KFC favourite. (441 Kcal • 161g)",
-            "image": "/images/KFC/Classic Chicken Krisper - With Cheese.jpg",
-            "isVeg": false,
-            "category": "Burgers"
-      },
-      {
-            "id": "kfc-csv-73",
-            "storeId": "store-kfc",
-            "name": "Regular Popcorn",
-            "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (306 Kcal • 90g)",
-            "image": "/images/KFC/Regular Popcorn.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-74",
-            "storeId": "store-kfc",
-            "name": "Medium Popcorn",
-            "price": 159,
-            "description": "Crunchy, juicy signature KFC favourite. (476 Kcal • 140g)",
-            "image": "/images/KFC/Medium Popcorn.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-75",
-            "storeId": "store-kfc",
-            "name": "Large Popcorn",
-            "price": 209,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Large Popcorn.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-76",
-            "storeId": "store-kfc",
-            "name": "4pc Hot Wings",
-            "price": 169,
-            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
-            "image": "/images/KFC/4pc Hot Wings.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-77",
-            "storeId": "store-kfc",
-            "name": "3 Pc Peri Peri Strips",
-            "price": 169,
-            "description": "Crunchy, juicy signature KFC favourite. (498 Kcal • 140g)",
-            "image": "/images/KFC/3 Pc Peri Peri Strips.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-78",
-            "storeId": "store-kfc",
-            "name": "6 Peri Peri Strips",
-            "price": 289,
-            "description": "Crunchy, juicy signature KFC favourite. (202 Kcal • 270g)",
-            "image": "/images/KFC/6 Peri Peri Strips.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-79",
-            "storeId": "store-kfc",
-            "name": "1 Pc Hot & Crispy",
-            "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (320 Kcal • 110g)",
-            "image": "/images/KFC/1 Pc Hot & Crispy.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-80",
-            "storeId": "store-kfc",
-            "name": "2pc Hot & Crispy",
-            "price": 205,
-            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 220g)",
-            "image": "/images/KFC/2pc Hot & Crispy.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-81",
-            "storeId": "store-kfc",
-            "name": "4pc Hot & Crispy",
-            "price": 389,
-            "description": "Crunchy, juicy signature KFC favourite. (640 Kcal • 440g)",
-            "image": "/images/KFC/4pc Hot & Crispy.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-82",
-            "storeId": "store-kfc",
-            "name": "1pc Smoky Red",
-            "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (171 Kcal • 90g)",
-            "image": "/images/KFC/1pc Smoky Red.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-83",
-            "storeId": "store-kfc",
-            "name": "2pc Smoky Red",
-            "price": 205,
-            "description": "Crunchy, juicy signature KFC favourite. (342 Kcal • 180g)",
-            "image": "/images/KFC/2pc Smoky Red.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-84",
-            "storeId": "store-kfc",
-            "name": "Regular Fries",
-            "price": 94,
-            "description": "Signature KFC preparation. (224g)",
-            "image": "/images/KFC/Regular Fries.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-85",
-            "storeId": "store-kfc",
-            "name": "Medium Fries",
-            "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Medium Fries.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-86",
-            "storeId": "store-kfc",
-            "name": "Large Fries",
-            "price": 119,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Large Fries.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-87",
-            "storeId": "store-kfc",
-            "name": "Plain Rice Bowlz",
-            "price": 139,
-            "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 250g)",
-            "image": "/images/KFC/Plain Rice Bowlz.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-88",
-            "storeId": "store-kfc",
-            "name": "Tandoori Chicken Roll",
-            "price": 119,
-            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
-            "image": "/images/KFC/Tandoori Chicken Roll.jpg",
-            "isVeg": true,
-            "category": "Snacks"
+            "category": "Desserts & Beverages"
       },
       {
             "id": "kfc-csv-89",
             "storeId": "store-kfc",
             "name": "Tandoori Chicken Roll Meal",
             "price": 208,
-            "description": "Crunchy, juicy signature KFC favourite. (621 Kcal • 555g)",
-            "image": "/images/KFC/Tandoori Chicken Roll Meal.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-90",
-            "storeId": "store-kfc",
-            "name": "Thai Spicy Chicken Roll",
-            "price": 129,
-            "description": "Crunchy, juicy signature KFC favourite. (225 Kcal • 150g)",
-            "image": "/images/KFC/Thai Spicy Chicken Roll.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-91",
-            "storeId": "store-kfc",
-            "name": "Classic Chicken Roll",
-            "price": 109,
-            "description": "Crunchy, juicy signature KFC favourite. (461 Kcal • 150g)",
-            "image": "/images/KFC/Double Chicken Roll.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-92",
-            "storeId": "store-kfc",
-            "name": "Double Chicken Roll",
-            "price": 159,
-            "description": "Crunchy, juicy signature KFC favourite. (526 Kcal • 190g)",
-            "image": "/images/KFC/Double Chicken Roll.jpg",
-            "isVeg": true,
-            "category": "Snacks"
+            "description": "TANDOORI CHICKEN ROLL MEAL",
+            "image": "/images/KFC/Tandoori Chicken Roll Meal.webp",
+            "isVeg": false,
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-csv-93",
             "storeId": "store-kfc",
             "name": "Double Chicken Roll Meal",
             "price": 258,
-            "description": "Crunchy, juicy signature KFC favourite. (892 Kcal • 595g)",
-            "image": "/images/KFC/Double Chicken Roll Meal.jpg",
-            "isVeg": true,
-            "category": "Snacks"
+            "description": "Double Chicken Roll with Reg. Fries & Reg Pepsi.",
+            "image": "/images/KFC/Double Chicken Roll Meal.webp",
+            "isVeg": false,
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-csv-94",
             "storeId": "store-kfc",
             "name": "American Nashville Roll Meal",
             "price": 208,
-            "description": "Crunchy, juicy signature KFC favourite. (654 Kcal • 600g)",
-            "image": "/images/KFC/American Nashville Roll Meal.jpg",
-            "isVeg": true,
-            "category": "Snacks"
+            "description": "American Nashville Roll Meal",
+            "image": "/images/KFC/American Nashville Roll Meal.webp",
+            "isVeg": false,
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-csv-95",
             "storeId": "store-kfc",
             "name": "Thai Spicy Chicken Roll Meal",
             "price": 208.1,
-            "description": "Crunchy, juicy signature KFC favourite. (591 Kcal • 555g)",
-            "image": "/images/KFC/Thai Spicy Chicken Roll Meal.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-96",
-            "storeId": "store-kfc",
-            "name": "Dynamite Spicy Mayo Dip",
-            "price": 38.57,
-            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 20g)",
-            "image": "/images/KFC/Dynamite Spicy Mayo Dip.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-97",
-            "storeId": "store-kfc",
-            "name": "Nashville Hot Pepper Dip",
-            "price": 38.57,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Nashville Hot Pepper Dip.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-98",
-            "storeId": "store-kfc",
-            "name": "Eggless Mayo Dip",
-            "price": 39,
-            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
-            "image": "/images/KFC/Eggless Mayo Dip.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-99",
-            "storeId": "store-kfc",
-            "name": "Tandoori Masala Dip",
-            "price": 39,
-            "description": "Crunchy, juicy signature KFC favourite. (74 Kcal • 20g)",
-            "image": "/images/KFC/Tandoori Masala Dip.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-100",
-            "storeId": "store-kfc",
-            "name": "Naagin Sauce – The Original",
-            "price": 39,
-            "description": "Crunchy, juicy signature KFC favourite. (20 Kcal • 20g)",
-            "image": "/images/KFC/Naagin Sauce – The Original.jpg",
-            "isVeg": true,
-            "category": "Snacks"
-      },
-      {
-            "id": "kfc-csv-101",
-            "storeId": "store-kfc",
-            "name": "Naagin Sauce – The 65 Variant",
-            "price": 39,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Naagin Sauce – The 65 Variant.jpg",
-            "isVeg": true,
-            "category": "Snacks"
+            "description": "Thai Spicy Chicken Roll Meal",
+            "image": "/images/KFC/Thai Spicy Chicken Roll Meal.webp",
+            "isVeg": false,
+            "category": "Rolls & Wraps"
       },
       {
             "id": "kfc-csv-102",
             "storeId": "store-kfc",
             "name": "Classic Chicken Rice Bowlz & Pepsi Combo",
             "price": 269,
-            "description": "Classic Chicken Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 689 Kcal | Wt 690 g",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
+            "description": "Classic Chicken Rice Bowlz with Reg Pepsi",
+            "image": "/images/KFC/Classic Chicken Rice Bowlz & Pepsi combo.webp",
+            "isVeg": false,
             "category": "Rice Bowlz"
       },
       {
@@ -3889,9 +3383,9 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Popcorn Chicken Rice Bowlz & Pepsi Combo",
             "price": 269,
-            "description": "Popcorn Chicken Rice Bowlz with Reg Pepsi Allergen Wheat,Milk| 757 Kcal | Wt",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
+            "description": "Popcorn Chicken Rice Bowlz with Reg Pepsi",
+            "image": "/images/KFC/Classic Chicken Rice Bowlz & Pepsi combo.webp",
+            "isVeg": false,
             "category": "Rice Bowlz"
       },
       {
@@ -3900,67 +3394,18 @@ export const RAW_STORES: Store[] = [
             "name": "Grilled Chicken Rice Bowlz & Pepsi Combo",
             "price": 258.57,
             "description": "Crunchy, juicy signature KFC favourite. (560 Kcal • 670g)",
-            "image": "/images/KFC/Pepsi Regular.jpg",
-            "isVeg": true,
+            "image": "/images/KFC/Classic Chicken Rice Bowlz & Pepsi combo.webp",
+            "isVeg": false,
             "category": "Rice Bowlz"
       },
-      {
-            "id": "kfc-csv-105",
-            "storeId": "store-kfc",
-            "name": "Classic Chicken Rice Bowlz",
-            "price": 209.05,
-            "description": "Crunchy, juicy signature KFC favourite. (547 Kcal • 360g)",
-            "image": "/images/KFC/Classic Chicken Rice Bowlz.jpg",
-            "isVeg": true,
-            "category": "Rice Bowlz"
-      },
-      {
-            "id": "kfc-csv-106",
-            "storeId": "store-kfc",
-            "name": "Popcorn Chicken Rice Bowlz",
-            "price": 219.05,
-            "description": "Crunchy, juicy signature KFC favourite. (615 Kcal • 340g)",
-            "image": "/images/KFC/Popcorn Chicken Rice Bowlz.jpg",
-            "isVeg": true,
-            "category": "Rice Bowlz"
-      },
-      {
-            "id": "kfc-csv-107",
-            "storeId": "store-kfc",
-            "name": "Grilled Chicken Rice Bowlz",
-            "price": 209.05,
-            "description": "Crunchy, juicy signature KFC favourite. (418 Kcal • 340g)",
-            "image": "/images/KFC/Grilled Chicken Rice Bowlz.jpg",
-            "isVeg": true,
-            "category": "Rice Bowlz"
-      },
-      {
-            "id": "kfc-csv-109",
-            "storeId": "store-kfc",
-            "name": "Dutch Chocolate Cup",
-            "price": 96.19,
-            "description": "Crunchy, juicy signature KFC favourite. (77 Kcal • 59g)",
-            "image": "/images/KFC/Dutch Chocolate Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-csv-110",
-            "storeId": "store-kfc",
-            "name": "Honey Nut Crunch Cup",
-            "price": 95.71,
-            "description": "Crunchy, juicy signature KFC favourite. (90 Kcal • 61g)",
-            "image": "/images/KFC/Dutch Chocolate Cup.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
+
       {
             "id": "kfc-csv-113",
             "storeId": "store-kfc",
             "name": "Mojito",
             "price": 89.05,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mojito.jpg",
+            "description": "Try a sweet minty & lemony melange Mojito from KFC Krushers Range",
+            "image": "/images/KFC/Fresh_Lime_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -3969,8 +3414,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Regular",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Grab a Regular Reg Pepsi with your favourite KFC Chicken!",
+            "image": "/images/KFC/Pepsi_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -3979,8 +3424,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Medium",
             "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Grab a Medium Reg Pepsi with your favourite KFC Chicken!",
+            "image": "/images/KFC/Pepsi_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -3989,8 +3434,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Large",
             "price": 114,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Grab a Large Reg Pepsi with your favourite KFC Chicken!",
+            "image": "/images/KFC/Pepsi_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -3999,8 +3444,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "7Up Regular",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/7Up Regular or Medium or Large.jpg",
+            "description": "Grab a Regular 7UP with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4009,8 +3454,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "7Up Medium",
             "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/7Up Regular or Medium or Large.jpg",
+            "description": "Grab a Medium 7UP with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4019,8 +3464,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "7Up Large",
             "price": 114,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/7Up Regular or Medium or Large.jpg",
+            "description": "Grab a Large 7UP with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4029,8 +3474,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mirinda Regular",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mirinda Regular or Medium or Large.jpg",
+            "description": "Grab a Regular Mirinda with your favourite KFC Chicken!",
+            "image": "/images/KFC/Mirinda_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4039,8 +3484,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mirinda Medium",
             "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mirinda Regular or Medium or Large.jpg",
+            "description": "Grab a Medium Mirinda with your favourite KFC Chicken!",
+            "image": "/images/KFC/Mirinda_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4049,8 +3494,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mirinda Large",
             "price": 114,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mirinda Regular or Medium or Large.jpg",
+            "description": "Grab a Large Mirinda with your favourite KFC Chicken!",
+            "image": "/images/KFC/Mirinda_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4059,8 +3504,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Krush Lime",
             "price": 78.57,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Krush Lime.jpg",
+            "description": "Try the cool lemony Krush Lime from KFC Krushers Range",
+            "image": "/images/KFC/Fresh_Lime_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4069,8 +3514,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Zero Sugar Regular",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Pepsi Black Regular",
+            "image": "/images/KFC/Pepsi Zero Sugar .webp",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4079,8 +3524,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Zero Sugar Medium",
             "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Pepsi Black Medium",
+            "image": "/images/KFC/Pepsi Zero Sugar .webp",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4089,8 +3534,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Pepsi Zero Sugar Large",
             "price": 114,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Pepsi Regular.jpg",
+            "description": "Pepsi Black Large",
+            "image": "/images/KFC/Pepsi Zero Sugar .webp",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4099,8 +3544,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mountain Dew R",
             "price": 94,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mountain dew regular or medium or large.jpg",
+            "description": "Grab a Regular Mountain Dew with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4109,8 +3554,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mountain Dew M",
             "price": 104,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mountain dew regular or medium or large.jpg",
+            "description": "Grab a Medium Mountain Dew with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4119,38 +3564,8 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Mountain Dew L",
             "price": 114,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Mountain dew regular or medium or large.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-csv-130",
-            "storeId": "store-kfc",
-            "name": "Coolberg Cranberry",
-            "price": 152.85,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Coolberg Cranberry.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-csv-131",
-            "storeId": "store-kfc",
-            "name": "Coolberg Peach",
-            "price": 152.85,
-            "description": "Signature KFC preparation.",
-            "image": "/images/KFC/Coolberg Peach.jpg",
-            "isVeg": true,
-            "category": "Desserts & Beverages"
-      },
-      {
-            "id": "kfc-csv-132",
-            "storeId": "store-kfc",
-            "name": "Choco Lava Cake",
-            "price": 119,
-            "description": "Crunchy, juicy signature KFC favourite. (343 Kcal • 60g)",
-            "image": "/images/KFC/Choco Lava Cake.jpg",
+            "description": "Grab a Large Mountain Dew with your favourite KFC Chicken!",
+            "image": "/images/KFC/7Up_Drink.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
@@ -4159,12 +3574,25 @@ export const RAW_STORES: Store[] = [
             "storeId": "store-kfc",
             "name": "Choco Mud Pie",
             "price": 129,
-            "description": "Crunchy, juicy signature KFC favourite. (241 Kcal • 93g)",
+            "description": "KFC Choco Mud Pie- creamy layered cake",
             "image": "/images/KFC/Choco mud pie.jpg",
             "isVeg": true,
             "category": "Desserts & Beverages"
       },
-])
+
+      ]), [
+        'Veg Burgers',
+        'Chicken Burgers',
+        'Shawarma Specials',
+        'Chicken Buckets',
+        'Wings & Strips',
+        'Rolls & Wraps',
+        'Fries & Sides',
+        'Rice Bowlz',
+        'Dips & Sauces',
+        'Combos & Meals',
+        'Desserts & Beverages',
+      ])
     },
   {
     id: 'store-pizzahut',
@@ -6954,72 +6382,80 @@ export const RAW_STORES: Store[] = [
   }
 ];
 const KFC_NON_VEG_ITEMS = new Set([
-      '2 Shawarmas – Saver Deal',
+      '1 Pc Hot & Crispy',
+      '1pc Smoky Red',
       '2 Shawarma Meals – Value Deal',
-      'Shawarma',
-      'Shawarma & Pepsi Combo',
-      'Shawarma Regular Meal',
-      'Shawarma Snack Box',
-      'Shawarma Box Meal',
-      'Shawarma Big Box',
+      '2 Shawarmas – Saver Deal',
+      '2pc Hot & Crispy',
+      '2pc Smoky Red',
+      '3 Pc Peri Peri Strips',
+      '4pc Hot & Crispy',
+      '4pc Hot Wings',
+      '5 Leg Pc & Pepsi Combo',
+      '5 Peri Peri Leg Pc',
+      '5pc Smoky Red',
+      '5pc Smoky Red With 2 Pepsi',
+      '6 Peri Peri Strips',
+      '6pc Hot & Crispy',
+      '8 Pc Boneless Meal',
+      '8 Pc Bucket',
+      'All Chicken Box Meal',
+      'All In One Bucket',
+      'American Classic Zinger Burger',
+      'American Classic Zinger Meal',
+      'American Nashville Roll Meal',
+      'Big 12',
+      'Big 8',
+      'Big 8 With 2 Pepsi Zero Sugar',
+      'Chicken Longer Burger',
+      'Chicken Longer Meal',
+      'Classic Chicken Krisper',
+      'Classic Chicken Krisper - With Cheese',
+      'Classic Chicken Krisper, Fries & Pepsi Combo',
+      'Classic Chicken Krisper, Popcorn & Pepsi Combo',
+      'Classic Chicken Rice Bowlz',
+      'Classic Chicken Rice Bowlz & Pepsi Combo',
+      'Classic Chicken Roll',
+      'Classic Zinger Box Meal',
+      'Double Chicken Roll',
+      'Double Chicken Roll Meal',
+      'Epic Feast Grand Bucket',
       'Epic Savers Bucket',
-      'Gold Zinger and Popcorn Meal',
+      'Gold Edition – 3pc Boneless Strips',
       'Gold Edition – Chicken Zinger',
       'Gold Edition – Chicken Zinger & Fries',
       'Gold Edition – Chicken Zinger, Fries & Pepsi Meal',
-      'Gold Edition – 3pc Boneless Strips',
-      'All Chicken Box Meal',
-      'Classic Zinger Box Meal',
-      'Tandoori Zinger Box Meal',
-      'Epic Feast Grand Bucket',
-      'All In One Bucket',
-      'Ultimate Savings Bucket',
-      'Big 12',
-      'Big 8 With 2 Pepsi Zero Sugar',
-      'Big 8',
-      '5 Leg Pc & Pepsi Combo',
-      '5 Peri Peri Leg Pc',
-      '8 Pc Bucket',
-      '6pc Hot & Crispy',
-      '8 Pc Boneless Meal',
-      '5pc Smoky Red With 2 Pepsi',
-      '5pc Smoky Red',
-      'Classic Chicken Krisper',
+      'Gold Zinger and Popcorn Meal',
+      'Grilled Chicken Rice Bowlz',
+      'Grilled Chicken Rice Bowlz & Pepsi Combo',
+      'Large Popcorn',
+      'Medium Popcorn',
+      'Popcorn Chicken Rice Bowlz',
+      'Popcorn Chicken Rice Bowlz & Pepsi Combo',
+      'Regular Popcorn',
+      'Shawarma',
+      'Shawarma & Pepsi Combo',
+      'Shawarma Big Box',
+      'Shawarma Box Meal',
+      'Shawarma Regular Meal',
+      'Shawarma Snack Box',
       'Spicy Chicken Krisper',
+      'Spicy Chicken Krisper - With Cheese',
+      'Spicy Chicken Krisper, Fries & Pepsi Combo',
+      'Spicy Chicken Krisper, Popcorn & Pepsi Combo',
       'Spicy Zinger Burger',
       'Spicy Zinger Meal',
-      'Zinger Pro Burger',
-      'Zinger Pro Meal',
-      'Tandoori Zinger Burger',
-      'Tandoori Zinger Meal',
-      'American Classic Zinger Burger',
-      'American Classic Zinger Meal',
-      'Regular Popcorn',
-      'Medium Popcorn',
-      'Large Popcorn',
-      '4pc Hot Wings',
-      '3 Pc Peri Peri Strips',
-      '6 Peri Peri Strips',
-      '1 Pc Hot & Crispy',
-      '2pc Hot & Crispy',
-      '4pc Hot & Crispy',
-      '1pc Smoky Red',
-      '2pc Smoky Red',
       'Tandoori Chicken Roll',
       'Tandoori Chicken Roll Meal',
+      'Tandoori Zinger Box Meal',
+      'Tandoori Zinger Burger',
+      'Tandoori Zinger Meal',
       'Thai Spicy Chicken Roll',
-      'Classic Chicken Roll',
-      'Double Chicken Roll',
-      'Double Chicken Roll Meal',
-      'American Nashville Roll Meal',
       'Thai Spicy Chicken Roll Meal',
-      'Classic Chicken Rice Bowlz & Pepsi Combo',
-      'Popcorn Chicken Rice Bowlz & Pepsi Combo',
-      'Grilled Chicken Rice Bowlz & Pepsi Combo',
-      'Classic Chicken Rice Bowlz',
-      'Popcorn Chicken Rice Bowlz',
-      'Grilled Chicken Rice Bowlz',
-      'Pepsi Medium',
+      'Ultimate Savings Bucket',
+      'Wednesday Specials 15 Pc Bucket',
+      'Zinger Pro Burger',
+      'Zinger Pro Meal',
 ]);
 
 const kfcStore = RAW_STORES.find((store) => store.id === 'store-kfc');

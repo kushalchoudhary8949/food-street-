@@ -1,10 +1,10 @@
 // Order window timing configuration and utility functions
 
-// Order window: 12:00 PM to 10:30 PM daily
-const ORDER_WINDOW_START_HOUR = 12; // 12:00 PM
+// Order window: 3:00 PM to 10:00 PM daily
+const ORDER_WINDOW_START_HOUR = 15; // 3:00 PM
 const ORDER_WINDOW_START_MINUTE = 0;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
-const ORDER_WINDOW_END_MINUTE = 30; // 10:30 PM
+const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -28,10 +28,10 @@ export const getOrderWindowStatus = (
   return {
     isOpen,
     message: isOpen
-      ? 'Orders are open until 10:30 PM'
-      : 'Orders open at 12:00 PM',
-    opensAt: '12:00 PM',
-    closesAt: '10:30 PM',
+      ? 'Orders are open until 10:00 PM'
+      : 'Orders open at 3:00 PM',
+    opensAt: '3:00 PM',
+    closesAt: '10:00 PM',
   };
 };
 

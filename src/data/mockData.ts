@@ -1,6 +1,6 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 
-export const DATA_VERSION = 'food_street_v1991_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v191_addons_nonveg_2026_09_19';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -2413,7 +2413,7 @@ export const RAW_STORES: Store[] = [
             "name": "Epic Savers Bucket",
             "price": 519,
             "description": "40% off 2 Hot & Crispy, 6 Strips, 4 Wings, 2 Dips",
-            "image": "/images/KFC/Ultimate Savings Bucket.webp",
+            "image": "/images/KFC/Epic Savers Bucket.webp",
             "isVeg": false,
             "category": "Chicken Buckets"
       },

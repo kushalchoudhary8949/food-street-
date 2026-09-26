@@ -38,6 +38,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [deliveryNote, setDeliveryNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
+  const currentStore = cartItems[0]?.store;
 
   if (!isOpen) return null;
 
@@ -49,9 +50,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const totalQuantity = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
   const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
-  const deliveryFee = 20;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-  const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
+  const offerDiscount = currentStore?.id === 'store-biriyani-zone'
+    ? Number(((itemTotal + taxesAndPacking) * 0.10).toFixed(2))
+    : 0;
+  const deliveryFee = 20;
+  const grandTotal = Math.max(0, itemTotal - offerDiscount + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
@@ -78,8 +82,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       cancellationConfirmed: isCancellationConfirmed,
     });
   };
-
-  const currentStore = cartItems[0]?.store;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
@@ -269,12 +271,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>₹{itemTotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Platform Fee</span>
-                  <span>₹{deliveryFee}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
                   <span>Taxes</span>
                   <span>₹{taxesAndPacking.toFixed(0)}</span>
+                </div>
+                {offerDiscount > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Biriyani Zone offer (10%)</span>
+                    <span className="text-emerald-600">-₹{offerDiscount.toFixed(0)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-gray-600">
+                  <span>Platform Fee</span>
+                  <span>₹{deliveryFee}</span>
                 </div>
                 {selectedTip > 0 && (
                   <div className="flex justify-between text-gray-600">

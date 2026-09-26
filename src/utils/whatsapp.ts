@@ -28,7 +28,7 @@ ${itemsText}
 ━━━━━━━━━━━━━━━━━━━━
 💵 *Item Total:* ₹${order.itemTotal.toFixed(0)}
 💼 *Platform Fee:* ₹${order.deliveryFee.toFixed(0)}
-🧾 *Taxes & Charges:* ₹${order.taxesAndCharges.toFixed(0)}
+${order.offerDiscount && order.offerDiscount > 0 ? `🏷️ *Biriyani Zone Offer (10%):* -₹${order.offerDiscount.toFixed(0)}\n` : ''}🧾 *Taxes & Charges:* ₹${order.taxesAndCharges.toFixed(0)}
 ${order.discount > 0 ? `🏷️ *Offer Discount:* -₹${order.discount.toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${order.tip.toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${order.grandTotal.toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
 ${cancellationNote}📌 *PAYMENT COLLECTION DETAILS:*

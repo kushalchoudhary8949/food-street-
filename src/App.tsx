@@ -372,9 +372,12 @@ export default function App() {
 
     const totalQuantity = cartItemsForOrder.reduce((sum, ci) => sum + ci.quantity, 0);
     const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
-    const deliveryFee = 20;
     const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-    const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + tip - discount);
+    const offerDiscount = cartItemsForOrder.some((ci) => ci.store.id === 'store-biriyani-zone')
+      ? Number(((itemTotal + taxesAndPacking) * 0.10).toFixed(2))
+      : 0;
+    const deliveryFee = 20;
+    const grandTotal = Math.max(0, itemTotal - offerDiscount + containerCharge + deliveryFee + taxesAndPacking + tip - discount);
 
     const storeMap = new Map<string, Store>();
     cartItemsForOrder.forEach(ci => storeMap.set(ci.store.id, ci.store));
@@ -408,6 +411,7 @@ export default function App() {
       })),
       itemTotal,
       deliveryFee,
+      offerDiscount,
       discount,
       taxesAndCharges: taxesAndPacking,
       tip,

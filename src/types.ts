@@ -77,6 +77,7 @@ export interface Order {
   }[];
   itemTotal: number;
   deliveryFee: number;
+  offerDiscount?: number;
   discount: number;
   taxesAndCharges: number;
   tip: number;

@@ -51,11 +51,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalQuantity = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
   const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
   const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-  const offerDiscount = currentStore?.id === 'store-biriyani-zone'
-    ? Number(((itemTotal + taxesAndPacking) * 0.10).toFixed(2))
-    : 0;
   const deliveryFee = 20;
-  const grandTotal = Math.max(0, itemTotal - offerDiscount + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
+  const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
@@ -274,12 +271,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>Taxes</span>
                   <span>₹{taxesAndPacking.toFixed(0)}</span>
                 </div>
-                {offerDiscount > 0 && (
-                  <div className="flex justify-between text-gray-600">
-                    <span>Biriyani Zone offer (10%)</span>
-                    <span className="text-emerald-600">-₹{offerDiscount.toFixed(0)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between text-gray-600">
                   <span>Platform Fee</span>
                   <span>₹{deliveryFee}</span>

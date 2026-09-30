@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Heart, Share2, Search, Plus, Minus, Clock, Store as StoreIcon, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Heart, Share2, Search, Plus, Minus, Clock, Store as StoreIcon, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { Store, MenuItem, CartItem, MenuItemAddon } from '../types';
+import { GRADUATE_BIRYANI_ORDER_SLOTS } from '../utils/orderTiming';
 
 interface StoreDetailModalProps {
   store: Store | null;
@@ -30,6 +31,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [menuSearch, setMenuSearch] = useState('');
   const [vegOnly, setVegOnly] = useState(false);
+  const [showGraduateMenu, setShowGraduateMenu] = useState(false);
 
   useEffect(() => {
     if (store) {
@@ -40,6 +42,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
       }
       setSelectedCategory('all');
       setMenuSearch('');
+      setShowGraduateMenu(false);
     }
   }, [store?.id]);
 
@@ -188,7 +191,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         </div>
 
         {/* Store Info Bar */}
-        {!['store-ssv', 'store-jawa-hut', 'store-taj-biriyani'].includes(store.id) && (
+        {!['store-ssv', 'store-jawa-hut', 'store-taj-biriyani', 'store-graduate-biryani'].includes(store.id) && (
           <div className="px-4 py-3 bg-white flex items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600">
             <div className="flex items-center space-x-3">
               {(!hasOutlets || currentOutlet) && (
@@ -208,7 +211,35 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         )}
 
         {/* View Mode 1: Food Court Store Selection Grid */}
-        {hasOutlets && selectedOutletId === 'select' ? (
+        {store.id === 'store-graduate-biryani' && !showGraduateMenu ? (
+          <div className="flex flex-1 flex-col p-4 pb-28">
+            <div className="rounded-3xl border-2 border-amber-300 bg-amber-50 p-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-amber-600" />
+                <div>
+                  <h3 className="text-lg font-black uppercase tracking-wide text-amber-900">Important: Order & Delivery Slots</h3>
+                  <p className="mt-2 text-sm font-semibold leading-relaxed text-amber-900">
+                    Orders are accepted from 5:00 PM to 10:00 PM in 30-minute windows. Delivery is expected around 15 minutes after the selected window closes.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {GRADUATE_BIRYANI_ORDER_SLOTS.map((slot) => (
+                  <div key={slot.orderWindow} className="rounded-xl border border-amber-200 bg-white/80 px-3 py-2.5">
+                    <p className="text-xs font-black text-gray-900">Order: {slot.orderWindow}</p>
+                    <p className="mt-1 text-xs font-bold text-amber-800">Delivery around {slot.deliveryTime}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button
+              onClick={() => setShowGraduateMenu(true)}
+              className="mt-auto w-full rounded-2xl bg-red-600 px-5 py-3.5 text-sm font-black uppercase tracking-wide text-white shadow-lg transition-colors hover:bg-red-700"
+            >
+              Next: View Menu
+            </button>
+          </div>
+        ) : hasOutlets && selectedOutletId === 'select' ? (
           <div className="p-4 space-y-4 pb-28">
             <div className="bg-linear-to-r from-red-600 via-red-500 to-amber-600 text-white rounded-3xl p-5 shadow-lg">
               <div className="flex items-center space-x-2">

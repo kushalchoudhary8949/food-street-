@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { getOrderWindowStatus, isOrderWindowOpen } from './utils/orderTiming';
+import { getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen } from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -282,6 +282,14 @@ export default function App() {
       return;
     }
 
+    if (store.id === 'store-graduate-biryani') {
+      const windowStatus = getGraduateBiryaniOrderWindowStatus();
+      if (!windowStatus.isOpen) {
+        showToast(windowStatus.message);
+        return;
+      }
+    }
+
     const activeStoreIds = new Set(cartItems.map((cartItem) => cartItem.store.id));
     if (activeStoreIds.size > 0 && (activeStoreIds.size > 1 || !activeStoreIds.has(store.id))) {
       showToast('Orders are possible from one store at a time. Clear your current cart to order from another store.');
@@ -343,6 +351,13 @@ export default function App() {
     if (!windowStatus.isOpen) {
       showToast(windowStatus.message);
       return;
+    }
+    if (cartItemsForOrder[0]?.store.id === 'store-graduate-biryani') {
+      const graduateWindowStatus = getGraduateBiryaniOrderWindowStatus();
+      if (!graduateWindowStatus.isOpen) {
+        showToast(graduateWindowStatus.message);
+        return;
+      }
     }
 
     const itemTotal = cartItemsForOrder.reduce((sum, ci) => {
@@ -416,7 +431,7 @@ export default function App() {
     showToast('🎉 Order placed & sent to WhatsApp (+91 8949508256)!');
   };
 
-  const containerChargePerItem = ['store-biriyani-zone', 'store-ssv', 'store-jawa-hut', 'store-taj-biriyani'].includes(cartItems[0]?.store.id ?? '') ? 10 : 0;
+  const containerChargePerItem = ['store-biriyani-zone', 'store-ssv', 'store-jawa-hut', 'store-taj-biriyani', 'store-graduate-biryani'].includes(cartItems[0]?.store.id ?? '') ? 10 : 0;
   const handlePlaceOrder = (opts: { tip: number; discount: number; couponCode: string; instructions: string; paymentMethod: string; cancellationConfirmed: boolean }) =>
     buildAndPlaceOrder(cartItems, () => setCartItems([]), () => setIsCartOpen(false), opts, containerChargePerItem);
 

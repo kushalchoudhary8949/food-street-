@@ -2,8 +2,9 @@ import { Category, MenuItem, Store, UserAddress, Order } from '../types';
 import ssvMenuCsv from '../csv files/Sri_Siddhi_Vinayaka_Manch_Mela_Menu.csv?raw';
 import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
+import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v3_add_taj_biriyani_2026_09_30';
+export const DATA_VERSION = 'food_street_v4_add_graduate_biryani_2026_09_30';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -121,6 +122,31 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
             return {
               id: `taj-biriyani-${index + 1}`,
               storeId: 'store-taj-biriyani',
+              name: variant ? `${itemName} (${variant})` : itemName,
+              price: Number.parseFloat(getValue(row, 'price_inr')) || 0,
+              description: getValue(row, 'notes') || getValue(row, 'subcategory'),
+              image: '',
+              isVeg: getValue(row, 'dietary_type') !== 'Non-Veg',
+              category: getValue(row, 'category'),
+            };
+          });
+
+          return { categories, items };
+        };
+
+        const createGraduateBiryaniMenu = (): { categories: string[]; items: MenuItem[] } => {
+          const rows = graduateBiryaniMenuCsv.trim().split(/\r?\n/).map(parseCsvRow);
+          const [header, ...menuRows] = rows;
+          const columnIndex = new Map(header.map((column, index) => [column, index]));
+          const getValue = (row: string[], column: string) => row[columnIndex.get(column) ?? -1] ?? '';
+          const categories = Array.from(new Set(menuRows.map((row) => getValue(row, 'category')).filter(Boolean)));
+          const items = menuRows.map((row, index) => {
+            const itemName = getValue(row, 'item_name');
+            const variant = getValue(row, 'variant');
+
+            return {
+              id: `graduate-biryani-${index + 1}`,
+              storeId: 'store-graduate-biryani',
               name: variant ? `${itemName} (${variant})` : itemName,
               price: Number.parseFloat(getValue(row, 'price_inr')) || 0,
               description: getValue(row, 'notes') || getValue(row, 'subcategory'),
@@ -6596,6 +6622,7 @@ export const foodStreetStore: Store = {
 const ssvMenu = createSsvMenu();
 const jawaHutMenu = createJawaHutMenu();
 const tajBiriyaniMenu = createTajBiriyaniMenu();
+const graduateBiryaniMenu = createGraduateBiryaniMenu();
 
 const ssvStore: Store = {
   id: 'store-ssv',
@@ -6648,12 +6675,30 @@ const tajBiriyaniStore: Store = {
   items: tajBiriyaniMenu.items
 };
 
+const graduateBiryaniStore: Store = {
+  id: 'store-graduate-biryani',
+  name: 'Graduate Biryani',
+  rating: 4.5,
+  reviewsCount: 0,
+  deliveryTime: '30-45 mins',
+  deliveryFee: 20,
+  distance: '3.0 km',
+  image: '/images/storeImage/Graduate Biryani Logo.png',
+  bannerImage: '/images/storeImage/Graduate Biryani Logo.png',
+  cuisines: ['Biryani', 'Indian'],
+  tags: ['Biryani', 'Student Favorite'],
+  outlets: [],
+  menuCategories: graduateBiryaniMenu.categories,
+  items: graduateBiryaniMenu.items
+};
+
 export const STORES: Store[] = [
   biriyaniZoneStore,
   foodStreetStore,
   ssvStore,
   jawaHutStore,
   tajBiriyaniStore,
+  graduateBiryaniStore,
 ];
 
 export const INITIAL_ADDRESSES: UserAddress[] = [

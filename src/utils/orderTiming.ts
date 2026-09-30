@@ -40,3 +40,57 @@ export const isOrderWindowOpen = (
 ): boolean => {
   return getOrderWindowStatus(date).isOpen;
 };
+
+const GRADUATE_BIRYANI_START_MINUTES = 17 * 60;
+const GRADUATE_BIRYANI_END_MINUTES = 22 * 60;
+const GRADUATE_BIRYANI_SLOT_MINUTES = 30;
+const GRADUATE_BIRYANI_DELIVERY_DELAY_MINUTES = 15;
+
+const formatTime = (totalMinutes: number): string => {
+  const hours = Math.floor(totalMinutes / 60) % 24;
+  const minutes = totalMinutes % 60;
+  const suffix = hours >= 12 ? 'PM' : 'AM';
+  const displayHour = hours % 12 || 12;
+  return `${displayHour}:${minutes.toString().padStart(2, '0')} ${suffix}`;
+};
+
+export const GRADUATE_BIRYANI_ORDER_SLOTS = Array.from(
+  { length: (GRADUATE_BIRYANI_END_MINUTES - GRADUATE_BIRYANI_START_MINUTES) / GRADUATE_BIRYANI_SLOT_MINUTES },
+  (_, index) => {
+    const start = GRADUATE_BIRYANI_START_MINUTES + index * GRADUATE_BIRYANI_SLOT_MINUTES;
+    const end = start + GRADUATE_BIRYANI_SLOT_MINUTES;
+    const delivery = end + GRADUATE_BIRYANI_DELIVERY_DELAY_MINUTES;
+    return {
+      orderWindow: `${formatTime(start)} - ${formatTime(end)}`,
+      deliveryTime: formatTime(delivery),
+    };
+  }
+);
+
+export interface GraduateBiryaniOrderWindowStatus {
+  isOpen: boolean;
+  message: string;
+}
+
+export const getGraduateBiryaniOrderWindowStatus = (
+  date: Date = new Date()
+): GraduateBiryaniOrderWindowStatus => {
+  const currentMinutes = date.getHours() * 60 + date.getMinutes();
+  const isOpen = currentMinutes >= GRADUATE_BIRYANI_START_MINUTES && currentMinutes < GRADUATE_BIRYANI_END_MINUTES;
+
+  if (!isOpen) {
+    return {
+      isOpen: false,
+      message: 'Graduate Biryani orders are available from 5:00 PM to 10:00 PM in 30-minute slots.',
+    };
+  }
+
+  const slotStart = GRADUATE_BIRYANI_START_MINUTES + Math.floor((currentMinutes - GRADUATE_BIRYANI_START_MINUTES) / GRADUATE_BIRYANI_SLOT_MINUTES) * GRADUATE_BIRYANI_SLOT_MINUTES;
+  const slotEnd = slotStart + GRADUATE_BIRYANI_SLOT_MINUTES;
+  const deliveryTime = slotEnd + GRADUATE_BIRYANI_DELIVERY_DELAY_MINUTES;
+
+  return {
+    isOpen: true,
+    message: `Current order window: ${formatTime(slotStart)} - ${formatTime(slotEnd)}. Delivery around ${formatTime(deliveryTime)}.`,
+  };
+};

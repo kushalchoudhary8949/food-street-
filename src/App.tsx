@@ -416,7 +416,7 @@ export default function App() {
     showToast('🎉 Order placed & sent to WhatsApp (+91 8949508256)!');
   };
 
-  const containerChargePerItem = cartItems[0]?.store.id === 'store-biriyani-zone' ? 10 : 0;
+  const containerChargePerItem = ['store-biriyani-zone', 'store-ssv'].includes(cartItems[0]?.store.id ?? '') ? 10 : 0;
   const handlePlaceOrder = (opts: { tip: number; discount: number; couponCode: string; instructions: string; paymentMethod: string; cancellationConfirmed: boolean }) =>
     buildAndPlaceOrder(cartItems, () => setCartItems([]), () => setIsCartOpen(false), opts, containerChargePerItem);
 

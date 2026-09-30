@@ -142,7 +142,9 @@ export const SearchTab: React.FC<SearchTabProps> = ({
                   </div>
 
                   <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    {item.image && (
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    )}
                   </div>
                 </div>
               ))}

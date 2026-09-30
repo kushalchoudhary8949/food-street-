@@ -1,6 +1,7 @@
 import { Category, MenuItem, Store, UserAddress, Order } from '../types';
+import ssvMenuCsv from '../csv files/Sri_Siddhi_Vinayaka_Manch_Mela_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v11_addons_nonveg_2026_09_19';
+export const DATA_VERSION = 'food_street_v1_add_ssv_menu_2026_09_30';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -25,6 +26,60 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
             })
             .map(({ item }) => item);
 };
+
+        const parseCsvRow = (row: string): string[] => {
+          const values: string[] = [];
+          let value = '';
+          let isQuoted = false;
+
+          for (let index = 0; index < row.length; index += 1) {
+            const character = row[index];
+            const nextCharacter = row[index + 1];
+
+            if (character === '"' && isQuoted && nextCharacter === '"') {
+              value += '"';
+              index += 1;
+            } else if (character === '"') {
+              isQuoted = !isQuoted;
+            } else if (character === ',' && !isQuoted) {
+              values.push(value.trim());
+              value = '';
+            } else {
+              value += character;
+            }
+          }
+
+          values.push(value.trim());
+          return values;
+        };
+
+        const createSsvMenu = (): { categories: string[]; items: MenuItem[] } => {
+          const rows = ssvMenuCsv.trim().split(/\r?\n/).map(parseCsvRow);
+          const [, ...menuRows] = rows;
+          const categories = Array.from(new Set(menuRows.map(([, category]) => category).filter(Boolean)));
+          const items = menuRows.map(([
+            ,
+            category,
+            subcategory,
+            itemName,
+            variant,
+            price,
+            dietaryType,
+            ,
+            notes,
+          ], index) => ({
+            id: `ssv-${index + 1}`,
+            storeId: 'store-ssv',
+            name: variant ? `${itemName} (${variant})` : itemName,
+            price: Number.parseFloat(price) || 0,
+            description: notes || subcategory,
+            image: '',
+            isVeg: dietaryType !== 'Non-Veg',
+            category,
+          }));
+
+          return { categories, items };
+        };
 
 export const CATEGORIES: Category[] = [
   {
@@ -6486,9 +6541,29 @@ export const foodStreetStore: Store = {
   items: foodStreetItems,
 };
 
+const ssvMenu = createSsvMenu();
+
+const ssvStore: Store = {
+  id: 'store-ssv',
+  name: 'Sri Siddhi Vinayaka Manch Mela',
+  rating: 4.5,
+  reviewsCount: 0,
+  deliveryTime: '30-45 mins',
+  deliveryFee: 20,
+  distance: '3.0 km',
+  image: '/images/storeImage/SSV logo.png',
+  bannerImage: '/images/storeImage/SSV logo.png',
+  cuisines: ['South Indian'],
+  tags: ['Food Court', 'Breakfast'],
+  outlets: [],
+  menuCategories: ssvMenu.categories,
+  items: ssvMenu.items
+};
+
 export const STORES: Store[] = [
   biriyaniZoneStore,
   foodStreetStore,
+  ssvStore,
 ];
 
 export const INITIAL_ADDRESSES: UserAddress[] = [

@@ -188,22 +188,24 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         </div>
 
         {/* Store Info Bar */}
-        <div className="px-4 py-3 bg-white flex items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600">
-          <div className="flex items-center space-x-3">
-            {(!hasOutlets || currentOutlet) && (
-              <div className="flex items-center space-x-1.5">
-                <Clock className="w-4 h-4 text-red-600 stroke-[2.2]" />
-                <span className="text-gray-900 font-bold">{currentOutlet ? currentOutlet.deliveryTime : store.deliveryTime}</span>
-              </div>
-            )}
-            {(currentOutlet?.distance || store.distance) && (
-              <span className="text-gray-400 font-medium">
-                {(!hasOutlets || currentOutlet) && "• "}
-                {currentOutlet ? currentOutlet.distance : store.distance} away
-              </span>
-            )}
+        {store.id !== 'store-ssv' && (
+          <div className="px-4 py-3 bg-white flex items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600">
+            <div className="flex items-center space-x-3">
+              {(!hasOutlets || currentOutlet) && (
+                <div className="flex items-center space-x-1.5">
+                  <Clock className="w-4 h-4 text-red-600 stroke-[2.2]" />
+                  <span className="text-gray-900 font-bold">{currentOutlet ? currentOutlet.deliveryTime : store.deliveryTime}</span>
+                </div>
+              )}
+              {(currentOutlet?.distance || store.distance) && (
+                <span className="text-gray-400 font-medium">
+                  {(!hasOutlets || currentOutlet) && "• "}
+                  {currentOutlet ? currentOutlet.distance : store.distance} away
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* View Mode 1: Food Court Store Selection Grid */}
         {hasOutlets && selectedOutletId === 'select' ? (
@@ -411,15 +413,17 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                     {/* Right Image & Action Button */}
                     <div className="relative shrink-0 flex flex-col items-center">
                       <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gray-100">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=300&q=80';
-                          }}
-                        />
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=300&q=80';
+                            }}
+                          />
+                        )}
                       </div>
 
                       {/* Add or Counter Button */}

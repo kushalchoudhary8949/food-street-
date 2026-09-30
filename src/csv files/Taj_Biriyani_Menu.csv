@@ -1,0 +1,6 @@
+﻿store_name,category,subcategory,item_name,variant,price_inr,dietary_type,menu_page,notes
+Taj Biriyani,Biryani,Biryani,Chicken Biriyani,Regular,120,Non-Veg,1,
+Taj Biriyani,Starters,Kabab,Chicken Kabab,Full,120,Non-Veg,1,F = Full
+Taj Biriyani,Starters,Kabab,Chicken Kabab,Half,60,Non-Veg,1,H = Half
+Taj Biriyani,Biryani,Kushka,Kushka,Full,60,Non-Veg,1,F = Full
+Taj Biriyani,Biryani,Kushka,Kushka,Half,40,Non-Veg,1,H = Half

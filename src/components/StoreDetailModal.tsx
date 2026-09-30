@@ -188,7 +188,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         </div>
 
         {/* Store Info Bar */}
-        {store.id !== 'store-ssv' && (
+        {!['store-ssv', 'store-jawa-hut', 'store-taj-biriyani'].includes(store.id) && (
           <div className="px-4 py-3 bg-white flex items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600">
             <div className="flex items-center space-x-3">
               {(!hasOutlets || currentOutlet) && (

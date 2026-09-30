@@ -44,7 +44,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
       setMenuSearch('');
       setShowGraduateMenu(false);
     }
-  }, [store?.id]);
+  }, [store?.id, isOpen]);
 
   if (!isOpen || !store) return null;
 

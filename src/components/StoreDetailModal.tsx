@@ -232,12 +232,14 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                 ))}
               </div>
             </div>
-            <button
-              onClick={() => setShowGraduateMenu(true)}
-              className="mt-auto w-full rounded-2xl bg-red-600 px-5 py-3.5 text-sm font-black uppercase tracking-wide text-white shadow-lg transition-colors hover:bg-red-700"
-            >
-              Next: View Menu
-            </button>
+            <div className="sticky bottom-4 z-40 py-2 mt-auto">
+              <button
+                onClick={() => setShowGraduateMenu(true)}
+                className="w-full rounded-2xl bg-red-600 px-5 py-3.5 text-sm font-black uppercase tracking-wide text-white shadow-2xl transition-colors hover:bg-red-700"
+              >
+                Next: View Menu
+              </button>
+            </div>
           </div>
         ) : hasOutlets && selectedOutletId === 'select' ? (
           <div className="p-4 space-y-4 pb-28">

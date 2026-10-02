@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Heart, Share2, Search, Plus, Minus, Clock, Store as StoreIcon, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { Store, MenuItem, CartItem, MenuItemAddon } from '../types';
 import { GRADUATE_BIRYANI_ORDER_SLOTS } from '../utils/orderTiming';
+import { getOrderWindowStatus } from '../utils/orderTiming';
 
 interface StoreDetailModalProps {
   store: Store | null;
@@ -47,6 +48,8 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
   }, [store?.id, isOpen]);
 
   if (!isOpen || !store) return null;
+
+  const orderWindowStatus = getOrderWindowStatus();
 
   const currentOutlet = hasOutlets && selectedOutletId && selectedOutletId !== 'all' && selectedOutletId !== 'select'
     ? store.outlets?.find(o => o.id === selectedOutletId)
@@ -189,6 +192,12 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
             <p className="text-xs sm:text-sm text-gray-200 mt-1 font-medium drop-shadow-xs">{cuisinesText}</p>
           </div>
         </div>
+
+        {!orderWindowStatus.isOpen && (
+          <div className="mx-4 mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+            Closed for today. Orders will reopen tomorrow at 3:00 PM.
+          </div>
+        )}
 
         {/* Store Info Bar */}
         {!['store-ssv', 'store-jawa-hut', 'store-taj-biriyani', 'store-graduate-biryani'].includes(store.id) && (

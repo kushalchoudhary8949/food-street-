@@ -1,5 +1,14 @@
 // Order window timing configuration and utility functions
 
+export const SITE_CLOSED_DATE = '2026-10-02';
+
+export const isSiteClosedForToday = (date: Date = new Date()): boolean => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}` === SITE_CLOSED_DATE;
+};
+
 // Order window: 3:00 PM to 10:00 PM daily
 const ORDER_WINDOW_START_HOUR = 15; // 3:00 PM
 const ORDER_WINDOW_START_MINUTE = 0;
@@ -8,6 +17,7 @@ const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
 
 export interface OrderWindowStatus {
   isOpen: boolean;
+  isClosedForToday: boolean;
   message: string;
   opensAt: string;
   closesAt: string;
@@ -23,13 +33,17 @@ export const getOrderWindowStatus = (
   const startMinutes = ORDER_WINDOW_START_HOUR * 60 + ORDER_WINDOW_START_MINUTE;
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
 
-  const isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  const isClosedForToday = isSiteClosedForToday(date);
+  const isOpen = !isClosedForToday && currentMinutes >= startMinutes && currentMinutes < endMinutes;
 
   return {
     isOpen,
-    message: isOpen
-      ? 'Orders are open until 10:00 PM'
-      : 'Orders open at 3:00 PM',
+    isClosedForToday,
+    message: isClosedForToday
+      ? 'We are closed for today. Orders will reopen tomorrow at 3:00 PM.'
+      : isOpen
+        ? 'Orders are open until 10:00 PM'
+        : 'Orders open at 3:00 PM',
     opensAt: '3:00 PM',
     closesAt: '10:00 PM',
   };

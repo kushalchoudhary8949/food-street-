@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { Store } from '../types';
+import { getOrderWindowStatus } from '../utils/orderTiming';
 
 interface StoreCardProps {
   store: Store;
@@ -15,6 +16,8 @@ export const StoreCard: React.FC<StoreCardProps> = ({
   onToggleFavorite,
   onClick,
 }) => {
+  const orderWindowStatus = getOrderWindowStatus();
+
   return (
     <div
       id={`store-card-${store.id}`}
@@ -32,6 +35,12 @@ export const StoreCard: React.FC<StoreCardProps> = ({
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';
           }}
         />
+
+        {!orderWindowStatus.isOpen && (
+          <span className="absolute bottom-3 left-3 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 shadow-sm">
+            Closed for today
+          </span>
+        )}
 
         {/* Favorite Button */}
         <button

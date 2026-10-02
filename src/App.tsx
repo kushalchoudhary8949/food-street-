@@ -248,6 +248,12 @@ export default function App() {
     quantity = 1,
     selectedAddons: MenuItemAddon[] = []
   ) => {
+    const orderWindowStatus = getOrderWindowStatus();
+    if (!orderWindowStatus.isOpen) {
+      showToast(orderWindowStatus.message);
+      return;
+    }
+
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     const isDayRestricted = Array.isArray(item.availableOnDays) && item.availableOnDays.length > 0;
     if (isDayRestricted && !item.availableOnDays!.includes(today)) {

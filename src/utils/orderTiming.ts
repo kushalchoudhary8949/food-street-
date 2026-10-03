@@ -1,6 +1,6 @@
 // Order window timing configuration and utility functions
 
-export const SITE_CLOSED_DATE = '2026-10-02';
+export const SITE_CLOSED_DATE = '2026-10-03';
 
 export const isSiteClosedForToday = (date: Date = new Date()): boolean => {
   const year = date.getFullYear();

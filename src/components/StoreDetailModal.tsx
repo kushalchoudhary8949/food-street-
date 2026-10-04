@@ -257,11 +257,11 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
             <div className="bg-linear-to-r from-red-600 via-red-500 to-amber-600 text-white rounded-3xl p-5 shadow-lg">
               <div className="flex items-center space-x-2">
                 <StoreIcon className="w-5 h-5 text-amber-300" />
-                <span className="text-xs font-black uppercase tracking-wider text-amber-200">The Food Street • 6 Outlets</span>
+                <span className="text-xs font-black uppercase tracking-wider text-amber-200">Available Restaurants</span>
               </div>
               <h3 className="text-xl font-black mt-1">Select a Store to View Menu</h3>
               <p className="text-xs font-medium opacity-90 mt-1 leading-relaxed">
-                Explore signature menus from all 6 iconic food spots inside The Food Street. Tap any store below to order!
+                Explore the available restaurant menus below and tap any store to order.
               </p>
             </div>
 

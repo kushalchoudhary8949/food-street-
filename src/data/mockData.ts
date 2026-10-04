@@ -3,8 +3,9 @@ import ssvMenuCsv from '../csv files/Sri_Siddhi_Vinayaka_Manch_Mela_Menu.csv?raw
 import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
+import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 
-export const DATA_VERSION = 'food_street_v4_add_graduate_biryani_2026_09_30';
+export const DATA_VERSION = 'food_street_v12_kfc_8pc_bucket_price_2026_10_04';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -6592,32 +6593,26 @@ const KFC_NON_VEG_ITEMS = new Set([
 ]);
 
 const kfcStore = RAW_STORES.find((store) => store.id === 'store-kfc');
+const kfcCsvPrices = new Map(
+  kfcMenuCsv
+    .trim()
+    .split(/\r?\n/)
+    .slice(1)
+    .map((row) => {
+      const [, name, price] = parseCsvRow(row);
+      return [name, Number(price)] as const;
+    })
+);
 kfcStore?.items.forEach((item) => {
+  const csvPrice = kfcCsvPrices.get(item.name);
+  if (csvPrice !== undefined) item.price = csvPrice;
       if (KFC_NON_VEG_ITEMS.has(item.name)) item.isVeg = false;
 });
 
 const biriyaniZoneStore = RAW_STORES.find(s => s.id === 'store-biriyani-zone')!;
-const foodCourtOutlets = RAW_STORES.filter(s => s.id !== 'store-biriyani-zone');
-
-const foodStreetItems = foodCourtOutlets.flatMap(s => s.items);
-const foodStreetCategories = Array.from(new Set(foodCourtOutlets.flatMap(s => s.menuCategories)));
-
-export const foodStreetStore: Store = {
-  id: 'store-food-street',
-  name: 'The Food Street',
-  rating: 4.8,
-  reviewsCount: 3200,
-  deliveryTime: '20-35 mins',
-  deliveryFee: 20,
-  distance: '2.8 km',
-  image: 'images/storeImage/FoodStreet.png',
-  bannerImage: '/images/storeImage/FoodStreet.png',
-  cuisines: ['Burgers', 'Pizza', 'South Indian', 'Biryani', 'North Indian', 'Ice Cream', 'Fast Food'],
-  tags: ['Food Court', '6 Outlets', 'Multi-Brand', 'Bestseller'],
-  outlets: foodCourtOutlets,
-  menuCategories: foodStreetCategories,
-  items: foodStreetItems,
-};
+const foodCourtOutlets = RAW_STORES.filter(
+  s => !['store-biriyani-zone', 'store-bbk', 'store-goila'].includes(s.id)
+);
 
 const ssvMenu = createSsvMenu();
 const jawaHutMenu = createJawaHutMenu();
@@ -6694,7 +6689,7 @@ const graduateBiryaniStore: Store = {
 
 export const STORES: Store[] = [
   biriyaniZoneStore,
-  foodStreetStore,
+  ...foodCourtOutlets,
   ssvStore,
   jawaHutStore,
   tajBiriyaniStore,

@@ -4,8 +4,9 @@ import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
 import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
+import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v12_kfc_8pc_bucket_price_2026_10_04';
+export const DATA_VERSION = 'food_street_v13_pizza_hut_price_update_2026_10_04';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -6607,6 +6608,28 @@ kfcStore?.items.forEach((item) => {
   const csvPrice = kfcCsvPrices.get(item.name);
   if (csvPrice !== undefined) item.price = csvPrice;
       if (KFC_NON_VEG_ITEMS.has(item.name)) item.isVeg = false;
+});
+
+const pizzaHutCsvPrices = new Map<string, number>();
+pizzaHutMenuCsv
+  .trim()
+  .split(/\r?\n/)
+  .slice(1)
+  .forEach((row) => {
+    const fields = parseCsvRow(row);
+    const personalPrice = Number(fields[4]);
+    if (fields[2] && Number.isFinite(personalPrice) && fields[4] !== '') {
+      const dietaryKey = fields[3] === 'Non-Veg' ? 'non-veg' : 'veg';
+      pizzaHutCsvPrices.set(`${fields[2]}|${dietaryKey}`, personalPrice);
+      pizzaHutCsvPrices.set(fields[2], personalPrice);
+    }
+  });
+
+const pizzaHutStore = RAW_STORES.find((store) => store.id === 'store-pizzahut');
+pizzaHutStore?.items.forEach((item) => {
+  const dietaryKey = item.isVeg ? 'veg' : 'non-veg';
+  const csvPrice = pizzaHutCsvPrices.get(`${item.name}|${dietaryKey}`) ?? pizzaHutCsvPrices.get(item.name);
+  if (csvPrice !== undefined) item.price = csvPrice;
 });
 
 const biriyaniZoneStore = RAW_STORES.find(s => s.id === 'store-biriyani-zone')!;

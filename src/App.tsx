@@ -248,7 +248,7 @@ export default function App() {
     quantity = 1,
     selectedAddons: MenuItemAddon[] = []
   ) => {
-    const orderWindowStatus = getOrderWindowStatus();
+    const orderWindowStatus = getOrderWindowStatus(item.storeId);
     if (!orderWindowStatus.isOpen) {
       showToast(orderWindowStatus.message);
       return;
@@ -353,7 +353,7 @@ export default function App() {
     containerChargePerItem = 0
   ) => {
     if (cartItemsForOrder.length === 0) return;
-    const windowStatus = getOrderWindowStatus();
+    const windowStatus = getOrderWindowStatus(cartItemsForOrder[0]?.store.id);
     if (!windowStatus.isOpen) {
       showToast(windowStatus.message);
       return;
@@ -608,7 +608,7 @@ export default function App() {
                     }`}>
                       <div className="flex items-center space-x-2">
                         <span className={`w-2 h-2 rounded-full ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                        <span>{ws.isOpen ? 'Orders open now' : 'Orders currently closed'}</span>
+                        <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Only Biriyani Zone can accept orders today' : 'Orders currently closed'}</span>
                       </div>
                       <span className="opacity-70">⏰ {ws.opensAt} – {ws.closesAt}</span>
                     </div>

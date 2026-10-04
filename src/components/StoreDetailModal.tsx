@@ -49,7 +49,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
   if (!isOpen || !store) return null;
 
-  const orderWindowStatus = getOrderWindowStatus();
+  const orderWindowStatus = getOrderWindowStatus(store.id);
 
   const currentOutlet = hasOutlets && selectedOutletId && selectedOutletId !== 'all' && selectedOutletId !== 'select'
     ? store.outlets?.find(o => o.id === selectedOutletId)
@@ -195,7 +195,9 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
         {!orderWindowStatus.isOpen && (
           <div className="mx-4 mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
-            Closed for today. Orders will reopen tomorrow at 3:00 PM.
+            {orderWindowStatus.isClosedForToday
+              ? 'Closed for today. Orders will reopen tomorrow at 12:00 PM.'
+              : `Orders open at ${orderWindowStatus.opensAt}.`}
           </div>
         )}
 

@@ -56,7 +56,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
-    const windowStatus = getOrderWindowStatus();
+    const windowStatus = getOrderWindowStatus(currentStore?.id);
     if (!windowStatus.isOpen) {
       alert(windowStatus.message);
       return;
@@ -313,7 +313,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           <div className="p-4 sm:p-5 bg-white border-t border-gray-100 space-y-2">
             {/* Order timing info */}
             {(() => {
-              const ws = getOrderWindowStatus();
+              const ws = getOrderWindowStatus(currentStore?.id);
               return (
                 <div className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
                   ws.isOpen
@@ -322,7 +322,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 }`}>
                   <div className="flex items-center space-x-2">
                     <span className={`w-2 h-2 rounded-full flex-shrink-0 ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                    <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Closed for today' : 'Orders closed · Opens at 3:00 PM'}</span>
+                    <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Closed for today' : `Orders closed · Opens at ${ws.opensAt}`}</span>
                   </div>
                   <span className="opacity-70 ml-2 whitespace-nowrap">⏰ {ws.opensAt} – {ws.closesAt}</span>
                 </div>
@@ -331,7 +331,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               id="place-order-checkout-btn"
               onClick={handleCheckout}
-              disabled={!isCancellationConfirmed || !isOrderWindowOpen()}
+              disabled={!isCancellationConfirmed || !isOrderWindowOpen(currentStore?.id)}
               className="w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600"
             >
               <div className="text-left">

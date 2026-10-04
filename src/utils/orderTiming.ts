@@ -1,18 +1,9 @@
 // Order window timing configuration and utility functions
 
-export const SITE_CLOSED_DATE = '2026-10-04';
 export const OPEN_STORE_ID = 'store-biriyani-zone';
-
-export const isSiteClosedForToday = (date: Date = new Date()): boolean => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}` === SITE_CLOSED_DATE;
-};
-
-// Order window: 12:00 PM to 10:00 PM daily
-const ORDER_WINDOW_START_HOUR = 12; // 12:00 PM
-const ORDER_WINDOW_START_MINUTE = 0;
+const BIRIYANI_ZONE_START_HOUR = 12;
+const OTHER_STORES_START_HOUR = 16;
+const OTHER_STORES_START_MINUTE = 30;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
 
@@ -32,21 +23,19 @@ export const getOrderWindowStatus = (
   const minutes = date.getMinutes();
 
   const currentMinutes = hours * 60 + minutes;
-  const startMinutes = ORDER_WINDOW_START_HOUR * 60 + ORDER_WINDOW_START_MINUTE;
+  const isBiriyaniZone = storeId === OPEN_STORE_ID;
+  const startMinutes = (isBiriyaniZone ? BIRIYANI_ZONE_START_HOUR : OTHER_STORES_START_HOUR) * 60
+    + (isBiriyaniZone ? 0 : OTHER_STORES_START_MINUTE);
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
 
-  const isClosedForToday = isSiteClosedForToday(date) && storeId !== OPEN_STORE_ID;
-  const isOpen = !isClosedForToday && currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  const isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  const opensAt = isBiriyaniZone ? '12:00 PM' : '4:30 PM';
 
   return {
     isOpen,
-    isClosedForToday,
-    message: isClosedForToday
-      ? 'We are closed for today. Orders will reopen tomorrow at 12:00 PM.'
-      : isOpen
-        ? 'Orders are open until 10:00 PM'
-        : 'Orders open at 12:00 PM',
-      opensAt: '12:00 PM',
+    isClosedForToday: false,
+    message: isOpen ? 'Orders are open until 10:00 PM' : `Orders open at ${opensAt}`,
+    opensAt,
     closesAt: '10:00 PM',
   };
 };

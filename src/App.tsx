@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen } from './utils/orderTiming';
+import { getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen, OPEN_STORE_ID } from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -599,18 +599,24 @@ export default function App() {
 
                 {/* Order Window Timing Banner */}
                 {(() => {
-                  const ws = getOrderWindowStatus();
+                  const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID);
+                  const otherStoresStatus = getOrderWindowStatus();
+                  const statusLabel = biriyaniZoneStatus.isOpen && otherStoresStatus.isOpen
+                    ? 'Orders open now'
+                    : biriyaniZoneStatus.isOpen
+                      ? 'Biriyani Zone open · Other stores open at 4:30 PM'
+                      : 'Biriyani Zone opens at 12:00 PM · Other stores open at 4:30 PM';
                   return (
                     <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
-                      ws.isOpen
+                      biriyaniZoneStatus.isOpen || otherStoresStatus.isOpen
                         ? 'bg-green-50 border border-green-200 text-green-800'
                         : 'bg-red-50 border border-red-200 text-red-700'
                     }`}>
                       <div className="flex items-center space-x-2">
-                        <span className={`w-2 h-2 rounded-full ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                        <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Only Biriyani Zone can accept orders today' : 'Orders currently closed'}</span>
+                        <span className={`w-2 h-2 rounded-full ${biriyaniZoneStatus.isOpen || otherStoresStatus.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                        <span>{statusLabel}</span>
                       </div>
-                      <span className="opacity-70">⏰ {ws.opensAt} – {ws.closesAt}</span>
+                      <span className="opacity-70">⏰ BZ 12:00 PM · Others 4:30 PM–10:00 PM</span>
                     </div>
                   );
                 })()}

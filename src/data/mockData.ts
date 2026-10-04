@@ -5,8 +5,10 @@ import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
 import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
+import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
+import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v13_pizza_hut_price_update_2026_10_04';
+export const DATA_VERSION = 'food_street_v14_vaango_baskin_price_update_2026_10_04';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -6630,6 +6632,53 @@ pizzaHutStore?.items.forEach((item) => {
   const dietaryKey = item.isVeg ? 'veg' : 'non-veg';
   const csvPrice = pizzaHutCsvPrices.get(`${item.name}|${dietaryKey}`) ?? pizzaHutCsvPrices.get(item.name);
   if (csvPrice !== undefined) item.price = csvPrice;
+});
+
+const getFirstNumericPrice = (value: string): number | undefined => {
+  const match = value.match(/\d+(?:\.\d+)?/);
+  if (!match) return undefined;
+  const price = Number(match[0]);
+  return Number.isFinite(price) ? price : undefined;
+};
+
+const vaangoCsvPrices = new Map<string, number>();
+vaangoMenuCsv
+  .trim()
+  .split(/\r?\n/)
+  .slice(1)
+  .forEach((row) => {
+    const fields = parseCsvRow(row);
+    const price = getFirstNumericPrice(fields[2] || '');
+    if (fields[1] && price !== undefined) vaangoCsvPrices.set(fields[1], price);
+  });
+
+const vaangoStore = RAW_STORES.find((store) => store.id === 'store-vengo');
+vaangoStore?.items.forEach((item) => {
+  const csvPrice = vaangoCsvPrices.get(item.name);
+  if (csvPrice !== undefined) item.price = csvPrice;
+});
+
+const baskinRobbinsCsvPrices = new Map<string, number>();
+baskinRobbinsMenuCsv
+  .trim()
+  .split(/\r?\n/)
+  .slice(1)
+  .forEach((row) => {
+    const fields = parseCsvRow(row);
+    const price = getFirstNumericPrice(fields[2] || '');
+    if (fields[1] && price !== undefined) baskinRobbinsCsvPrices.set(fields[1], price);
+  });
+
+const baskinRobbinsStore = RAW_STORES.find((store) => store.id === 'store-baskinrobbins');
+baskinRobbinsStore?.items.forEach((item) => {
+  const csvPrice = baskinRobbinsCsvPrices.get(item.name);
+  if (csvPrice !== undefined) item.price = csvPrice;
+  item.addons?.forEach((addon) => {
+    const addonName = addon.name.replace('Chocolate Topper – ', 'Chocolate Message Toppers - ')
+      .replace(/ \(4 pcs\)$/, '');
+    const addonPrice = baskinRobbinsCsvPrices.get(addonName) ?? baskinRobbinsCsvPrices.get(addon.name);
+    if (addonPrice !== undefined) addon.price = addonPrice;
+  });
 });
 
 const biriyaniZoneStore = RAW_STORES.find(s => s.id === 'store-biriyani-zone')!;

@@ -6,7 +6,6 @@ const OTHER_STORES_START_HOUR = 16;
 const OTHER_STORES_START_MINUTE = 30;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
-const TEMPORARY_OPEN_FROM_NOW = true;
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -28,17 +27,13 @@ export const getOrderWindowStatus = (
   const defaultStartMinutes = (isBiriyaniZone ? BIRIYANI_ZONE_START_HOUR : OTHER_STORES_START_HOUR) * 60
     + (isBiriyaniZone ? 0 : OTHER_STORES_START_MINUTE);
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
-  const defaultOpensAt = isBiriyaniZone ? '12:00 PM' : '4:30 PM';
-
-  const isOpen = TEMPORARY_OPEN_FROM_NOW
-    ? currentMinutes >= 0 && currentMinutes < endMinutes
-    : currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
-  const opensAt = isOpen ? 'Now' : defaultOpensAt;
+  const opensAt = isBiriyaniZone ? '12:00 PM' : '4:30 PM';
+  const isOpen = currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
 
   return {
     isOpen,
     isClosedForToday: false,
-    message: isOpen ? 'Orders are open now until 10:00 PM' : `Orders open at ${opensAt}`,
+    message: isOpen ? 'Orders are open until 10:00 PM' : `Orders open at ${opensAt}`,
     opensAt,
     closesAt: '10:00 PM',
   };

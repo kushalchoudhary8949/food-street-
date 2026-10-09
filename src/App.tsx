@@ -604,8 +604,12 @@ export default function App() {
                   const statusLabel = biriyaniZoneStatus.isOpen && otherStoresStatus.isOpen
                     ? 'Orders open now'
                     : biriyaniZoneStatus.isOpen
-                      ? 'Biriyani Zone open · Other stores open at 4:30 PM'
-                      : 'Biriyani Zone opens at 12:00 PM · Other stores open at 4:30 PM';
+                      ? otherStoresStatus.isClosedForToday
+                        ? 'Biriyani Zone open · Other stores closed for today'
+                        : 'Biriyani Zone open · Other stores open at 4:30 PM'
+                      : otherStoresStatus.isClosedForToday
+                        ? 'Biriyani Zone opens at 12:00 PM · Other stores closed for today'
+                        : 'Biriyani Zone opens at 12:00 PM · Other stores open at 4:30 PM';
                   return (
                     <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
                       biriyaniZoneStatus.isOpen || otherStoresStatus.isOpen
@@ -616,7 +620,9 @@ export default function App() {
                         <span className={`w-2 h-2 rounded-full ${biriyaniZoneStatus.isOpen || otherStoresStatus.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
                         <span>{statusLabel}</span>
                       </div>
-                      <span className="opacity-70">⏰ BZ 12:00 PM · Others 4:30 PM–10:00 PM</span>
+                      <span className="opacity-70">
+                        ⏰ BZ 12:00 PM–10:00 PM · {otherStoresStatus.isClosedForToday ? 'Others closed today' : 'Others 4:30 PM–10:00 PM'}
+                      </span>
                     </div>
                   );
                 })()}

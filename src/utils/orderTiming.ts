@@ -6,6 +6,13 @@ const OTHER_STORES_START_HOUR = 16;
 const OTHER_STORES_START_MINUTE = 30;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
+const OTHER_STORES_CLOSURE_DATE = '2026-10-09';
+
+const getLocalDateKey = (date: Date): string => {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+};
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -28,7 +35,19 @@ export const getOrderWindowStatus = (
     + (isBiriyaniZone ? 0 : OTHER_STORES_START_MINUTE);
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
   const opensAt = isBiriyaniZone ? '12:00 PM' : '4:30 PM';
+  const isOtherStoreClosedToday = !isBiriyaniZone
+    && getLocalDateKey(date) === OTHER_STORES_CLOSURE_DATE;
   const isOpen = currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
+
+  if (isOtherStoreClosedToday) {
+    return {
+      isOpen: false,
+      isClosedForToday: true,
+      message: 'Orders are closed for today. Orders reopen tomorrow at 4:30 PM.',
+      opensAt,
+      closesAt: '10:00 PM',
+    };
+  }
 
   return {
     isOpen,

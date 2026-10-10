@@ -1,18 +1,11 @@
 // Order window timing configuration and utility functions
 
 export const OPEN_STORE_ID = 'store-biriyani-zone';
+export const BITE_ADDA_STORE_ID = 'store-bite-adda';
 const BIRIYANI_ZONE_START_HOUR = 12;
-const OTHER_STORES_START_HOUR = 16;
-const OTHER_STORES_START_MINUTE = 30;
+const BITE_ADDA_START_HOUR = 11;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
-const OTHER_STORES_CLOSURE_DATE = '2026-10-09';
-
-const getLocalDateKey = (date: Date): string => {
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${date.getFullYear()}-${month}-${day}`;
-};
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -31,21 +24,21 @@ export const getOrderWindowStatus = (
 
   const currentMinutes = hours * 60 + minutes;
   const isBiriyaniZone = storeId === OPEN_STORE_ID;
-  const defaultStartMinutes = (isBiriyaniZone ? BIRIYANI_ZONE_START_HOUR : OTHER_STORES_START_HOUR) * 60
-    + (isBiriyaniZone ? 0 : OTHER_STORES_START_MINUTE);
+  const isBiteAdda = storeId === BITE_ADDA_STORE_ID;
+  const isOrderableStore = isBiriyaniZone || isBiteAdda;
+  const startHour = isBiriyaniZone ? BIRIYANI_ZONE_START_HOUR : BITE_ADDA_START_HOUR;
+  const defaultStartMinutes = startHour * 60;
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
-  const opensAt = isBiriyaniZone ? '12:00 PM' : '4:30 PM';
-  const isOtherStoreClosedToday = !isBiriyaniZone
-    && getLocalDateKey(date) === OTHER_STORES_CLOSURE_DATE;
-  const isOpen = currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
+  const opensAt = isBiriyaniZone ? '12:00 PM' : '11:00 AM';
+  const isOpen = isOrderableStore && currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
 
-  if (isOtherStoreClosedToday) {
+  if (!isOrderableStore) {
     return {
       isOpen: false,
       isClosedForToday: true,
-      message: 'Orders are closed for today. Orders reopen tomorrow at 4:30 PM.',
-      opensAt,
-      closesAt: '10:00 PM',
+      message: 'Orders are not available for this store.',
+      opensAt: 'Not available',
+      closesAt: 'Not available',
     };
   }
 

@@ -322,9 +322,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 }`}>
                   <div className="flex items-center space-x-2">
                     <span className={`w-2 h-2 rounded-full flex-shrink-0 ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                    <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Closed for today' : `Orders closed · Opens at ${ws.opensAt}`}</span>
+                    <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Orders closed' : `Orders closed · Opens at ${ws.opensAt}`}</span>
                   </div>
-                  <span className="opacity-70 ml-2 whitespace-nowrap">⏰ {ws.opensAt} – {ws.closesAt}</span>
+                  {ws.isOpen || !ws.isClosedForToday ? (
+                    <span className="opacity-70 ml-2 whitespace-nowrap">⏰ {ws.opensAt} – {ws.closesAt}</span>
+                  ) : null}
                 </div>
               );
             })()}

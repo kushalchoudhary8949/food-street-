@@ -38,7 +38,7 @@ export const StoreCard: React.FC<StoreCardProps> = ({
 
         {!orderWindowStatus.isOpen && (
           <span className="absolute bottom-3 left-3 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 shadow-sm">
-            {orderWindowStatus.isClosedForToday ? 'Closed for today' : `Opens at ${orderWindowStatus.opensAt}`}
+            {orderWindowStatus.isClosedForToday ? 'Orders closed' : `Opens at ${orderWindowStatus.opensAt}`}
           </span>
         )}
 
@@ -94,4 +94,3 @@ export const StoreCard: React.FC<StoreCardProps> = ({
     </div>
   );
 };
-

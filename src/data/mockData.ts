@@ -3,12 +3,13 @@ import ssvMenuCsv from '../csv files/Sri_Siddhi_Vinayaka_Manch_Mela_Menu.csv?raw
 import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
+import biteAddaMenuCsv from '../csv files/bite_adda_menu_updated.csv?raw';
 import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v14_vaango_baskin_price_update_2026_10_04';
+export const DATA_VERSION = 'food_street_v15_bite_adda_2026_10_10';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -159,6 +160,24 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
               category: getValue(row, 'category'),
             };
           });
+
+          return { categories, items };
+        };
+
+        const createBiteAddaMenu = (): { categories: string[]; items: MenuItem[] } => {
+          const rows = biteAddaMenuCsv.trim().split(/\r?\n/).map(parseCsvRow);
+          const [, ...menuRows] = rows;
+          const categories = Array.from(new Set(menuRows.map(([, category]) => category).filter(Boolean)));
+          const items = menuRows.map(([name, category, price], index) => ({
+            id: `bite-adda-${index + 1}`,
+            storeId: 'store-bite-adda',
+            name,
+            price: Number.parseFloat(price) || 0,
+            description: `${name} from Bite Adda.`,
+            image: '',
+            isVeg: category !== 'Non-Veg',
+            category,
+          }));
 
           return { categories, items };
         };
@@ -6682,14 +6701,12 @@ baskinRobbinsStore?.items.forEach((item) => {
 });
 
 const biriyaniZoneStore = RAW_STORES.find(s => s.id === 'store-biriyani-zone')!;
-const foodCourtOutlets = RAW_STORES.filter(
-  s => !['store-biriyani-zone', 'store-bbk', 'store-goila'].includes(s.id)
-);
 
 const ssvMenu = createSsvMenu();
 const jawaHutMenu = createJawaHutMenu();
 const tajBiriyaniMenu = createTajBiriyaniMenu();
 const graduateBiryaniMenu = createGraduateBiryaniMenu();
+const biteAddaMenu = createBiteAddaMenu();
 
 const ssvStore: Store = {
   id: 'store-ssv',
@@ -6758,6 +6775,30 @@ const graduateBiryaniStore: Store = {
   menuCategories: graduateBiryaniMenu.categories,
   items: graduateBiryaniMenu.items
 };
+
+const biteAddaStore: Store = {
+  id: 'store-bite-adda',
+  name: 'Bite Adda',
+  rating: 4.5,
+  reviewsCount: 0,
+  deliveryTime: '30-45 mins',
+  deliveryFee: 20,
+  distance: '3.0 km',
+  image: '/images/storeImage/BiteAdda logo.png',
+  bannerImage: '/images/storeImage/BiteAdda logo.png',
+  cuisines: ['Biryani', 'Indian', 'Non-Veg'],
+  tags: ['Biryani', 'Student Favorite'],
+  outlets: [],
+  menuCategories: biteAddaMenu.categories,
+  items: biteAddaMenu.items
+};
+
+const foodCourtOutlets = [
+  ...RAW_STORES.filter(
+    s => !['store-biriyani-zone', 'store-bbk', 'store-goila'].includes(s.id)
+  ),
+  biteAddaStore,
+];
 
 export const STORES: Store[] = [
   biriyaniZoneStore,

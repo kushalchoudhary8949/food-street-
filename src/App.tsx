@@ -148,6 +148,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+
+  React.useEffect(() => {
+    const refreshCurrentTime = () => setCurrentTime(new Date());
+    const intervalId = window.setInterval(refreshCurrentTime, 60_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   // Address state
   const [addresses, setAddresses] = useState<UserAddress[]>(() => {
@@ -472,30 +480,38 @@ export default function App() {
 
   // Filtered stores for Home screen
   const filteredStores = useMemo(() => {
-    return stores.filter((store) => {
-      if (selectedCategory) {
-        const matchesCat = categoryKeywords.some(kw => 
-          store.cuisines.some(c => c.toLowerCase().includes(kw)) ||
-          (store.tags && store.tags.some(t => t.toLowerCase().includes(kw))) ||
-          store.name.toLowerCase().includes(kw) ||
-          store.items.some(i => 
-            i.category.toLowerCase().includes(kw) || 
-            i.name.toLowerCase().includes(kw) ||
-            (i.description && i.description.toLowerCase().includes(kw))
-          )
-        );
-        if (!matchesCat) return false;
-      }
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchName = store.name.toLowerCase().includes(q);
-        const matchCuisine = store.cuisines.some(c => c.toLowerCase().includes(q));
-        const matchItem = store.items.some(i => i.name.toLowerCase().includes(q));
-        if (!matchName && !matchCuisine && !matchItem) return false;
-      }
-      return true;
-    });
-  }, [selectedCategory, categoryKeywords, searchQuery, stores]);
+    return stores
+      .filter((store) => {
+        if (selectedCategory) {
+          const matchesCat = categoryKeywords.some(kw =>
+            store.cuisines.some(c => c.toLowerCase().includes(kw)) ||
+            (store.tags && store.tags.some(t => t.toLowerCase().includes(kw))) ||
+            store.name.toLowerCase().includes(kw) ||
+            store.items.some(i =>
+              i.category.toLowerCase().includes(kw) ||
+              i.name.toLowerCase().includes(kw) ||
+              (i.description && i.description.toLowerCase().includes(kw))
+            )
+          );
+          if (!matchesCat) return false;
+        }
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const matchName = store.name.toLowerCase().includes(q);
+          const matchCuisine = store.cuisines.some(c => c.toLowerCase().includes(q));
+          const matchItem = store.items.some(i => i.name.toLowerCase().includes(q));
+          if (!matchName && !matchCuisine && !matchItem) return false;
+        }
+        return true;
+      })
+      .map((store, index) => ({
+        store,
+        index,
+        isOpen: getOrderWindowStatus(store.id, currentTime).isOpen,
+      }))
+      .sort((first, second) => Number(second.isOpen) - Number(first.isOpen) || first.index - second.index)
+      .map(({ store }) => store);
+  }, [selectedCategory, categoryKeywords, searchQuery, stores, currentTime]);
 
   // Filtered dishes for currently selected category
   const categoryMatchedDishes = useMemo(() => {
@@ -599,8 +615,8 @@ export default function App() {
 
                 {/* Order Window Timing Banner */}
                 {(() => {
-                  const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID);
-                  const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID);
+                  const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID, currentTime);
+                  const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
                   const statusLabel = biriyaniZoneStatus.isOpen && biteAddaStatus.isOpen
                     ? 'Orders open now'
                     : biriyaniZoneStatus.isOpen

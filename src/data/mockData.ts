@@ -4,12 +4,13 @@ import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
 import biteAddaMenuCsv from '../csv files/bite_adda_menu_updated.csv?raw';
+import tummyTreatMenuCsv from '../csv files/tummy_treat_menu.csv?raw';
 import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v15_bite_adda_2026_10_10';
+export const DATA_VERSION = 'food_street_v17_tummy_treat_after_vaango_2026_10_11';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -178,6 +179,31 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
             isVeg: category !== 'Non-Veg',
             category,
           }));
+
+          return { categories, items };
+        };
+
+        const createTummyTreatMenu = (): { categories: string[]; items: MenuItem[] } => {
+          const rows = tummyTreatMenuCsv.trim().split(/\r?\n/).map(parseCsvRow);
+          const [header, ...menuRows] = rows;
+          const columnIndex = new Map(header.map((column, index) => [column.replace(/^\uFEFF/, ''), index]));
+          const getValue = (row: string[], column: string) => row[columnIndex.get(column) ?? -1] ?? '';
+          const categories = Array.from(new Set(menuRows.map((row) => getValue(row, 'category')).filter(Boolean)));
+          const items = menuRows.map((row, index) => {
+            const itemName = getValue(row, 'item_name');
+            const notes = getValue(row, 'description_or_notes');
+
+            return {
+              id: `tummy-treat-${index + 1}`,
+              storeId: 'store-tummy-treat',
+              name: itemName,
+              price: Number.parseFloat(getValue(row, 'price_inr')) || 0,
+              description: notes || getValue(row, 'portion_or_variant') || getValue(row, 'category'),
+              image: '',
+              isVeg: getValue(row, 'food_type') !== 'Non-Veg',
+              category: getValue(row, 'category'),
+            };
+          });
 
           return { categories, items };
         };
@@ -6707,6 +6733,7 @@ const jawaHutMenu = createJawaHutMenu();
 const tajBiriyaniMenu = createTajBiriyaniMenu();
 const graduateBiryaniMenu = createGraduateBiryaniMenu();
 const biteAddaMenu = createBiteAddaMenu();
+const tummyTreatMenu = createTummyTreatMenu();
 
 const ssvStore: Store = {
   id: 'store-ssv',
@@ -6793,12 +6820,31 @@ const biteAddaStore: Store = {
   items: biteAddaMenu.items
 };
 
+const tummyTreatStore: Store = {
+  id: 'store-tummy-treat',
+  name: 'Tummy Treat',
+  rating: 4.5,
+  reviewsCount: 0,
+  deliveryTime: '30-45 mins',
+  deliveryFee: 20,
+  distance: '3.0 km',
+  image: '/images/storeImage/Tummy Treat logo .png',
+  bannerImage: '/images/storeImage/Tummy Treat logo .png',
+  cuisines: ['Indian', 'Chinese', 'Momos', 'Rolls'],
+  tags: ['Veg & Non-Veg', 'Student Favorite'],
+  outlets: [],
+  menuCategories: tummyTreatMenu.categories,
+  items: tummyTreatMenu.items
+};
+
 const foodCourtOutlets = [
   ...RAW_STORES.filter(
     s => !['store-biriyani-zone', 'store-bbk', 'store-goila'].includes(s.id)
   ),
-  biteAddaStore,
 ];
+const vaangoIndex = foodCourtOutlets.findIndex((store) => store.id === 'store-vengo');
+foodCourtOutlets.splice(vaangoIndex + 1, 0, tummyTreatStore);
+foodCourtOutlets.push(biteAddaStore);
 
 export const STORES: Store[] = [
   biriyaniZoneStore,

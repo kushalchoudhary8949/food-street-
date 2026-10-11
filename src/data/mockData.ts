@@ -4,13 +4,13 @@ import jawaHutMenuCsv from '../csv files/Jawa_Hut_Menu.csv?raw';
 import tajBiriyaniMenuCsv from '../csv files/Taj_Biriyani_Menu.csv?raw';
 import graduateBiryaniMenuCsv from '../csv files/Graduate_Biryani_Menu.csv?raw';
 import biteAddaMenuCsv from '../csv files/bite_adda_menu_updated.csv?raw';
-import tummyTreatMenuCsv from '../csv files/tummy_treat_menu.csv?raw';
+import tummyTreatMenuCsv from '../csv files/tummy_treat_menu_final.csv?raw';
 import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v17_tummy_treat_after_vaango_2026_10_11';
+export const DATA_VERSION = 'food_street_v20_tummy_treat_no_descriptions_2026_10_11';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -191,14 +191,17 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
           const categories = Array.from(new Set(menuRows.map((row) => getValue(row, 'category')).filter(Boolean)));
           const items = menuRows.map((row, index) => {
             const itemName = getValue(row, 'item_name');
-            const notes = getValue(row, 'description_or_notes');
+            const variant = getValue(row, 'variant');
+            const displayVariant = variant && variant !== 'Higher conflicting price selected'
+              ? ` (${variant})`
+              : '';
 
             return {
               id: `tummy-treat-${index + 1}`,
               storeId: 'store-tummy-treat',
-              name: itemName,
+              name: `${itemName}${displayVariant}`,
               price: Number.parseFloat(getValue(row, 'price_inr')) || 0,
-              description: notes || getValue(row, 'portion_or_variant') || getValue(row, 'category'),
+              description: '',
               image: '',
               isVeg: getValue(row, 'food_type') !== 'Non-Veg',
               category: getValue(row, 'category'),

@@ -619,13 +619,15 @@ export default function App() {
                   const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
                   const tummyTreatStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
                   const openStoreNames = [
-                    biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : null,
-                    biteAddaStatus.isOpen ? 'Bite Adda' : null,
-                    tummyTreatStatus.isOpen ? 'Tummy Treat' : null,
-                  ].filter((name): name is string => name !== null);
-                  const statusLabel = openStoreNames.length > 0
-                    ? `${openStoreNames.join(' · ')} open`
-                    : 'Orders closed';
+                    biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : '',
+                    biteAddaStatus.isOpen ? 'Bite Adda' : '',
+                    tummyTreatStatus.isOpen ? 'Tummy Treat' : '',
+                  ].filter(Boolean);
+                  const statusLabel = openStoreNames.length === 0
+                    ? 'Orders closed'
+                    : openStoreNames.length === 3
+                    ? 'Orders open now'
+                    : `${openStoreNames.join(' · ')} open`;
                   return (
                     <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
                       openStoreNames.length > 0
@@ -637,7 +639,7 @@ export default function App() {
                         <span>{statusLabel}</span>
                       </div>
                       <span className="opacity-70">
-                        ⏰ BZ 12:00 PM–10:00 PM · Bite Adda 11:00 AM–10:00 PM · Tummy Treat 12:00 PM–8:30 PM
+                        ⏰ BZ 12:00 PM–10:00 PM · Bite Adda 11:00 AM–10:00 PM · Tummy Treat 11:00 AM–10:00 PM · Others closed
                       </span>
                     </div>
                   );

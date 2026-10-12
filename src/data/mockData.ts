@@ -10,7 +10,7 @@ import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v20_tummy_treat_no_descriptions_2026_10_11';
+export const DATA_VERSION = 'food_street_v23_tummy_treat_updated_logo_2026_10_12';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();
@@ -189,23 +189,23 @@ const orderMenuItemsByCategory = (items: MenuItem[], categories: string[]): Menu
           const columnIndex = new Map(header.map((column, index) => [column.replace(/^\uFEFF/, ''), index]));
           const getValue = (row: string[], column: string) => row[columnIndex.get(column) ?? -1] ?? '';
           const categories = Array.from(new Set(menuRows.map((row) => getValue(row, 'category')).filter(Boolean)));
-          const items = menuRows.map((row, index) => {
-            const itemName = getValue(row, 'item_name');
+          const items = menuRows.flatMap((row, rowIndex) => {
+            const itemNames = getValue(row, 'item_name').split(/\s*\/\s*/).filter(Boolean);
             const variant = getValue(row, 'variant');
-            const displayVariant = variant && variant !== 'Higher conflicting price selected'
-              ? ` (${variant})`
-              : '';
+            const variants = variant && variant !== 'Higher conflicting price selected'
+              ? variant.split(/\s*\/\s*/).filter(Boolean)
+              : [''];
 
-            return {
-              id: `tummy-treat-${index + 1}`,
+            return itemNames.flatMap((itemName, itemIndex) => variants.map((itemVariant, variantIndex) => ({
+              id: `tummy-treat-${rowIndex + 1}-${itemIndex + 1}-${variantIndex + 1}`,
               storeId: 'store-tummy-treat',
-              name: `${itemName}${displayVariant}`,
+              name: itemVariant ? `${itemName} (${itemVariant})` : itemName,
               price: Number.parseFloat(getValue(row, 'price_inr')) || 0,
               description: '',
               image: '',
               isVeg: getValue(row, 'food_type') !== 'Non-Veg',
               category: getValue(row, 'category'),
-            };
+            })));
           });
 
           return { categories, items };
@@ -6831,8 +6831,8 @@ const tummyTreatStore: Store = {
   deliveryTime: '30-45 mins',
   deliveryFee: 20,
   distance: '3.0 km',
-  image: '/images/storeImage/Tummy Treat logo .png',
-  bannerImage: '/images/storeImage/Tummy Treat logo .png',
+  image: '/images/storeImage/Tummy Treat updated logo.png',
+  bannerImage: '/images/storeImage/Tummy Treat updated logo.png',
   cuisines: ['Indian', 'Chinese', 'Momos', 'Rolls'],
   tags: ['Veg & Non-Veg', 'Student Favorite'],
   outlets: [],

@@ -1,10 +1,10 @@
 ﻿store_name,category,item_name,price_inr,food_type,variant,alternate_price_inr,notes
 Tummy Treat,Fries & Snacks,4 Samosas,60,Veg,,,
-Tummy Treat,Fries & Snacks,French Fries,100,Veg,,,Higher conflicting price selected: ₹100.
+Tummy Treat,Fries & Snacks,French Fries,90,Veg,,,Higher conflicting price selected: ₹90.
 Tummy Treat,Fries & Snacks,Smiley Fries,80,Veg,,,
-Tummy Treat,Fries & Snacks,Peri Peri Fries,110,Veg,,,Higher conflicting price selected: ₹110.
+Tummy Treat,Fries & Snacks,Peri Peri Fries,100,Veg,,,Higher conflicting price selected: ₹100.
 Tummy Treat,Momos,Veg Momos,70,Veg,,,
-Tummy Treat,Momos,Panner Momos,90,Veg,,,
+Tummy Treat,Momos,Panner Momos,80,Veg,,,
 Tummy Treat,Momos,Chicken Momos,80,Non-Veg,,,
 Tummy Treat,Sandwich,Chocolate Sandwich,60,Veg,,,
 Tummy Treat,Sandwich,Veg Sandwich,70,Veg,,,
@@ -20,8 +20,8 @@ Tummy Treat,Soups,Veg Manchow Soup,90,Veg,,,
 Tummy Treat,Soups,Chicken Clear Soup,110,Non-Veg,,,
 Tummy Treat,Soups,Hot and Sour Chicken Soup,120,Non-Veg,,,
 Tummy Treat,Soups,Chicken Manchow Soup,120,Non-Veg,,,
-Tummy Treat,Veg Starters,French Fries,100,Veg,,,Higher conflicting price selected: ₹100.
-Tummy Treat,Veg Starters,Peri Peri Fries,110,Veg,,,Higher conflicting price selected: ₹110.
+Tummy Treat,Veg Starters,French Fries,90,Veg,,,Higher conflicting price selected: ₹90.
+Tummy Treat,Veg Starters,Peri Peri Fries,100,Veg,,,Higher conflicting price selected: ₹100.
 Tummy Treat,Veg Starters,Honey Chilli Potato,140,Veg,,,
 Tummy Treat,Veg Starters,Gobi Selection,100,Veg,Manchurian / Chilli,,
 Tummy Treat,Veg Starters,Gobi Selection,110,Veg,Pepper Dry / 65,,

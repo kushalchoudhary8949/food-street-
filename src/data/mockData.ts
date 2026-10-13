@@ -10,7 +10,7 @@ import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 
-export const DATA_VERSION = 'food_street_v24_tummy_treat_chicken_fried_rice_130_2026_10_13';
+export const DATA_VERSION = 'food_street_v25_tummy_treat_price_updates_2026_10_13';
 
 const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
       const seenNames = new Set<string>();

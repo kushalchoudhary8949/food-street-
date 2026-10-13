@@ -618,28 +618,35 @@ export default function App() {
                   const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID, currentTime);
                   const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
                   const tummyTreatStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
+                  const otherStoresOpen = stores.some((store) =>
+                    ![OPEN_STORE_ID, BITE_ADDA_STORE_ID, TUMMY_TREAT_STORE_ID].includes(store.id) &&
+                    getOrderWindowStatus(store.id, currentTime).isOpen
+                  );
                   const openStoreNames = [
                     biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : '',
                     biteAddaStatus.isOpen ? 'Bite Adda' : '',
                     tummyTreatStatus.isOpen ? 'Tummy Treat' : '',
                   ].filter(Boolean);
-                  const statusLabel = openStoreNames.length === 0
+                  const hasOpenStores = openStoreNames.length > 0 || otherStoresOpen;
+                  const statusLabel = !hasOpenStores
                     ? 'Orders closed'
-                    : openStoreNames.length === 3
+                    : openStoreNames.length === 3 && otherStoresOpen
                     ? 'Orders open now'
-                    : `${openStoreNames.join(' · ')} open`;
+                    : openStoreNames.length > 0
+                      ? `${openStoreNames.join(' · ')} open`
+                      : 'Other stores open';
                   return (
                     <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
-                      openStoreNames.length > 0
+                      hasOpenStores
                         ? 'bg-green-50 border border-green-200 text-green-800'
                         : 'bg-red-50 border border-red-200 text-red-700'
                     }`}>
                       <div className="flex items-center space-x-2">
-                        <span className={`w-2 h-2 rounded-full ${openStoreNames.length > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                        <span className={`w-2 h-2 rounded-full ${hasOpenStores ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
                         <span>{statusLabel}</span>
                       </div>
                       <span className="opacity-70">
-                        ⏰ BZ 12:00 PM–10:00 PM · Bite Adda 11:00 AM–10:00 PM · Tummy Treat 11:00 AM–10:00 PM · Others closed
+                        ⏰ BZ 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM · Others 11:45 AM–10:00 PM
                       </span>
                     </div>
                   );

@@ -626,11 +626,13 @@ export default function App() {
                   const hasOpenStores = openStoreNames.length > 0;
                   const statusLabel = !hasOpenStores
                     ? 'Orders closed'
-                    : openStoreNames.length === 3
+                    : openStoreNames.length === 3 && stores.every((store) =>
+                      getOrderWindowStatus(store.id, currentTime).isOpen
+                    )
                     ? 'Orders open now'
                     : openStoreNames.length > 0
                       ? `${openStoreNames.join(' · ')} open`
-                      : 'Orders closed';
+                      : 'Other stores open';
                   return (
                     <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
                       hasOpenStores
@@ -642,7 +644,7 @@ export default function App() {
                         <span>{statusLabel}</span>
                       </div>
                       <span className="opacity-70">
-                        ⏰ Biriyani Zone 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM
+                        ⏰ Biriyani Zone 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM · Other stores 11:45 AM–10:00 PM
                       </span>
                     </div>
                   );

@@ -6,6 +6,8 @@ export const TUMMY_TREAT_STORE_ID = 'store-tummy-treat';
 const BIRIYANI_ZONE_START_HOUR = 12;
 const BITE_ADDA_START_HOUR = 11;
 const TUMMY_TREAT_START_HOUR = 11;
+const OTHER_STORES_START_HOUR = 11;
+const OTHER_STORES_START_MINUTE = 45;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
 
@@ -28,22 +30,24 @@ export const getOrderWindowStatus = (
   const isBiriyaniZone = storeId === OPEN_STORE_ID;
   const isBiteAdda = storeId === BITE_ADDA_STORE_ID;
   const isTummyTreat = storeId === TUMMY_TREAT_STORE_ID;
-  const isScheduledStore = isBiriyaniZone || isBiteAdda || isTummyTreat;
+  const isScheduledStore = true;
   const startHour = isBiriyaniZone
     ? BIRIYANI_ZONE_START_HOUR
     : isBiteAdda
       ? BITE_ADDA_START_HOUR
       : isTummyTreat
         ? TUMMY_TREAT_START_HOUR
-        : 0;
-  const startMinute = 0;
+        : OTHER_STORES_START_HOUR;
+  const startMinute = isBiriyaniZone || isBiteAdda || isTummyTreat
+    ? 0
+    : OTHER_STORES_START_MINUTE;
   const defaultStartMinutes = startHour * 60 + startMinute;
   const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
   const opensAt = isBiriyaniZone
     ? '12:00 PM'
     : isBiteAdda || isTummyTreat
       ? '11:00 AM'
-      : 'Closed';
+      : '11:45 AM';
   const closesAt = '10:00 PM';
   const isOpen = isScheduledStore && currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
   const isClosedForToday = !isScheduledStore || currentMinutes >= endMinutes;

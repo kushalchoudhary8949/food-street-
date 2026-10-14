@@ -5,7 +5,6 @@ Tummy Treat,Fries & Snacks,Smiley Fries,80,Veg,,,
 Tummy Treat,Fries & Snacks,Peri Peri Fries,100,Veg,,,Higher conflicting price selected: ₹100.
 Tummy Treat,Momos,Veg Momos,70,Veg,,,
 Tummy Treat,Momos,Panner Momos,80,Veg,,,
-Tummy Treat,Momos,Chicken Momos,80,Non-Veg,,,
 Tummy Treat,Sandwich,Chocolate Sandwich,60,Veg,,,
 Tummy Treat,Sandwich,Veg Sandwich,70,Veg,,,
 Tummy Treat,Sandwich,Cheese Chilly Sandwich,70,Veg,,,
@@ -83,14 +82,11 @@ Tummy Treat,Rice & Noodles,Curd Rice,90,Veg,,,
 Tummy Treat,Rice & Noodles,Veg Fried Rice / Noodles,100,Veg,,,Schezwan option ₹110.
 Tummy Treat,Rice & Noodles,Veg Fried Rice / Noodles,110,Veg,Schezwan,,
 Tummy Treat,Rice & Noodles,Ghee Rice,110,Veg,,,
-Tummy Treat,Rice & Noodles,Veg Biryani,110,Veg,,,
 Tummy Treat,Rice & Noodles,Mushroom Fried Rice / Noodles,120,Veg,,,Schezwan available; price not separately specified.
 Tummy Treat,Rice & Noodles,Paneer Fried Rice / Noodles,120,Veg,,,Schezwan available; price not separately specified.
-Tummy Treat,Rice & Noodles,Egg Biryani,120,Non-Veg,,,
 Tummy Treat,Rice & Noodles,Chicken Fried Rice / Noodles,130,Non-Veg,,,Schezwan option ₹130.
 Tummy Treat,Rice & Noodles,Chicken Fried Rice / Noodles,130,Non-Veg,Schezwan,,
 Tummy Treat,Rice & Noodles,Chicken Fried Rice / Schezwan,140,Non-Veg,Higher conflicting price selected,,Higher conflicting price selected: ₹140.
-Tummy Treat,Rice & Noodles,Chicken Biryani,140,Non-Veg,,,
 Tummy Treat,Roti Items,Tandoor Roti,25,Veg,,,
 Tummy Treat,Roti Items,Butter Roti,30,Veg,,,
 Tummy Treat,Roti Items,Kulcha,40,Veg,,,

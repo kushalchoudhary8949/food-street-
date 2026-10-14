@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen, KFC_STORE_ID, OPEN_STORE_ID, PIZZA_HUT_STORE_ID, TUMMY_TREAT_STORE_ID, VAANGO_STORE_ID } from './utils/orderTiming';
+import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen, OPEN_STORE_ID, TUMMY_TREAT_STORE_ID } from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -618,24 +618,15 @@ export default function App() {
                   const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID, currentTime);
                   const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
                   const tummyTreatStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
-                  const limitedStoreStatuses = [
-                    ['KFC', KFC_STORE_ID],
-                    ['Vaango', VAANGO_STORE_ID],
-                    ['Pizza Hut', PIZZA_HUT_STORE_ID],
-                  ].map(([name, storeId]) => ({
-                    name,
-                    isOpen: getOrderWindowStatus(storeId, currentTime).isOpen,
-                  }));
                   const openStoreNames = [
                     biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : '',
                     biteAddaStatus.isOpen ? 'Bite Adda' : '',
                     tummyTreatStatus.isOpen ? 'Tummy Treat' : '',
-                    ...limitedStoreStatuses.filter((store) => store.isOpen).map((store) => store.name),
                   ].filter(Boolean);
                   const hasOpenStores = openStoreNames.length > 0;
                   const statusLabel = !hasOpenStores
                     ? 'Orders closed'
-                    : openStoreNames.length === 6
+                    : openStoreNames.length === 3
                     ? 'Orders open now'
                     : openStoreNames.length > 0
                       ? `${openStoreNames.join(' · ')} open`
@@ -651,7 +642,7 @@ export default function App() {
                         <span>{statusLabel}</span>
                       </div>
                       <span className="opacity-70">
-                        ⏰ BZ 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM · KFC/Vaango/Pizza Hut 3:00 PM–9:30 PM
+                        ⏰ Biriyani Zone 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM
                       </span>
                     </div>
                   );

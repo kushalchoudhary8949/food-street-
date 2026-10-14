@@ -3,13 +3,18 @@
 export const OPEN_STORE_ID = 'store-biriyani-zone';
 export const BITE_ADDA_STORE_ID = 'store-bite-adda';
 export const TUMMY_TREAT_STORE_ID = 'store-tummy-treat';
+export const KFC_STORE_ID = 'store-kfc';
+export const VAANGO_STORE_ID = 'store-vengo';
+export const PIZZA_HUT_STORE_ID = 'store-pizzahut';
 const BIRIYANI_ZONE_START_HOUR = 12;
 const BITE_ADDA_START_HOUR = 11;
 const TUMMY_TREAT_START_HOUR = 11;
-const OTHER_STORES_START_HOUR = 11;
-const OTHER_STORES_START_MINUTE = 45;
+const LIMITED_STORES_START_HOUR = 15;
+const LIMITED_STORES_START_MINUTE = 0;
 const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
 const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
+const LIMITED_STORES_END_HOUR = 21;
+const LIMITED_STORES_END_MINUTE = 30;
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -30,31 +35,41 @@ export const getOrderWindowStatus = (
   const isBiriyaniZone = storeId === OPEN_STORE_ID;
   const isBiteAdda = storeId === BITE_ADDA_STORE_ID;
   const isTummyTreat = storeId === TUMMY_TREAT_STORE_ID;
+  const isLimitedStore = [KFC_STORE_ID, VAANGO_STORE_ID, PIZZA_HUT_STORE_ID].includes(storeId ?? '');
+  const isScheduledStore = isBiriyaniZone || isBiteAdda || isTummyTreat || isLimitedStore;
   const startHour = isBiriyaniZone
     ? BIRIYANI_ZONE_START_HOUR
     : isBiteAdda
       ? BITE_ADDA_START_HOUR
       : isTummyTreat
         ? TUMMY_TREAT_START_HOUR
-        : OTHER_STORES_START_HOUR;
-  const startMinute = isBiriyaniZone || isBiteAdda || isTummyTreat
-    ? 0
-    : OTHER_STORES_START_MINUTE;
+        : LIMITED_STORES_START_HOUR;
+  const startMinute = isLimitedStore ? LIMITED_STORES_START_MINUTE : 0;
   const defaultStartMinutes = startHour * 60 + startMinute;
-  const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
+  const endMinutes = isLimitedStore
+    ? LIMITED_STORES_END_HOUR * 60 + LIMITED_STORES_END_MINUTE
+    : ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
   const opensAt = isBiriyaniZone
     ? '12:00 PM'
     : isBiteAdda || isTummyTreat
       ? '11:00 AM'
-      : '11:45 AM';
-  const isOpen = currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
+      : isLimitedStore
+        ? '3:00 PM'
+        : 'Closed';
+  const closesAt = isLimitedStore ? '9:30 PM' : '10:00 PM';
+  const isOpen = isScheduledStore && currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
+  const isClosedForToday = !isScheduledStore || currentMinutes >= endMinutes;
 
   return {
     isOpen,
-    isClosedForToday: false,
-    message: isOpen ? 'Orders are open until 10:00 PM' : `Orders open at ${opensAt}`,
+    isClosedForToday,
+    message: isOpen
+      ? `Orders are open until ${closesAt}`
+      : isClosedForToday
+        ? 'Orders are closed for today'
+        : `Orders open at ${opensAt}`,
     opensAt,
-    closesAt: '10:00 PM',
+    closesAt,
   };
 };
 

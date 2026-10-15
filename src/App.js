@@ -16,6 +16,7 @@ import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
+import { fetchStoresFromDb, fetchCategoriesFromDb, saveStoresToDb, saveCategoriesToDb } from './services/api';
 const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 export default function App() {
@@ -55,6 +56,36 @@ export default function App() {
             setStores(STORES);
             setCategories(CATEGORIES);
         }
+        // Auto-fetch latest stores & categories from live Supabase database
+        let isMounted = true;
+        (async () => {
+            try {
+                const [dbStores, dbCats] = await Promise.all([
+                    fetchStoresFromDb(),
+                    fetchCategoriesFromDb(),
+                ]);
+                if (!isMounted) return;
+                if (Array.isArray(dbStores) && dbStores.length > 0) {
+                    setStores((prevStores) => {
+                        const storeMap = new Map();
+                        dbStores.forEach(s => storeMap.set(s.id, s));
+                        // Retain any locally added store that hasn't synced yet
+                        prevStores.forEach(s => {
+                            if (!storeMap.has(s.id)) {
+                                storeMap.set(s.id, s);
+                            }
+                        });
+                        return Array.from(storeMap.values());
+                    });
+                }
+                if (Array.isArray(dbCats) && dbCats.length > 0) {
+                    setCategories(dbCats);
+                }
+            } catch (err) {
+                console.warn('Initial cloud fetch notice:', err);
+            }
+        })();
+        return () => { isMounted = false; };
     }, []);
     // Save states to localStorage when they change
     React.useEffect(() => {
@@ -473,13 +504,14 @@ export default function App() {
     const cartPrice = cartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
     // Only track active orders among the customer's top 4 recent orders
     const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
-    // Handlers to synchronize Admin updates to local state
-    // Handlers to synchronize Admin updates to local state
+    // Handlers to synchronize Admin updates to local state and Supabase backend
     const handleUpdateStores = (newStores) => {
         setStores(newStores);
+        saveStoresToDb(newStores);
     };
     const handleUpdateCategories = (newCategories) => {
         setCategories(newCategories);
+        saveCategoriesToDb(newCategories);
     };
     const handleUpdateOrders = (newOrders) => {
         setOrders(newOrders);

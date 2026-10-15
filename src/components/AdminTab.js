@@ -78,8 +78,18 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             ]);
             let msgParts = [];
             if (pgStores && pgStores.length > 0) {
-                onUpdateStores(pgStores);
-                msgParts.push(`${pgStores.length} stores`);
+                const storeMap = new Map();
+                pgStores.forEach(s => storeMap.set(s.id, s));
+                // Preserve any store present locally that isn't in remote yet
+                (stores || []).forEach(s => {
+                    if (!storeMap.has(s.id)) {
+                        storeMap.set(s.id, s);
+                    }
+                });
+                const mergedStores = Array.from(storeMap.values());
+                onUpdateStores(mergedStores);
+                await saveStoresToDb(mergedStores);
+                msgParts.push(`${mergedStores.length} stores`);
             }
             if (pgCats && pgCats.length > 0) {
                 onUpdateCategories(pgCats);
@@ -496,26 +506,8 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                                     setIsCloudSyncing(true);
                                                     setCloudStatusMsg(null);
                                                     try {
-                                                        const allStoresToSync = [...STORES];
-                                                        (stores || []).forEach(s => {
-                                                            const idx = allStoresToSync.findIndex(existing => existing.id === s.id);
-                                                            if (idx >= 0) {
-                                                                allStoresToSync[idx] = s;
-                                                            }
-                                                            else {
-                                                                allStoresToSync.push(s);
-                                                            }
-                                                        });
-                                                        const allCatsToSync = [...CATEGORIES];
-                                                        (categories || []).forEach(c => {
-                                                            const idx = allCatsToSync.findIndex(existing => existing.id === c.id);
-                                                            if (idx >= 0) {
-                                                                allCatsToSync[idx] = c;
-                                                            }
-                                                            else {
-                                                                allCatsToSync.push(c);
-                                                            }
-                                                        });
+                                                        const allStoresToSync = stores && stores.length > 0 ? [...stores] : [...STORES];
+                                                        const allCatsToSync = categories && categories.length > 0 ? [...categories] : [...CATEGORIES];
                                                         await saveStoresToDb(allStoresToSync);
                                                         await saveCategoriesToDb(allCatsToSync);
                                                         await seedDatabase(allStoresToSync, allCatsToSync);

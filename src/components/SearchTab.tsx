@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Sparkles } from 'lucide-react';
 import { Store, MenuItem } from '../types';
+import { getOrderWindowStatus } from '../utils/orderTiming';
 
 interface SearchTabProps {
   stores: Store[];
@@ -188,9 +189,22 @@ export const SearchTab: React.FC<SearchTabProps> = ({
 
                     <p className="text-xs text-gray-500 truncate mt-0.5">{store.cuisines.join(', ')}</p>
 
-                    <div className="flex items-center text-xs font-semibold text-gray-600 mt-2">
-                      <span>{store.deliveryTime}</span>
-                    </div>
+                    {(() => {
+                      const ws = getOrderWindowStatus(store.id);
+                      return (
+                        <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 mt-2 flex-wrap">
+                          <span>{store.deliveryTime}</span>
+                          <span>•</span>
+                          <span className={`text-[10px] uppercase font-black px-2 py-0.5 rounded-md ${
+                            ws.isOpen
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-red-50 text-red-700 border border-red-200'
+                          }`}>
+                            {ws.statusBadge}
+                          </span>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}

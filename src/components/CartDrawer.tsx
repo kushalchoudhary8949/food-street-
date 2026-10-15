@@ -317,15 +317,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               return (
                 <div className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
                   ws.isOpen
-                    ? 'bg-green-50 border border-green-200 text-green-800'
+                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
                     : 'bg-red-50 border border-red-200 text-red-700'
                 }`}>
                   <div className="flex items-center space-x-2">
-                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                    <span>{ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Orders closed' : `Orders closed · Opens at ${ws.opensAt}`}</span>
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${ws.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                    <span>{ws.statusBadge}</span>
                   </div>
-                  {ws.isOpen || !ws.isClosedForToday ? (
-                    <span className="opacity-70 ml-2 whitespace-nowrap">⏰ {ws.opensAt} – {ws.closesAt}</span>
+                  {ws.timingLabel && ws.timingLabel !== 'Orders Closed' ? (
+                    <span className="opacity-80 ml-2 whitespace-nowrap text-[11px] font-bold">⏰ {ws.timingLabel}</span>
                   ) : null}
                 </div>
               );

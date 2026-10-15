@@ -1,5 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, isOrderWindowOpen, OPEN_STORE_ID, TUMMY_TREAT_STORE_ID } from './utils/orderTiming';
+import {
+  BIRIYANI_ZONE_STORE_ID,
+  TUMMY_TREAT_STORE_ID,
+  KFC_STORE_ID,
+  PIZZA_HUT_STORE_ID,
+  VAANGO_STORE_ID,
+  getOrderWindowStatus,
+  isOrderWindowOpen,
+  isSpecialToday,
+  getGraduateBiryaniOrderWindowStatus,
+} from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -615,36 +625,48 @@ export default function App() {
 
                 {/* Order Window Timing Banner */}
                 {(() => {
-                  const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID, currentTime);
-                  const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
-                  const tummyTreatStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
-                  const openStoreNames = [
-                    biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : '',
-                    biteAddaStatus.isOpen ? 'Bite Adda' : '',
-                    tummyTreatStatus.isOpen ? 'Tummy Treat' : '',
-                  ].filter(Boolean);
+                  const bzStatus = getOrderWindowStatus(BIRIYANI_ZONE_STORE_ID, currentTime);
+                  const ttStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
+                  const kfcStatus = getOrderWindowStatus(KFC_STORE_ID, currentTime);
+                  const phStatus = getOrderWindowStatus(PIZZA_HUT_STORE_ID, currentTime);
+                  const vaangoStatus = getOrderWindowStatus(VAANGO_STORE_ID, currentTime);
+
+                  const activeStores = [
+                    { name: 'Biriyani Zone', status: bzStatus },
+                    { name: 'Tummy Treat', status: ttStatus },
+                    { name: 'KFC', status: kfcStatus },
+                    { name: 'Pizza Hut', status: phStatus },
+                    { name: 'Vaango', status: vaangoStatus },
+                  ];
+
+                  const openStoreNames = activeStores
+                    .filter((s) => s.status.isOpen)
+                    .map((s) => s.name);
+
                   const hasOpenStores = openStoreNames.length > 0;
+                  const allActiveOpen = openStoreNames.length === activeStores.length;
                   const statusLabel = !hasOpenStores
                     ? 'Orders closed'
-                    : openStoreNames.length === 3 && stores.every((store) =>
-                      getOrderWindowStatus(store.id, currentTime).isOpen
-                    )
-                    ? 'Orders open now'
-                    : openStoreNames.length > 0
-                      ? `${openStoreNames.join(' · ')} open`
-                      : 'Other stores open';
+                    : allActiveOpen
+                      ? 'Orders open now'
+                      : `${openStoreNames.join(' · ')} open`;
+
+                  const isTodaySpecial = isSpecialToday(currentTime);
+
                   return (
-                    <div className={`mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${
+                    <div className={`mx-4 mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 px-4 py-2.5 rounded-2xl font-semibold text-xs ${
                       hasOpenStores
                         ? 'bg-green-50 border border-green-200 text-green-800'
                         : 'bg-red-50 border border-red-200 text-red-700'
                     }`}>
                       <div className="flex items-center space-x-2">
-                        <span className={`w-2 h-2 rounded-full ${hasOpenStores ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${hasOpenStores ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
                         <span>{statusLabel}</span>
                       </div>
-                      <span className="opacity-70">
-                        ⏰ Biriyani Zone 12:00 PM–10:00 PM · Bite Adda/Tummy Treat 11:00 AM–10:00 PM · Other stores 11:45 AM–10:00 PM
+                      <span className="opacity-80 text-[11px] sm:text-xs">
+                        {isTodaySpecial
+                          ? '⏰ BZ 12–10 PM · Tummy Treat 11 AM–10 PM · KFC/Pizza Hut/Vaango 3:00–5:30 PM (Today)'
+                          : '⏰ BZ/KFC/Pizza Hut/Vaango 12:00 PM–10:00 PM · Tummy Treat 11:00 AM–10:00 PM'}
                       </span>
                     </div>
                   );

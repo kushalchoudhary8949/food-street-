@@ -1,15 +1,32 @@
 // Order window timing configuration and utility functions
 
-export const OPEN_STORE_ID = 'store-biriyani-zone';
-export const BITE_ADDA_STORE_ID = 'store-bite-adda';
+export const BIRIYANI_ZONE_STORE_ID = 'store-biriyani-zone';
+export const OPEN_STORE_ID = BIRIYANI_ZONE_STORE_ID;
 export const TUMMY_TREAT_STORE_ID = 'store-tummy-treat';
-const BIRIYANI_ZONE_START_HOUR = 12;
-const BITE_ADDA_START_HOUR = 11;
-const TUMMY_TREAT_START_HOUR = 11;
-const OTHER_STORES_START_HOUR = 11;
-const OTHER_STORES_START_MINUTE = 45;
-const ORDER_WINDOW_END_HOUR = 22; // 10:00 PM
-const ORDER_WINDOW_END_MINUTE = 0; // 10:00 PM
+export const KFC_STORE_ID = 'store-kfc';
+export const PIZZA_HUT_STORE_ID = 'store-pizzahut';
+export const VAANGO_STORE_ID = 'store-vengo';
+export const BITE_ADDA_STORE_ID = 'store-bite-adda';
+
+// Stores permitted to have open order windows
+export const ACTIVE_ORDER_STORE_IDS = new Set<string>([
+  BIRIYANI_ZONE_STORE_ID,
+  TUMMY_TREAT_STORE_ID,
+  KFC_STORE_ID,
+  PIZZA_HUT_STORE_ID,
+  VAANGO_STORE_ID,
+  'store-vaango',
+]);
+
+// Special schedule date for today: October 15, 2026
+export const SPECIAL_SCHEDULE_DATE = '2026-10-15';
+
+export const isSpecialToday = (date: Date = new Date()): boolean => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}` === SPECIAL_SCHEDULE_DATE;
+};
 
 export interface OrderWindowStatus {
   isOpen: boolean;
@@ -17,40 +34,77 @@ export interface OrderWindowStatus {
   message: string;
   opensAt: string;
   closesAt: string;
+  timingLabel: string;
+  statusBadge: string;
 }
 
 export const getOrderWindowStatus = (
   storeId?: string,
   date: Date = new Date()
 ): OrderWindowStatus => {
+  if (!storeId || !ACTIVE_ORDER_STORE_IDS.has(storeId)) {
+    return {
+      isOpen: false,
+      isClosedForToday: true,
+      message: 'Orders are closed for this store',
+      opensAt: '',
+      closesAt: '',
+      timingLabel: 'Orders Closed',
+      statusBadge: 'Orders Closed',
+    };
+  }
+
   const hours = date.getHours();
   const minutes = date.getMinutes();
-
   const currentMinutes = hours * 60 + minutes;
-  const isBiriyaniZone = storeId === OPEN_STORE_ID;
-  const isBiteAdda = storeId === BITE_ADDA_STORE_ID;
-  const isTummyTreat = storeId === TUMMY_TREAT_STORE_ID;
-  const isScheduledStore = true;
-  const startHour = isBiriyaniZone
-    ? BIRIYANI_ZONE_START_HOUR
-    : isBiteAdda
-      ? BITE_ADDA_START_HOUR
-      : isTummyTreat
-        ? TUMMY_TREAT_START_HOUR
-        : OTHER_STORES_START_HOUR;
-  const startMinute = isBiriyaniZone || isBiteAdda || isTummyTreat
-    ? 0
-    : OTHER_STORES_START_MINUTE;
-  const defaultStartMinutes = startHour * 60 + startMinute;
-  const endMinutes = ORDER_WINDOW_END_HOUR * 60 + ORDER_WINDOW_END_MINUTE;
-  const opensAt = isBiriyaniZone
-    ? '12:00 PM'
-    : isBiteAdda || isTummyTreat
-      ? '11:00 AM'
-      : '11:45 AM';
-  const closesAt = '10:00 PM';
-  const isOpen = isScheduledStore && currentMinutes >= defaultStartMinutes && currentMinutes < endMinutes;
-  const isClosedForToday = !isScheduledStore || currentMinutes >= endMinutes;
+
+  let startMinutes: number;
+  let endMinutes: number;
+  let opensAt: string;
+  let closesAt: string;
+  let timingLabel: string;
+
+  if (storeId === BIRIYANI_ZONE_STORE_ID) {
+    // Biriyani Zone: 12:00 PM – 10:00 PM
+    startMinutes = 12 * 60;
+    endMinutes = 22 * 60;
+    opensAt = '12:00 PM';
+    closesAt = '10:00 PM';
+    timingLabel = '12:00 PM – 10:00 PM';
+  } else if (storeId === TUMMY_TREAT_STORE_ID) {
+    // Tummy Treat: 11:00 AM – 10:00 PM
+    startMinutes = 11 * 60;
+    endMinutes = 22 * 60;
+    opensAt = '11:00 AM';
+    closesAt = '10:00 PM';
+    timingLabel = '11:00 AM – 10:00 PM';
+  } else {
+    // KFC, Pizza Hut, Vaango
+    if (isSpecialToday(date)) {
+      // Today: 3:00 PM – 5:30 PM
+      startMinutes = 15 * 60;
+      endMinutes = 17 * 60 + 30;
+      opensAt = '3:00 PM';
+      closesAt = '5:30 PM';
+      timingLabel = '3:00 PM – 5:30 PM (Today)';
+    } else {
+      // Rest of the days: 12:00 PM – 10:00 PM
+      startMinutes = 12 * 60;
+      endMinutes = 22 * 60;
+      opensAt = '12:00 PM';
+      closesAt = '10:00 PM';
+      timingLabel = '12:00 PM – 10:00 PM';
+    }
+  }
+
+  const isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  const isClosedForToday = currentMinutes >= endMinutes;
+
+  const statusBadge = isOpen
+    ? `Open until ${closesAt}`
+    : isClosedForToday
+      ? 'Orders Closed'
+      : `Opens at ${opensAt}`;
 
   return {
     isOpen,
@@ -62,6 +116,8 @@ export const getOrderWindowStatus = (
         : `Orders open at ${opensAt}`,
     opensAt,
     closesAt,
+    timingLabel,
+    statusBadge,
   };
 };
 

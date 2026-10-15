@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Clock } from 'lucide-react';
 import { Store } from '../types';
 import { getOrderWindowStatus } from '../utils/orderTiming';
 
@@ -36,9 +36,15 @@ export const StoreCard: React.FC<StoreCardProps> = ({
           }}
         />
 
-        {!orderWindowStatus.isOpen && (
-          <span className="absolute bottom-3 left-3 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 shadow-sm">
-            {orderWindowStatus.isClosedForToday ? 'Orders closed' : `Opens at ${orderWindowStatus.opensAt}`}
+        {orderWindowStatus.isOpen ? (
+          <span className="absolute bottom-3 left-3 rounded-lg border border-emerald-300 bg-emerald-50/95 backdrop-blur-xs px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-800 shadow-sm flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>{orderWindowStatus.statusBadge}</span>
+          </span>
+        ) : (
+          <span className="absolute bottom-3 left-3 rounded-lg border border-red-200 bg-red-50/95 backdrop-blur-xs px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 shadow-sm flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <span>{orderWindowStatus.statusBadge}</span>
           </span>
         )}
 
@@ -90,6 +96,14 @@ export const StoreCard: React.FC<StoreCardProps> = ({
             {store.cuisines.join(' • ')}
           </p>
         )}
+
+        {/* Order Window Timing Label */}
+        <div className="flex items-center gap-1.5 text-xs font-bold pt-0.5">
+          <Clock className={`w-3.5 h-3.5 shrink-0 ${orderWindowStatus.isOpen ? 'text-emerald-600' : 'text-gray-400'}`} />
+          <span className={orderWindowStatus.isOpen ? 'text-emerald-700 font-extrabold' : 'text-gray-500'}>
+            {orderWindowStatus.timingLabel}
+          </span>
+        </div>
       </div>
     </div>
   );

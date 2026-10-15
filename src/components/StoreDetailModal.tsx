@@ -193,33 +193,54 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
           </div>
         </div>
 
-        {!orderWindowStatus.isOpen && (
-          <div className="mx-4 mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
-            {orderWindowStatus.isClosedForToday
-              ? orderWindowStatus.message
-              : `Orders open at ${orderWindowStatus.opensAt}.`}
+        {orderWindowStatus.isOpen ? (
+          <div className="mx-4 mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-800 flex items-center justify-between shadow-xs">
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Orders open now · Closes at {orderWindowStatus.closesAt}</span>
+            </div>
+            <span className="text-[11px] font-black opacity-80">⏰ Window: {orderWindowStatus.timingLabel}</span>
+          </div>
+        ) : (
+          <div className="mx-4 mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs sm:text-sm font-bold text-red-700 flex items-center justify-between shadow-xs">
+            <div>
+              <p>{orderWindowStatus.isClosedForToday ? orderWindowStatus.message : `Orders open at ${orderWindowStatus.opensAt}`}</p>
+              {orderWindowStatus.timingLabel !== 'Orders Closed' && (
+                <p className="text-xs font-medium text-red-600 mt-0.5">Order Timing: {orderWindowStatus.timingLabel}</p>
+              )}
+            </div>
+            <span className="text-[11px] uppercase font-black px-2.5 py-1 rounded-lg bg-red-100 text-red-800 border border-red-300 shrink-0">
+              {orderWindowStatus.statusBadge}
+            </span>
           </div>
         )}
 
         {/* Store Info Bar */}
-        {!['store-ssv', 'store-jawa-hut', 'store-taj-biriyani', 'store-graduate-biryani', 'store-bite-adda', 'store-tummy-treat'].includes(store.id) && (
-          <div className="px-4 py-3 bg-white flex items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600">
-            <div className="flex items-center space-x-3">
-              {(!hasOutlets || currentOutlet) && (
-                <div className="flex items-center space-x-1.5">
-                  <Clock className="w-4 h-4 text-red-600 stroke-[2.2]" />
-                  <span className="text-gray-900 font-bold">{currentOutlet ? currentOutlet.deliveryTime : store.deliveryTime}</span>
-                </div>
-              )}
-              {(currentOutlet?.distance || store.distance) && (
-                <span className="text-gray-400 font-medium">
-                  {(!hasOutlets || currentOutlet) && "• "}
-                  {currentOutlet ? currentOutlet.distance : store.distance} away
-                </span>
-              )}
-            </div>
+        <div className="px-4 py-2.5 bg-gray-50/70 flex flex-wrap items-center justify-between border-b border-gray-100 text-xs font-semibold text-gray-600 gap-2">
+          <div className="flex items-center space-x-3">
+            {(!hasOutlets || currentOutlet) && (
+              <div className="flex items-center space-x-1.5">
+                <Clock className="w-4 h-4 text-red-600 stroke-[2.2]" />
+                <span className="text-gray-900 font-bold">{currentOutlet ? currentOutlet.deliveryTime : store.deliveryTime}</span>
+              </div>
+            )}
+            {(currentOutlet?.distance || store.distance) && (
+              <span className="text-gray-400 font-medium">
+                {(!hasOutlets || currentOutlet) && "• "}
+                {currentOutlet ? currentOutlet.distance : store.distance} away
+              </span>
+            )}
           </div>
-        )}
+          <div className="flex items-center space-x-1.5">
+            <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
+              orderWindowStatus.isOpen
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                : 'bg-red-50 text-red-700 border border-red-200'
+            }`}>
+              ⏰ {orderWindowStatus.timingLabel}
+            </span>
+          </div>
+        </div>
 
         {/* View Mode 1: Food Court Store Selection Grid */}
         {store.id === 'store-graduate-biryani' && !showGraduateMenu ? (
@@ -303,14 +324,23 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                       <p className="text-xs text-gray-500 truncate mt-0.5 font-medium">
                         {outlet.cuisines.slice(0, 3).join(', ')}
                       </p>
-                      <div className="mt-2 flex items-center justify-between">
-                        <span className="text-[11px] font-bold text-gray-400">
-                          {outlet.deliveryTime} • {outlet.distance}
-                        </span>
-                        <span className="text-xs font-black text-red-600 group-hover:translate-x-1 transition-transform flex items-center gap-0.5">
-                          View Menu →
-                        </span>
-                      </div>
+                      {(() => {
+                        const outletStatus = getOrderWindowStatus(outlet.id);
+                        return (
+                          <div className="mt-2 flex items-center justify-between gap-1">
+                            <span className="text-[11px] font-bold text-gray-400">
+                              {outlet.deliveryTime}
+                            </span>
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-md ${
+                              outletStatus.isOpen
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : 'bg-red-50 text-red-700 border border-red-200'
+                            }`}>
+                              {outletStatus.statusBadge}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </button>
                 );
@@ -478,6 +508,14 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                             className="px-4 py-1.5 bg-gray-200 text-gray-500 border border-gray-300 text-[10px] font-black rounded-xl shadow-sm uppercase tracking-wider cursor-not-allowed"
                           >
                             ONLY ON WED
+                          </button>
+                        ) : !getOrderWindowStatus(item.storeId).isOpen ? (
+                          <button
+                            disabled
+                            className="px-3.5 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 text-[10px] font-black rounded-xl shadow-xs uppercase tracking-wider cursor-not-allowed"
+                            title={getOrderWindowStatus(item.storeId).message}
+                          >
+                            {getOrderWindowStatus(item.storeId).isClosedForToday ? 'CLOSED' : `OPENS ${getOrderWindowStatus(item.storeId).opensAt}`}
                           </button>
                         ) : countInCart === 0 ? (
                           <button

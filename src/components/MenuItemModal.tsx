@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, Minus, Check } from 'lucide-react';
 import { MenuItem, MenuItemAddon } from '../types';
+import { getOrderWindowStatus } from '../utils/orderTiming';
 
 interface MenuItemModalProps {
   item: MenuItem | null;
@@ -31,13 +32,15 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
   const totalPrice = (item.price + addonsTotal) * quantity;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const isAvailableToday = !item.availableOnDays || item.availableOnDays.length === 0 || item.availableOnDays.includes(today);
+  const orderWindowStatus = getOrderWindowStatus(item.storeId);
+  const isOrderWindowOpen = orderWindowStatus.isOpen;
 
   // If any selected addon is non-veg, the customised item becomes non-veg
   const hasNonVegAddon = selectedAddons.some(a => a.isVeg === false);
   const effectiveIsVeg = item.isVeg && !hasNonVegAddon;
 
   const handleConfirm = () => {
-    if (!isAvailableToday) return;
+    if (!isAvailableToday || !isOrderWindowOpen) return;
     // Pass item with effectiveIsVeg state so cart and orders reflect non-veg correctly
     const configuredItem = {
       ...item,
@@ -93,6 +96,15 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
             {!isAvailableToday && (
               <div className="mt-3 inline-flex rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700">
                 Only available on {item.availableOnDays?.join(', ')}
+              </div>
+            )}
+
+            {!isOrderWindowOpen && (
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs font-bold text-red-700 flex items-center justify-between gap-2">
+                <span>{orderWindowStatus.isClosedForToday ? orderWindowStatus.message : `Orders open at ${orderWindowStatus.opensAt}`}</span>
+                <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-red-100 text-red-800 border border-red-200 shrink-0">
+                  {orderWindowStatus.statusBadge}
+                </span>
               </div>
             )}
 
@@ -171,14 +183,20 @@ export const MenuItemModal: React.FC<MenuItemModalProps> = ({
           <button
             id="add-item-modal-btn"
             onClick={handleConfirm}
-            disabled={!isAvailableToday}
+            disabled={!isAvailableToday || !isOrderWindowOpen}
             className={`flex-1 py-3.5 px-4 rounded-2xl font-extrabold text-sm flex items-center justify-between shadow-md active:scale-98 transition-all ${
-              isAvailableToday
+              isAvailableToday && isOrderWindowOpen
                 ? 'bg-red-600 hover:bg-red-700 text-white'
                 : 'bg-gray-200 text-gray-500 cursor-not-allowed'
             }`}
           >
-            <span>{isAvailableToday ? 'Add Item' : 'Unavailable'}</span>
+            <span>
+              {!isAvailableToday
+                ? 'Unavailable'
+                : !isOrderWindowOpen
+                  ? orderWindowStatus.statusBadge
+                  : 'Add Item'}
+            </span>
             <span>₹{totalPrice.toFixed(0)}</span>
           </button>
         </div>

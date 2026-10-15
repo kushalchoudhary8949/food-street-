@@ -75,13 +75,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         try {
             const dbOrders = await fetchOrdersFromDb();
             if (Array.isArray(dbOrders)) {
-                if (dbOrders.length > 0) {
-                    onUpdateOrders(dbOrders);
-                } else if (orders.length > 0) {
-                    for (const o of orders) {
-                        await saveOrderToDb(o);
-                    }
-                }
+                onUpdateOrders(dbOrders);
             }
         } catch (e) {
             console.warn('Orders refresh notice:', e);
@@ -89,18 +83,26 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             setIsRefreshingOrders(false);
         }
     };
+    // Live orders sync across all admin panel tabs (overview, orders, etc.)
     React.useEffect(() => {
-        if (activeSubTab !== 'orders') return;
-        refreshOrders();
-        const unsubscribe = subscribeToOrders((newOrders) => {
-            if (Array.isArray(newOrders) && newOrders.length > 0) {
-                onUpdateOrders(newOrders);
+        let isMounted = true;
+        const syncOrders = async () => {
+            try {
+                const dbOrders = await fetchOrdersFromDb();
+                if (isMounted && Array.isArray(dbOrders)) {
+                    onUpdateOrders(dbOrders);
+                }
+            } catch (e) {
+                console.warn('Orders live sync notice:', e);
             }
-        }, 3500);
-        return () => {
-            if (typeof unsubscribe === 'function') unsubscribe();
         };
-    }, [activeSubTab]);
+        syncOrders();
+        const intervalId = setInterval(syncOrders, 2500);
+        return () => {
+            isMounted = false;
+            clearInterval(intervalId);
+        };
+    }, []);
     const handleFetchFromPostgres = async () => {
         setIsFetchingDb(true);
         setCloudStatusMsg(null);

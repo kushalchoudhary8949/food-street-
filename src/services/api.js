@@ -33,8 +33,11 @@ export async function fetchDatabaseStatus() {
  */
 export async function fetchOrdersFromDb() {
   try {
-    const res = await fetch(`${API_BASE}/orders`, {
-      headers: { Accept: 'application/json' },
+    const res = await fetch(`${API_BASE}/orders?_t=${Date.now()}`, {
+      headers: {
+        Accept: 'application/json',
+      },
+      cache: 'no-store',
     });
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
@@ -54,6 +57,7 @@ export async function saveOrderToDb(order) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
+      keepalive: true,
     });
     const data = await res.json();
     return Boolean(data.success);

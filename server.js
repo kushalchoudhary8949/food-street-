@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
@@ -206,13 +207,40 @@ app.post('/api/seed', databaseRequired(async (req, res) => {
   });
 }));
 
+app.get('/version.json', (_req, res) => {
+  const versionFile = path.join(__dirname, isDevelopment ? 'public' : 'dist', 'version.json');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Content-Type', 'application/json');
+  if (fs.existsSync(versionFile)) {
+    return res.sendFile(versionFile);
+  }
+  return res.json({ version: Date.now().toString(), builtAt: new Date().toISOString() });
+});
+
 if (isDevelopment) {
   const { createServer } = await import('vite');
   const vite = await createServer({ server: { middlewareMode: true }, appType: 'spa' });
   app.use(vite.middlewares);
 } else {
-  app.use(express.static(path.join(__dirname, 'dist')));
-  app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
+  app.use(express.static(path.join(__dirname, 'dist'), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html') || filePath.endsWith('version.json')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+      } else if (filePath.includes('/assets/')) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    },
+  }));
+  app.get('*', (_req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
 }
 
 mongoose.connection.on('error', (error) => {

@@ -14,6 +14,7 @@ import { OrdersTab } from './components/OrdersTab';
 import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
+import VersionChecker from './components/VersionChecker';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
@@ -125,6 +126,32 @@ export default function App() {
     React.useEffect(() => {
         localStorage.setItem('food_street_orders', JSON.stringify(orders));
     }, [orders]);
+    // Periodically sync orders from Supabase cloud in background
+    React.useEffect(() => {
+        let isMounted = true;
+        const sync = async () => {
+            try {
+                const dbOrders = await fetchOrdersFromDb();
+                if (isMounted && Array.isArray(dbOrders) && dbOrders.length > 0) {
+                    setOrders(prevOrders => {
+                        const orderMap = new Map();
+                        dbOrders.forEach(o => orderMap.set(o.id, o));
+                        prevOrders.forEach(o => {
+                            if (!orderMap.has(o.id)) {
+                                orderMap.set(o.id, o);
+                            }
+                        });
+                        return Array.from(orderMap.values());
+                    });
+                }
+            } catch (e) {}
+        };
+        const intervalId = setInterval(sync, 4000);
+        return () => {
+            isMounted = false;
+            clearInterval(intervalId);
+        };
+    }, []);
     // Sync state across open tabs in real-time
     React.useEffect(() => {
         const handleStorageChange = (e) => {
@@ -367,7 +394,7 @@ export default function App() {
     };
     const handleUpdateCartQuantity = makeUpdateQuantity(setCartItems);
     // Generic place order — accepts the cart items for the specific store
-    const buildAndPlaceOrder = (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
+    const buildAndPlaceOrder = async (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
         if (cartItemsForOrder.length === 0)
             return;
         const windowStatus = getOrderWindowStatus(cartItemsForOrder[0]?.store);
@@ -439,17 +466,33 @@ export default function App() {
             paymentMethod: paymentMethod || 'UPI / Online',
             cancellationConfirmed,
         };
+
+        // Instantly save to local state and localStorage
         setOrders(prev => [newOrder, ...prev]);
+        try {
+            const currentSaved = localStorage.getItem('food_street_orders');
+            const parsed = currentSaved ? JSON.parse(currentSaved) : [];
+            localStorage.setItem('food_street_orders', JSON.stringify([newOrder, ...parsed]));
+        } catch (e) {}
+
         clearCart();
         closeCart();
         setIsStoreModalOpen(false);
-        sendOrderToWhatsApp(newOrder);
-        // Persist to live Supabase database so Admin panel tracks it live across all devices
-        saveOrderToDb(newOrder).catch(err => {
-            console.error('Failed to save order to Supabase:', err);
-        });
         setActiveTab('orders');
-        showToast('🎉 Order placed & sent to WhatsApp (+91 8949508256)!');
+
+        // Persist to live Supabase database FIRST so admin panel immediately tracks it
+        try {
+            await Promise.race([
+                saveOrderToDb(newOrder),
+                new Promise(resolve => setTimeout(resolve, 1500))
+            ]);
+        } catch (err) {
+            console.error('Failed to save order to Supabase:', err);
+        }
+
+        // Direct to WhatsApp with official order receipt & order ID
+        sendOrderToWhatsApp(newOrder);
+        showToast(`🎉 Order ${newOrder.orderNumber} placed & sent to WhatsApp!`);
     };
     const containerChargePerItem = ['store-biriyani-zone', 'store-ssv', 'store-jawa-hut', 'store-taj-biriyani', 'store-graduate-biryani'].includes(cartItems[0]?.store.id ?? '') ? 10 : 0;
     const handlePlaceOrder = (opts) => buildAndPlaceOrder(cartItems, () => setCartItems([]), () => setIsCartOpen(false), opts, containerChargePerItem);
@@ -555,7 +598,7 @@ export default function App() {
     const handleUpdateOrders = (newOrders) => {
         setOrders(newOrders);
     };
-    return (_jsx("div", { className: "min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans", children: _jsxs("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white min-h-screen shadow-xl relative flex flex-col", children: [toastMessage && (_jsx("div", { className: "fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-gray-900/95 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-top-4 duration-200", children: _jsx("span", { children: toastMessage }) })), isAdmin ? (isAdminAuthenticated ? (_jsx("div", { className: "flex-1", children: _jsx(AdminTab, { stores: stores, categories: categories, orders: orders, onUpdateStores: handleUpdateStores, onUpdateCategories: handleUpdateCategories, onUpdateOrders: handleUpdateOrders, onLogout: () => {
+    return (_jsx("div", { className: "min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans", children: _jsxs("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white min-h-screen shadow-xl relative flex flex-col", children: [_jsx(VersionChecker, {}), toastMessage && (_jsx("div", { className: "fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-gray-900/95 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-top-4 duration-200", children: _jsx("span", { children: toastMessage }) })), isAdmin ? (isAdminAuthenticated ? (_jsx("div", { className: "flex-1", children: _jsx(AdminTab, { stores: stores, categories: categories, orders: orders, onUpdateStores: handleUpdateStores, onUpdateCategories: handleUpdateCategories, onUpdateOrders: handleUpdateOrders, onLogout: () => {
                             clearAdminSession();
                             setIsAdminAuthenticated(false);
                             showToast('🔒 Logged out of Admin Panel');

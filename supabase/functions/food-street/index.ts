@@ -18,7 +18,7 @@ const supabase = createClient(
 const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization,Cache-Control,Pragma,Accept,X-Requested-With",
 };
 
 function jsonResponse(data: unknown, status = 200) {

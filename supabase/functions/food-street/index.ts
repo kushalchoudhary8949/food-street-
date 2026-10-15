@@ -1,3 +1,4 @@
+/// <reference path="../deno.d.ts" />
 // supabase/functions/food-street/index.ts
 // Deno Edge Function for Food Street backend
 // -------------------------------------------------

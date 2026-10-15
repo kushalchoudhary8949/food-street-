@@ -1,9 +1,9 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
-import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store } from 'lucide-react';
+import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock } from 'lucide-react';
 import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb, saveOrderToDb, subscribeToOrders } from '../services/api';
 import { STORES, CATEGORIES } from '../data/mockData';
-import { getOrderWindowStatus, getStoreManualOverride } from '../utils/orderTiming';
+import { getOrderWindowStatus, getStoreManualOverride, getStoreTimings, formatTimeTo12Hour, setStoreStatusCache } from '../utils/orderTiming';
 export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateCategories, onUpdateOrders, onLogout, }) => {
     const [activeSubTab, setActiveSubTab] = useState('overview');
     // Edit / Add Form States
@@ -17,6 +17,8 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         image: '',
         cuisines: '',
         tags: '',
+        openTime: '11:00',
+        closeTime: '23:00',
         isOpen: undefined,
     });
     const [selectedStoreId, setSelectedStoreId] = useState(stores[0]?.id || '');
@@ -195,9 +197,12 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                 tags: tagsList,
                 menuCategories: ['All'],
                 items: [],
+                openTime: storeForm.openTime || '11:00',
+                closeTime: storeForm.closeTime || '23:00',
                 isOpen: storeForm.isOpen,
             };
             updatedList = [...stores, newStore];
+            setStoreStatusCache(updatedList);
             onUpdateStores(updatedList);
             setIsAddingStore(false);
             await saveStoresToDb(updatedList);
@@ -214,11 +219,14 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                         image: storeForm.image || s.image,
                         cuisines: cuisinesList.length ? cuisinesList : s.cuisines,
                         tags: tagsList.length ? tagsList : s.tags,
+                        openTime: storeForm.openTime || s.openTime || '11:00',
+                        closeTime: storeForm.closeTime || s.closeTime || '23:00',
                         isOpen: storeForm.isOpen,
                     };
                 }
                 return s;
             });
+            setStoreStatusCache(updatedList);
             onUpdateStores(updatedList);
             setEditingStore(null);
             await saveStoresToDb(updatedList);
@@ -231,12 +239,15 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             image: '',
             cuisines: '',
             tags: '',
+            openTime: '11:00',
+            closeTime: '23:00',
             isOpen: undefined,
         });
     };
     const startEditStore = (store) => {
         setEditingStore(store);
         setIsAddingStore(false);
+        const timings = getStoreTimings(store);
         setStoreForm({
             name: store.name,
             deliveryTime: store.deliveryTime,
@@ -245,6 +256,8 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             image: store.image,
             cuisines: store.cuisines.join(', '),
             tags: store.tags?.join(', ') || '',
+            openTime: store.openTime || timings.openTime || '11:00',
+            closeTime: store.closeTime || timings.closeTime || '23:00',
             isOpen: store.isOpen,
         });
     };
@@ -438,7 +451,11 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                 _jsx("span", { className: `w-2.5 h-2.5 rounded-full shrink-0 ${status.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}` }),
                                 _jsxs("div", { className: "min-w-0", children: [
                                     _jsx("div", { className: "font-bold text-xs text-gray-900 truncate", children: store.name }),
-                                    _jsx("div", { className: "text-[10px] text-gray-400 font-medium", children: status.isOpen ? '🟢 Open for Orders' : '🔴 Closed' })
+                                    _jsxs("div", { className: "text-[10px] text-gray-500 font-medium truncate flex items-center gap-1.5", children: [
+                                        _jsx("span", { children: status.isOpen ? '🟢 Open' : '🔴 Closed' }),
+                                        _jsx("span", { className: "text-gray-300", children: "•" }),
+                                        _jsx("span", { children: status.timingLabel })
+                                    ] })
                                 ] })
                             ] }),
                             _jsxs("div", { className: "flex items-center bg-gray-200/80 p-0.5 rounded-lg text-[10px] font-bold shrink-0", children: [
@@ -457,10 +474,10 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                                             : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: order.status.replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }), _jsxs("button", { onClick: () => {
                                             setIsAddingStore(true);
                                             setEditingStore(null);
-                                        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })] }), (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Name" }), _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }), _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }), _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }), _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }), _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Ordering Status" }), _jsxs("select", { value: storeForm.isOpen === undefined ? 'auto' : storeForm.isOpen ? 'open' : 'closed', onChange: e => setStoreForm({ ...storeForm, isOpen: e.target.value === 'auto' ? undefined : (e.target.value === 'open') }), className: "w-full p-2 border border-gray-200 rounded-xl bg-white font-medium text-xs", children: [_jsx("option", { value: "auto", children: "⏱️ Auto (Follow schedule hours)" }), _jsx("option", { value: "open", children: "🟢 Force Open (Accept orders now)" }), _jsx("option", { value: "closed", children: "🔴 Force Closed (Disable ordering)" })] })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Store" }), _jsx("button", { type: "button", onClick: () => {
+                                        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })] }), (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }), _jsxs("div", { className: "space-y-2.5 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Name" }), _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }), _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }), _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "p-3 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2", children: [_jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-rose-800 text-xs", children: [_jsx(Clock, { className: "w-3.5 h-3.5 text-red-600" }), _jsx("span", { children: "Store Operating Timings (Database Controlled)" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Opening Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.openTime || '11:00', onChange: e => setStoreForm({ ...storeForm, openTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Opens at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.openTime || '11:00', '11:00 AM') })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Closing Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.closeTime || '23:00', onChange: e => setStoreForm({ ...storeForm, closeTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Closes at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.closeTime || '23:00', '11:00 PM') })] })] })] }), _jsx("p", { className: "text-[10px] text-rose-600 font-medium", children: "Customers will see \"OPENS AT ...\" label on the home store card based on this opening time." })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }), _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }), _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Ordering Status" }), _jsxs("select", { value: storeForm.isOpen === undefined ? 'auto' : storeForm.isOpen ? 'open' : 'closed', onChange: e => setStoreForm({ ...storeForm, isOpen: e.target.value === 'auto' ? undefined : (e.target.value === 'open') }), className: "w-full p-2 border border-gray-200 rounded-xl bg-white font-medium text-xs", children: [_jsx("option", { value: "auto", children: "⏱️ Auto (Follow schedule hours)" }), _jsx("option", { value: "open", children: "🟢 Force Open (Accept orders now)" }), _jsx("option", { value: "closed", children: "🔴 Force Closed (Disable ordering)" })] })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 cursor-pointer", children: "Save Store" }), _jsx("button", { type: "button", onClick: () => {
                                                     setIsAddingStore(false);
                                                     setEditingStore(null);
-                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "space-y-3", children: stores.map(store => {
+                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200 cursor-pointer", children: "Cancel" })] })] })), _jsx("div", { className: "space-y-3", children: stores.map(store => {
     const status = getOrderWindowStatus(store.id, undefined, store);
     const manualSetting = store.isOpen !== undefined ? (store.isOpen ? 'open' : 'closed') : (getStoreManualOverride(store.id) || 'auto');
     const isAuto = manualSetting === 'auto';
@@ -476,7 +493,11 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                             _jsx("h4", { className: "font-extrabold text-sm text-gray-900 truncate", children: store.name }),
                             _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 ${status.isOpen ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`, children: status.isOpen ? '● Open' : '○ Closed' })
                         ] }),
-                        _jsx("p", { className: "text-xs text-gray-500 truncate mt-0.5", children: store.cuisines.join(', ') })
+                        _jsx("p", { className: "text-xs text-gray-500 truncate mt-0.5", children: store.cuisines.join(', ') }),
+                        _jsxs("div", { className: "flex items-center gap-1.5 text-[11px] text-gray-600 font-semibold mt-1", children: [
+                            _jsx(Clock, { className: "w-3 h-3 text-red-500 shrink-0" }),
+                            _jsxs("span", { children: ["Timings: ", status.timingLabel] })
+                        ] })
                     ] })
                 ] }),
                 _jsxs("div", { className: "flex items-center space-x-1.5 shrink-0", children: [

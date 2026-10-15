@@ -285,7 +285,8 @@ export default function App() {
     };
     // Handle Add to Cart — routes to BZ cart or FS cart based on store
     const handleAddToCart = (item, quantity = 1, selectedAddons = []) => {
-        const orderWindowStatus = getOrderWindowStatus(item.storeId);
+        const itemStore = stores.find(s => s.id === item.storeId);
+        const orderWindowStatus = getOrderWindowStatus(itemStore || item.storeId);
         if (!orderWindowStatus.isOpen) {
             showToast(orderWindowStatus.message);
             return;
@@ -369,7 +370,7 @@ export default function App() {
     const buildAndPlaceOrder = (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
         if (cartItemsForOrder.length === 0)
             return;
-        const windowStatus = getOrderWindowStatus(cartItemsForOrder[0]?.store.id);
+        const windowStatus = getOrderWindowStatus(cartItemsForOrder[0]?.store);
         if (!windowStatus.isOpen) {
             showToast(windowStatus.message);
             return;
@@ -515,7 +516,7 @@ export default function App() {
             .map((store, index) => ({
             store,
             index,
-            isOpen: getOrderWindowStatus(store.id, currentTime).isOpen,
+            isOpen: getOrderWindowStatus(store, currentTime).isOpen,
         }))
             .sort((first, second) => Number(second.isOpen) - Number(first.isOpen) || first.index - second.index)
             .map(({ store }) => store);
@@ -565,27 +566,7 @@ export default function App() {
                         window.location.hash = '';
                         window.history.pushState(null, '', '/');
                         setCurrentPath('/');
-                    } }))) : (_jsxs(_Fragment, { children: [activeTab === 'home' && (_jsxs("div", { className: "flex-1 pb-24", children: [_jsx(Header, { currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), searchQuery: searchQuery, onSearchChange: setSearchQuery, onSearchFocus: () => { }, onAvatarClick: () => setActiveTab('profile'), onOpenCart: () => setIsCartOpen(true), cartCount: totalCartCount, cartTotal: cartPrice }), (() => {
-                                    const biriyaniZoneStatus = getOrderWindowStatus(OPEN_STORE_ID, currentTime);
-                                    const biteAddaStatus = getOrderWindowStatus(BITE_ADDA_STORE_ID, currentTime);
-                                    const tummyTreatStatus = getOrderWindowStatus(TUMMY_TREAT_STORE_ID, currentTime);
-                                    const openStoreNames = [
-                                        biriyaniZoneStatus.isOpen ? 'Biriyani Zone' : '',
-                                        biteAddaStatus.isOpen ? 'Bite Adda' : '',
-                                        tummyTreatStatus.isOpen ? 'Tummy Treat' : '',
-                                    ].filter(Boolean);
-                                    const hasOpenStores = openStoreNames.length > 0;
-                                    const statusLabel = !hasOpenStores
-                                        ? 'Orders closed'
-                                        : openStoreNames.length === 3 && stores.every((store) => getOrderWindowStatus(store.id, currentTime).isOpen)
-                                            ? 'Orders open now'
-                                            : openStoreNames.length > 0
-                                                ? `${openStoreNames.join(' · ')} open`
-                                                : 'Other stores open';
-                                    return (_jsxs("div", { className: `mx-4 mt-3 flex items-center justify-between px-4 py-2.5 rounded-2xl font-semibold text-xs ${hasOpenStores
-                                            ? 'bg-green-50 border border-green-200 text-green-800'
-                                            : 'bg-red-50 border border-red-200 text-red-700'}`, children: [_jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("span", { className: `w-2 h-2 rounded-full ${hasOpenStores ? 'bg-green-500 animate-pulse' : 'bg-red-500'}` }), _jsx("span", { children: statusLabel })] }), _jsx("span", { className: "opacity-70", children: "\u23F0 Biriyani Zone 12:00 PM\u201310:00 PM \u00B7 Bite Adda/Tummy Treat 11:00 AM\u201310:00 PM \u00B7 Other stores 11:45 AM\u201310:00 PM" })] }));
-                                })(), _jsx("div", { className: "mt-1", children: _jsx(CategoryBar, { categories: categories, selectedCategory: selectedCategory, onSelectCategory: handleSelectCategory }) }), selectedCategory && (_jsxs("div", { className: "px-4 mt-4 flex items-center justify-between", children: [_jsxs("h2", { className: "text-base font-extrabold text-gray-900 tracking-tight", children: [selectedCategory.toUpperCase(), " SPOTS"] }), _jsx("button", { onClick: () => setSelectedCategory(null), className: "text-xs font-bold text-red-600 hover:text-red-700 underline", children: "Clear filter" })] })), _jsxs("div", { className: "px-4 mt-3 space-y-4", children: [filteredStores.map((store) => (_jsx(StoreCard, { store: store, isFavorite: favorites.includes(store.id), onToggleFavorite: (e) => handleToggleFavorite(e, store.id), onClick: () => handleOpenStore(store) }, store.id))), filteredStores.length === 0 && (_jsxs("div", { className: "text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200", children: [_jsx("p", { className: "text-sm font-bold text-gray-500", children: "No restaurants match your search" }), _jsx("button", { onClick: () => {
+                    } }))) : (_jsxs(_Fragment, { children: [activeTab === 'home' && (_jsxs("div", { className: "flex-1 pb-24", children: [_jsx(Header, { currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), searchQuery: searchQuery, onSearchChange: setSearchQuery, onSearchFocus: () => { }, onAvatarClick: () => setActiveTab('profile'), onOpenCart: () => setIsCartOpen(true), cartCount: totalCartCount, cartTotal: cartPrice }), _jsx("div", { className: "mt-1", children: _jsx(CategoryBar, { categories: categories, selectedCategory: selectedCategory, onSelectCategory: handleSelectCategory }) }), selectedCategory && (_jsxs("div", { className: "px-4 mt-4 flex items-center justify-between", children: [_jsxs("h2", { className: "text-base font-extrabold text-gray-900 tracking-tight", children: [selectedCategory.toUpperCase(), " SPOTS"] }), _jsx("button", { onClick: () => setSelectedCategory(null), className: "text-xs font-bold text-red-600 hover:text-red-700 underline", children: "Clear filter" })] })), _jsxs("div", { className: "px-4 mt-3 space-y-4", children: [filteredStores.map((store) => (_jsx(StoreCard, { store: store, isFavorite: favorites.includes(store.id), onToggleFavorite: (e) => handleToggleFavorite(e, store.id), onClick: () => handleOpenStore(store) }, store.id))), filteredStores.length === 0 && (_jsxs("div", { className: "text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200", children: [_jsx("p", { className: "text-sm font-bold text-gray-500", children: "No restaurants match your search" }), _jsx("button", { onClick: () => {
                                                         setSelectedCategory(null);
                                                         setSearchQuery('');
                                                     }, className: "mt-2 text-xs font-bold text-red-600 hover:underline", children: "Reset all filters" })] }))] })] })), activeTab === 'search' && (_jsx("div", { className: "flex-1", children: _jsx(SearchTab, { stores: stores, initialQuery: searchQuery, onSelectStore: handleOpenStore, onSelectMenuItem: (item, store) => {

@@ -25,7 +25,7 @@ export const StoreDetailModal = ({ store, isOpen, onClose, isFavorite, onToggleF
     }, [store?.id, isOpen]);
     if (!isOpen || !store)
         return null;
-    const orderWindowStatus = getOrderWindowStatus(store.id);
+    const orderWindowStatus = getOrderWindowStatus(store);
     const currentOutlet = hasOutlets && selectedOutletId && selectedOutletId !== 'all' && selectedOutletId !== 'select'
         ? store.outlets?.find(o => o.id === selectedOutletId)
         : null;

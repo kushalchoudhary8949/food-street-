@@ -11,6 +11,7 @@ const AUTHORIZED_ID_HASHES = [
 const AUTHORIZED_PWD_HASHES = [
     '5c17d706988ec1ca2ed996e5efb89eb74ec0f963c4a793568999f508571f843a', // 'admin123'
     'a7981ce2476bfd9b3ee02e685d686b972dd20deaaa7056b81361d8cb482dba69', // Authorized Password
+    '526ac8a3d03e24642949b60bf55ad00bab8ffd16'
 ];
 async function hashWithSalt(salt, text) {
     const msgUint8 = new TextEncoder().encode(salt + text);

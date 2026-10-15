@@ -9,8 +9,12 @@ const SESSION_SECRET = 'fd_sec_sig_984729184';
 // Salted SHA-256 hash for ID ('admin')
 const AUTH_ID_HASH = 'd66decc061c037952af17d0ecdc72b57393bfba0725ab06e837ab822dc36af11';
 
-// Salted SHA-256 hash for Password
-const AUTH_PWD_HASH = 'b1944a4135baf733266141dbb7b4dce61152086196604819cc193b24ca29db52';
+// Salted SHA-256 hashes for password:
+// Supports 'foodZaAdmin@09' and 'FoodZaAdmin@09' (case-tolerant for initial auto-capitalization on mobile/keyboards)
+const AUTH_PWD_HASHES = [
+  'b1944a4135baf733266141dbb7b4dce61152086196604819cc193b24ca29db52',
+  '2166bcc6dd7b601e89b12acffd95d8daa86a6c38e2adfbc7d2255ed5d1c35c76',
+];
 
 const SESSION_KEY = 'admin_session_token';
 const RATE_LIMIT_KEY = 'admin_auth_attempts';
@@ -78,15 +82,15 @@ export function resetRateLimit() {
  * Verifies entered admin ID and password using salted SHA-256 hashes.
  */
 export async function verifyCredentials(id, password) {
-  // Artificial delay (400-600ms) to prevent timing analysis & brute-force bots
-  await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 200));
+  // Artificial delay (300-500ms) to prevent timing analysis & brute-force bots
+  await new Promise((resolve) => setTimeout(resolve, 300 + Math.random() * 200));
 
   if (!id || !password) return false;
 
-  const idHash = await sha256(ID_SALT + id.trim());
+  const idHash = await sha256(ID_SALT + id.trim().toLowerCase());
   const pwdHash = await sha256(PWD_SALT + password.trim());
 
-  return idHash === AUTH_ID_HASH && pwdHash === AUTH_PWD_HASH;
+  return idHash === AUTH_ID_HASH && AUTH_PWD_HASHES.includes(pwdHash);
 }
 
 /**
@@ -94,13 +98,14 @@ export async function verifyCredentials(id, password) {
  */
 export async function createAdminSession(rememberMe = true) {
   const ts = Date.now().toString();
-  const signature = await sha256(`${ts}:${SESSION_SECRET}:${AUTH_PWD_HASH}`);
+  const signature = await sha256(`${ts}:${SESSION_SECRET}:${AUTH_PWD_HASHES[0]}`);
   const token = `${ts}.${signature}`;
 
   // Clean any old obsolete keys
   try {
     localStorage.removeItem('admin_custom_id_hash');
     localStorage.removeItem('admin_custom_pwd_hash');
+    localStorage.removeItem(RATE_LIMIT_KEY);
   } catch {}
 
   if (rememberMe) {
@@ -138,14 +143,17 @@ export async function verifyAdminSession() {
       return false;
     }
 
-    const expectedSig = await sha256(`${ts}:${SESSION_SECRET}:${AUTH_PWD_HASH}`);
-    if (sig !== expectedSig) {
-      // Signature mismatch - tampering detected via console or localStorage
-      clearAdminSession();
-      return false;
+    // Match signature against authorized secret
+    for (const validHash of AUTH_PWD_HASHES) {
+      const expectedSig = await sha256(`${ts}:${SESSION_SECRET}:${validHash}`);
+      if (sig === expectedSig) {
+        return true;
+      }
     }
 
-    return true;
+    // Signature mismatch - tampering detected via console or localStorage
+    clearAdminSession();
+    return false;
   } catch {
     clearAdminSession();
     return false;

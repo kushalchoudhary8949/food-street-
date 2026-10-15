@@ -6,11 +6,9 @@ const ID_SALT = 'fd_id_salt_';
 const PWD_SALT = 'fd_pwd_salt_';
 const SESSION_SECRET = 'fd_sec_sig_984729184';
 
-// Salted SHA-256 hash for ID ('admin')
+// Authorized credentials hash signatures
 const AUTH_ID_HASH = 'd66decc061c037952af17d0ecdc72b57393bfba0725ab06e837ab822dc36af11';
 
-// Salted SHA-256 hashes for password:
-// Supports 'foodZaAdmin@09' and 'FoodZaAdmin@09' (case-tolerant for initial auto-capitalization on mobile/keyboards)
 const AUTH_PWD_HASHES = [
   'b1944a4135baf733266141dbb7b4dce61152086196604819cc193b24ca29db52',
   '2166bcc6dd7b601e89b12acffd95d8daa86a6c38e2adfbc7d2255ed5d1c35c76',

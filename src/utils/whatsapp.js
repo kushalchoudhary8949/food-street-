@@ -1,6 +1,7 @@
-export const WHATSAPP_NUMBER = '918949508256';
+export const WHATSAPP_NUMBER = '919180468256';
+export const DISPLAY_PHONE_NUMBER = '9180468256';
 export const PHONEPE_UPI_URI = 'upi://pay?pa=foodza@upi&pn=FoodZa%20Delivery&cu=INR';
-export const PAYMENT_UPI_ID = '8949508256@axl';
+export const PAYMENT_UPI_ID = '9180468256@axl';
 
 export function generateWhatsAppOrderMessage(order) {
     const orderId = order.orderNumber
@@ -32,7 +33,7 @@ ${order.offerDiscount && order.offerDiscount > 0 ? `🏷️ *Biriyani Zone Offer
 ${order.discount > 0 ? `🏷️ *Offer Discount:* -₹${Number(order.discount).toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${Number(order.tip).toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${Number(order.grandTotal || 0).toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
 ${cancellationNote}📌 *PAYMENT COLLECTION DETAILS:*
-🔗 *UPI ID:* 8949508256@axl
+🔗 *UPI ID:* ${PAYMENT_UPI_ID}
 
 📍 *DELIVERY ADDRESS:*
 ${order.deliveryAddress || 'Not specified'}

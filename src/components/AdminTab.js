@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
 import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store } from 'lucide-react';
-import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb } from '../services/api';
+import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb, saveOrderToDb, subscribeToOrders } from '../services/api';
 import { STORES, CATEGORIES } from '../data/mockData';
 import { getOrderWindowStatus, getStoreManualOverride } from '../utils/orderTiming';
 export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateCategories, onUpdateOrders, onLogout, }) => {
@@ -66,6 +66,38 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         if (activeSubTab === 'cloud') {
             checkDb();
         }
+    }, [activeSubTab]);
+    const [isRefreshingOrders, setIsRefreshingOrders] = useState(false);
+    const refreshOrders = async () => {
+        setIsRefreshingOrders(true);
+        try {
+            const dbOrders = await fetchOrdersFromDb();
+            if (Array.isArray(dbOrders)) {
+                if (dbOrders.length > 0) {
+                    onUpdateOrders(dbOrders);
+                } else if (orders.length > 0) {
+                    for (const o of orders) {
+                        await saveOrderToDb(o);
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Orders refresh notice:', e);
+        } finally {
+            setIsRefreshingOrders(false);
+        }
+    };
+    React.useEffect(() => {
+        if (activeSubTab !== 'orders') return;
+        refreshOrders();
+        const unsubscribe = subscribeToOrders((newOrders) => {
+            if (Array.isArray(newOrders) && newOrders.length > 0) {
+                onUpdateOrders(newOrders);
+            }
+        }, 3500);
+        return () => {
+            if (typeof unsubscribe === 'function') unsubscribe();
+        };
     }, [activeSubTab]);
     const handleFetchFromPostgres = async () => {
         setIsFetchingDb(true);
@@ -480,7 +512,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                         }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Category" })] })] }), (isAddingCategory || editingCategory) && (_jsxs("form", { onSubmit: handleSaveCategory, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingCategory ? 'Add Category' : 'Edit Category' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Category Name" }), _jsx("input", { type: "text", required: true, value: categoryForm.name, onChange: e => setCategoryForm({ ...categoryForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Image URL" }), _jsx("input", { type: "text", value: categoryForm.image, onChange: e => setCategoryForm({ ...categoryForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Category" }), _jsx("button", { type: "button", onClick: () => {
                                                     setIsAddingCategory(false);
                                                     setEditingCategory(null);
-                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "grid grid-cols-2 gap-3", children: categories.map(cat => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex flex-col items-center shadow-xs text-center relative group", children: [_jsx("img", { src: cat.image, alt: cat.name, className: "w-12 h-12 rounded-full object-cover border" }), _jsx("span", { className: "font-extrabold text-xs text-gray-900 mt-2", children: cat.name }), _jsxs("div", { className: "flex items-center space-x-1.5 mt-3", children: [_jsx("button", { onClick: () => startEditCategory(cat), className: "p-1 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-md transition-colors", children: _jsx(Edit3, { className: "w-3 h-3" }) }), _jsx("button", { onClick: () => handleDeleteCategory(cat.id), className: "p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-md transition-colors", children: _jsx(Trash2, { className: "w-3 h-3" }) })] })] }, cat.id))) })] })), activeSubTab === 'orders' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Live Order Fulfillment Tracker" }), _jsxs("p", { className: "text-xs text-gray-500", children: ["Total ", orders.length, " orders recorded"] })] }), _jsxs("div", { className: "flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold", children: [_jsxs("button", { onClick: () => setOrderFilter('all'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["All (", orders.length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('active'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Active (", orders.filter(o => o.status !== 'delivered').length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('delivered'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Delivered (", orders.filter(o => o.status === 'delivered').length, ")"] })] })] }), (() => {
+                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "grid grid-cols-2 gap-3", children: categories.map(cat => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex flex-col items-center shadow-xs text-center relative group", children: [_jsx("img", { src: cat.image, alt: cat.name, className: "w-12 h-12 rounded-full object-cover border" }), _jsx("span", { className: "font-extrabold text-xs text-gray-900 mt-2", children: cat.name }), _jsxs("div", { className: "flex items-center space-x-1.5 mt-3", children: [_jsx("button", { onClick: () => startEditCategory(cat), className: "p-1 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-md transition-colors", children: _jsx(Edit3, { className: "w-3 h-3" }) }), _jsx("button", { onClick: () => handleDeleteCategory(cat.id), className: "p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-md transition-colors", children: _jsx(Trash2, { className: "w-3 h-3" }) })] })] }, cat.id))) })] })), activeSubTab === 'orders' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex items-center justify-between gap-2 flex-wrap", children: [_jsxs("div", { children: [_jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Live Order Fulfillment Tracker" }), _jsxs("span", { className: "inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200", children: [_jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }), _jsx("span", { children: "Live Cloud Sync" })] })] }), _jsxs("div", { className: "flex items-center space-x-3 mt-0.5", children: [_jsxs("p", { className: "text-xs text-gray-500", children: ["Total ", orders.length, " orders recorded"] }), _jsxs("button", { onClick: refreshOrders, disabled: isRefreshingOrders, className: "flex items-center space-x-1 text-xs text-red-600 hover:text-red-700 font-bold cursor-pointer transition-colors", children: [_jsx(RefreshCw, { className: `w-3 h-3 ${isRefreshingOrders ? 'animate-spin' : ''}` }), _jsx("span", { children: isRefreshingOrders ? "Syncing..." : "Refresh" })] })] })] }), _jsxs("div", { className: "flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold", children: [_jsxs("button", { onClick: () => setOrderFilter('all'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["All (", orders.length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('active'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Active (", orders.filter(o => o.status !== 'delivered').length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('delivered'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Delivered (", orders.filter(o => o.status === 'delivered').length, ")"] })] })] }), (() => {
                                 const displayedOrders = orders.filter(o => {
                                     if (orderFilter === 'active')
                                         return o.status !== 'delivered';
@@ -511,10 +543,15 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                                         await saveStoresToDb(allStoresToSync);
                                                         await saveCategoriesToDb(allCatsToSync);
                                                         await seedDatabase(allStoresToSync, allCatsToSync);
+                                                        if (orders && orders.length > 0) {
+                                                            for (const order of orders) {
+                                                                await saveOrderToDb(order);
+                                                            }
+                                                        }
                                                         onUpdateStores(allStoresToSync);
                                                         onUpdateCategories(allCatsToSync);
                                                         await checkDb();
-                                                        setCloudStatusMsg(`✅ Successfully synced ${allStoresToSync.length} stores & ${allCatsToSync.length} categories to Supabase!`);
+                                                        setCloudStatusMsg(`✅ Successfully synced ${allStoresToSync.length} stores, ${allCatsToSync.length} categories & ${orders?.length || 0} orders to Supabase!`);
                                                     }
                                                     catch (e) {
                                                         setCloudStatusMsg(`⚠️ Failed to sync to Supabase: ${e?.message || 'Check connection'}`);

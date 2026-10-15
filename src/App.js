@@ -16,7 +16,7 @@ import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
-import { fetchStoresFromDb, fetchCategoriesFromDb, saveStoresToDb, saveCategoriesToDb } from './services/api';
+import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
 const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 export default function App() {
@@ -60,9 +60,10 @@ export default function App() {
         let isMounted = true;
         (async () => {
             try {
-                const [dbStores, dbCats] = await Promise.all([
+                const [dbStores, dbCats, dbOrders] = await Promise.all([
                     fetchStoresFromDb(),
                     fetchCategoriesFromDb(),
+                    fetchOrdersFromDb(),
                 ]);
                 if (!isMounted) return;
                 if (Array.isArray(dbStores) && dbStores.length > 0) {
@@ -80,6 +81,31 @@ export default function App() {
                 }
                 if (Array.isArray(dbCats) && dbCats.length > 0) {
                     setCategories(dbCats);
+                }
+                if (Array.isArray(dbOrders)) {
+                    if (dbOrders.length > 0) {
+                        setOrders((prevOrders) => {
+                            const orderMap = new Map();
+                            dbOrders.forEach(o => orderMap.set(o.id, o));
+                            // Retain any locally placed orders not yet in DB
+                            prevOrders.forEach(o => {
+                                if (!orderMap.has(o.id)) {
+                                    orderMap.set(o.id, o);
+                                    saveOrderToDb(o).catch(() => {});
+                                }
+                            });
+                            return Array.from(orderMap.values());
+                        });
+                    } else {
+                        // If DB currently has 0 orders, push existing local orders to Supabase
+                        const saved = localStorage.getItem('food_street_orders');
+                        const localOrders = saved ? JSON.parse(saved) : [];
+                        if (Array.isArray(localOrders) && localOrders.length > 0) {
+                            localOrders.forEach(order => {
+                                saveOrderToDb(order).catch(() => {});
+                            });
+                        }
+                    }
                 }
             } catch (err) {
                 console.warn('Initial cloud fetch notice:', err);
@@ -409,6 +435,10 @@ export default function App() {
         closeCart();
         setIsStoreModalOpen(false);
         sendOrderToWhatsApp(newOrder);
+        // Persist to live Supabase database so Admin panel tracks it live across all devices
+        saveOrderToDb(newOrder).catch(err => {
+            console.error('Failed to save order to Supabase:', err);
+        });
         setActiveTab('orders');
         showToast('🎉 Order placed & sent to WhatsApp (+91 8949508256)!');
     };

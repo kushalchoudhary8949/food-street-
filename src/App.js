@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import React, { useState, useMemo } from 'react';
-import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, OPEN_STORE_ID, TUMMY_TREAT_STORE_ID } from './utils/orderTiming';
+import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, OPEN_STORE_ID, TUMMY_TREAT_STORE_ID, setStoreStatusCache } from './utils/orderTiming';
 import { Header } from './components/Header';
 import { CategoryBar } from './components/CategoryBar';
 import { StoreCard } from './components/StoreCard';
@@ -59,6 +59,7 @@ export default function App() {
     // Save states to localStorage when they change
     React.useEffect(() => {
         localStorage.setItem('food_street_stores', JSON.stringify(stores));
+        setStoreStatusCache(stores);
     }, [stores]);
     React.useEffect(() => {
         localStorage.setItem('food_street_categories', JSON.stringify(categories));

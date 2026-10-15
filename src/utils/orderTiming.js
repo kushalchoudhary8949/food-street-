@@ -27,7 +27,62 @@ export const isSpecialToday = (date = new Date()) => {
   return `${year}-${month}-${day}` === SPECIAL_SCHEDULE_DATE;
 };
 
-export const getOrderWindowStatus = (storeId, date = new Date()) => {
+// Cache of loaded stores to check manual admin open/close status
+let storesCache = [];
+
+export const setStoreStatusCache = (storesList) => {
+  if (Array.isArray(storesList)) {
+    storesCache = storesList;
+  }
+};
+
+export const getStoreManualOverride = (storeId) => {
+  if (!storeId) return null;
+  // 1. Check in-memory stores cache
+  const found = storesCache.find((s) => s && s.id === storeId);
+  if (found && found.isOpen !== undefined && found.isOpen !== 'auto') {
+    return found.isOpen === true || found.isOpen === 'open' ? 'open' : 'closed';
+  }
+  // 2. Check localStorage override
+  try {
+    const val = localStorage.getItem(`store_status_${storeId}`);
+    if (val === 'open' || val === 'closed') {
+      return val;
+    }
+  } catch (e) {}
+  return null;
+};
+
+export const getOrderWindowStatus = (storeId, date = new Date(), store) => {
+  // Check for admin manual open/close override
+  const manual = (store && store.isOpen !== undefined && store.isOpen !== 'auto')
+    ? (store.isOpen === true || store.isOpen === 'open' ? 'open' : 'closed')
+    : getStoreManualOverride(storeId);
+
+  if (manual === 'open') {
+    return {
+      isOpen: true,
+      isClosedForToday: false,
+      message: 'Store is Open for Orders (Admin Open)',
+      opensAt: 'Now',
+      closesAt: 'Open',
+      timingLabel: 'Open for Orders',
+      statusBadge: 'Open Now',
+    };
+  }
+
+  if (manual === 'closed') {
+    return {
+      isOpen: false,
+      isClosedForToday: true,
+      message: 'Store is temporarily closed for orders',
+      opensAt: '',
+      closesAt: '',
+      timingLabel: 'Store Closed',
+      statusBadge: 'Store Closed',
+    };
+  }
+
   if (!storeId || !ACTIVE_ORDER_STORE_IDS.has(storeId)) {
     return {
       isOpen: false,

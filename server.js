@@ -228,6 +228,6 @@ if (process.env.MONGODB_URI) {
   console.log('⚡ Connected to Supabase Cloud Backend (PostgreSQL & Edge Functions)');
 }
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(3001, '0.0.0.0', () => {
   console.log(`Food Street server running on http://localhost:${port}`);
 });

@@ -1,0 +1,436 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import React, { useState } from 'react';
+import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare } from 'lucide-react';
+import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb } from '../services/api';
+import { STORES, CATEGORIES } from '../data/mockData';
+export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateCategories, onUpdateOrders, onLogout, }) => {
+    const [activeSubTab, setActiveSubTab] = useState('overview');
+    // Edit / Add Form States
+    const [editingStore, setEditingStore] = useState(null);
+    const [isAddingStore, setIsAddingStore] = useState(false);
+    const [storeForm, setStoreForm] = useState({
+        name: '',
+        deliveryTime: '25-35 mins',
+        deliveryFee: 20,
+        distance: '2.5 km',
+        image: '',
+        cuisines: '',
+        tags: '',
+    });
+    const [selectedStoreId, setSelectedStoreId] = useState(stores[0]?.id || '');
+    const [editingItem, setEditingItem] = useState(null);
+    const [isAddingItem, setIsAddingItem] = useState(false);
+    const [itemForm, setItemForm] = useState({
+        name: '',
+        price: 199,
+        description: '',
+        image: '',
+        category: '',
+        isVeg: true,
+        isBestseller: false,
+    });
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [isAddingCategory, setIsAddingCategory] = useState(false);
+    const [categoryForm, setCategoryForm] = useState({
+        name: '',
+        image: '',
+        slug: '',
+    });
+    const [isCloudSyncing, setIsCloudSyncing] = useState(false);
+    const [isFetchingDb, setIsFetchingDb] = useState(false);
+    const [isCheckingDb, setIsCheckingDb] = useState(false);
+    const [dbStatus, setDbStatus] = useState(null);
+    const [cloudStatusMsg, setCloudStatusMsg] = useState(null);
+    const [orderFilter, setOrderFilter] = useState('all');
+    const checkDb = async () => {
+        setIsCheckingDb(true);
+        try {
+            const status = await fetchDatabaseStatus();
+            setDbStatus(status);
+        }
+        catch (e) {
+            setDbStatus({
+                success: false,
+                connected: false,
+                database: 'Supabase (PostgreSQL)',
+                error: e?.message || 'Failed to check database',
+            });
+        }
+        finally {
+            setIsCheckingDb(false);
+        }
+    };
+    React.useEffect(() => {
+        if (activeSubTab === 'cloud') {
+            checkDb();
+        }
+    }, [activeSubTab]);
+    const handleFetchFromPostgres = async () => {
+        setIsFetchingDb(true);
+        setCloudStatusMsg(null);
+        try {
+            const [pgStores, pgCats, pgOrders] = await Promise.all([
+                fetchStoresFromDb(),
+                fetchCategoriesFromDb(),
+                fetchOrdersFromDb(),
+            ]);
+            let msgParts = [];
+            if (pgStores && pgStores.length > 0) {
+                onUpdateStores(pgStores);
+                msgParts.push(`${pgStores.length} stores`);
+            }
+            if (pgCats && pgCats.length > 0) {
+                onUpdateCategories(pgCats);
+                msgParts.push(`${pgCats.length} categories`);
+            }
+            if (pgOrders && pgOrders.length > 0) {
+                onUpdateOrders(pgOrders);
+                msgParts.push(`${pgOrders.length} orders`);
+            }
+            await checkDb();
+            if (msgParts.length > 0) {
+                setCloudStatusMsg(`✅ Fetched and loaded ${msgParts.join(', ')} from Supabase successfully!`);
+            }
+            else {
+                setCloudStatusMsg(`ℹ️ Database connected, but tables are currently empty. Click "Push & Seed Data" to populate.`);
+            }
+        }
+        catch (err) {
+            setCloudStatusMsg(`⚠️ Failed to fetch from Supabase: ${err?.message || 'Network error'}`);
+        }
+        finally {
+            setIsFetchingDb(false);
+        }
+    };
+    // Calculate Overview Stats
+    const totalRevenue = orders
+        .filter(o => o.status === 'delivered')
+        .reduce((sum, o) => sum + o.grandTotal, 0);
+    const activeOrdersCount = orders.filter(o => o.status !== 'delivered').length;
+    const totalItemsCount = stores.reduce((sum, s) => sum + (s.items?.length || 0), 0);
+    // Store Handlers
+    const handleSaveStore = (e) => {
+        e.preventDefault();
+        const cuisinesList = storeForm.cuisines.split(',').map(c => c.trim()).filter(Boolean);
+        const tagsList = storeForm.tags.split(',').map(t => t.trim()).filter(Boolean);
+        if (isAddingStore) {
+            const newStore = {
+                id: `store-${Date.now()}`,
+                name: storeForm.name,
+                rating: 4.5,
+                reviewsCount: 1,
+                deliveryTime: storeForm.deliveryTime,
+                deliveryFee: Number(storeForm.deliveryFee),
+                distance: storeForm.distance,
+                image: storeForm.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
+                cuisines: cuisinesList.length ? cuisinesList : ['Pizzas', 'Burgers'],
+                discountOffer: 'Flat 20% OFF',
+                tags: tagsList,
+                menuCategories: ['All'],
+                items: [],
+            };
+            onUpdateStores([...stores, newStore]);
+            setIsAddingStore(false);
+        }
+        else if (editingStore) {
+            const updatedStores = stores.map(s => {
+                if (s.id === editingStore.id) {
+                    return {
+                        ...s,
+                        name: storeForm.name,
+                        deliveryTime: storeForm.deliveryTime,
+                        deliveryFee: Number(storeForm.deliveryFee),
+                        distance: storeForm.distance,
+                        image: storeForm.image || s.image,
+                        cuisines: cuisinesList.length ? cuisinesList : s.cuisines,
+                        tags: tagsList.length ? tagsList : s.tags,
+                    };
+                }
+                return s;
+            });
+            onUpdateStores(updatedStores);
+            setEditingStore(null);
+        }
+        setStoreForm({
+            name: '',
+            deliveryTime: '25-35 mins',
+            deliveryFee: 20,
+            distance: '2.5 km',
+            image: '',
+            cuisines: '',
+            tags: '',
+        });
+    };
+    const startEditStore = (store) => {
+        setEditingStore(store);
+        setIsAddingStore(false);
+        setStoreForm({
+            name: store.name,
+            deliveryTime: store.deliveryTime,
+            deliveryFee: store.deliveryFee,
+            distance: store.distance || '2.5 km',
+            image: store.image,
+            cuisines: store.cuisines.join(', '),
+            tags: store.tags?.join(', ') || '',
+        });
+    };
+    const handleDeleteStore = async (storeId) => {
+        if (confirm('Are you sure you want to delete this store and all its items?')) {
+            onUpdateStores(stores.filter(s => s.id !== storeId));
+            await deleteStoreFromDb(storeId);
+        }
+    };
+    // Item Handlers
+    const handleSaveItem = (e) => {
+        e.preventDefault();
+        const currentStore = stores.find(s => s.id === selectedStoreId);
+        if (!currentStore)
+            return;
+        if (isAddingItem) {
+            const newItem = {
+                id: `item-${Date.now()}`,
+                storeId: selectedStoreId,
+                name: itemForm.name,
+                price: Number(itemForm.price),
+                description: itemForm.description,
+                image: itemForm.image || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80',
+                isVeg: itemForm.isVeg,
+                isBestseller: itemForm.isBestseller,
+                category: itemForm.category || 'Veg',
+            };
+            const updatedStores = stores.map(s => {
+                if (s.id === selectedStoreId) {
+                    const updatedItems = [...(s.items || []), newItem];
+                    const updatedCategories = s.menuCategories.includes(newItem.category)
+                        ? s.menuCategories
+                        : [...s.menuCategories, newItem.category];
+                    return { ...s, items: updatedItems, menuCategories: updatedCategories };
+                }
+                return s;
+            });
+            onUpdateStores(updatedStores);
+            setIsAddingItem(false);
+        }
+        else if (editingItem) {
+            const updatedStores = stores.map(s => {
+                if (s.id === selectedStoreId) {
+                    const updatedItems = s.items.map(item => {
+                        if (item.id === editingItem.id) {
+                            return {
+                                ...item,
+                                name: itemForm.name,
+                                price: Number(itemForm.price),
+                                description: itemForm.description,
+                                image: itemForm.image || item.image,
+                                isVeg: itemForm.isVeg,
+                                isBestseller: itemForm.isBestseller,
+                                category: itemForm.category || item.category,
+                            };
+                        }
+                        return item;
+                    });
+                    return { ...s, items: updatedItems };
+                }
+                return s;
+            });
+            onUpdateStores(updatedStores);
+            setEditingItem(null);
+        }
+        setItemForm({
+            name: '',
+            price: 199,
+            description: '',
+            image: '',
+            category: '',
+            isVeg: true,
+            isBestseller: false,
+        });
+    };
+    const startEditItem = (item) => {
+        setEditingItem(item);
+        setIsAddingItem(false);
+        setItemForm({
+            name: item.name,
+            price: item.price,
+            description: item.description,
+            image: item.image,
+            category: item.category,
+            isVeg: item.isVeg,
+            isBestseller: !!item.isBestseller,
+        });
+    };
+    const handleDeleteItem = (itemId) => {
+        if (confirm('Delete this menu item?')) {
+            const updatedStores = stores.map(s => {
+                if (s.id === selectedStoreId) {
+                    return { ...s, items: s.items.filter(i => i.id !== itemId) };
+                }
+                return s;
+            });
+            onUpdateStores(updatedStores);
+        }
+    };
+    // Category Handlers
+    const handleSaveCategory = (e) => {
+        e.preventDefault();
+        if (isAddingCategory) {
+            const newCat = {
+                id: `cat-${Date.now()}`,
+                name: categoryForm.name,
+                slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, '-'),
+                image: categoryForm.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80',
+            };
+            onUpdateCategories([...categories, newCat]);
+            setIsAddingCategory(false);
+        }
+        else if (editingCategory) {
+            const updatedCats = categories.map(c => {
+                if (c.id === editingCategory.id) {
+                    return {
+                        ...c,
+                        name: categoryForm.name,
+                        slug: categoryForm.slug || c.slug,
+                        image: categoryForm.image || c.image,
+                    };
+                }
+                return c;
+            });
+            onUpdateCategories(updatedCats);
+            setEditingCategory(null);
+        }
+        setCategoryForm({
+            name: '',
+            image: '',
+            slug: '',
+        });
+    };
+    const startEditCategory = (cat) => {
+        setEditingCategory(cat);
+        setIsAddingCategory(false);
+        setCategoryForm({
+            name: cat.name,
+            image: cat.image,
+            slug: cat.slug,
+        });
+    };
+    const handleDeleteCategory = async (catId) => {
+        if (confirm('Delete this category?')) {
+            onUpdateCategories(categories.filter(c => c.id !== catId));
+            await deleteCategoryFromDb(catId);
+        }
+    };
+    // Order Status Handler
+    const handleAdvanceStatus = async (orderId, currentStatus) => {
+        const statusMap = {
+            'placed': 'confirmed',
+            'confirmed': 'cooking',
+            'cooking': 'out_for_delivery',
+            'out_for_delivery': 'delivered',
+            'delivered': 'delivered',
+        };
+        const nextStatus = statusMap[currentStatus];
+        const updatedOrders = orders.map(o => {
+            if (o.id === orderId) {
+                return { ...o, status: nextStatus };
+            }
+            return o;
+        });
+        onUpdateOrders(updatedOrders);
+        await updateOrderStatusInDb(orderId, nextStatus);
+    };
+    const handleCancelOrder = async (orderId) => {
+        if (confirm('Are you sure you want to cancel this order?')) {
+            onUpdateOrders(orders.filter(o => o.id !== orderId));
+            await deleteOrderFromDb(orderId);
+        }
+    };
+    return (_jsxs("div", { className: "bg-[#F8F9FA] min-h-screen pb-24 text-gray-800", children: [_jsxs("div", { className: "bg-linear-to-r from-red-600 to-rose-500 text-white px-4 py-5 shadow-md flex items-center justify-between", children: [_jsxs("div", { children: [_jsxs("h1", { className: "text-xl font-black flex items-center space-x-2", children: [_jsx(Building2, { className: "w-6 h-6" }), _jsx("span", { children: "FoodZa Admin Panel" })] }), _jsx("p", { className: "text-xs text-rose-100 mt-0.5", children: "Manage your stores, menus, categories, and tracking" })] }), onLogout && (_jsxs("button", { onClick: onLogout, className: "flex items-center space-x-1.5 px-3.5 py-2 bg-white/15 hover:bg-white/25 active:bg-white/30 rounded-xl text-xs font-bold text-white transition-colors border border-white/20 cursor-pointer shadow-xs", title: "Log out of Admin Panel", children: [_jsx(LogOut, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Log Out" })] }))] }), _jsx("div", { className: "flex border-b border-gray-200 bg-white overflow-x-auto no-scrollbar shadow-xs", children: ['overview', 'stores', 'items', 'categories', 'orders', 'cloud'].map(tab => (_jsx("button", { onClick: () => setActiveSubTab(tab), className: `flex-1 py-3 px-4 text-center font-bold text-xs uppercase tracking-wider border-b-2 whitespace-nowrap transition-colors ${activeSubTab === tab
+                        ? 'border-red-600 text-red-600 bg-red-50/50'
+                        : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`, children: tab === 'cloud' ? '⚡ Supabase' : tab }, tab))) }), _jsxs("div", { className: "p-4 max-w-lg mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl space-y-5", children: [activeSubTab === 'overview' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "grid grid-cols-2 gap-3", children: [_jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-rose-50 text-rose-600 rounded-xl", children: _jsx(DollarSign, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Sales" }), _jsxs("div", { className: "text-lg font-black text-gray-900", children: ["\u20B9", totalRevenue.toFixed(0)] })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-red-50 text-red-600 rounded-xl", children: _jsx(ShoppingBag, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Active Orders" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: activeOrdersCount })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-emerald-50 text-emerald-600 rounded-xl", children: _jsx(Building2, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Stores" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: stores.length })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-amber-50 text-amber-600 rounded-xl", children: _jsx(Utensils, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Menu Items" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: totalItemsCount })] })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 space-y-3", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Recent Live Orders" }), orders.length === 0 ? (_jsx("div", { className: "text-center py-6 text-xs text-gray-400", children: "No recent orders placed" })) : (_jsx("div", { className: "divide-y divide-gray-100", children: orders.slice(0, 5).map(order => (_jsxs("div", { className: "py-2.5 flex items-center justify-between text-xs", children: [_jsxs("div", { children: [_jsxs("div", { className: "font-bold text-gray-900", children: [order.store.name, " (", order.orderNumber, ")"] }), _jsxs("div", { className: "text-gray-500 mt-0.5", children: ["\u20B9", order.grandTotal.toFixed(0), " \u2022 ", order.items.length, " items"] })] }), _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered'
+                                                        ? 'bg-emerald-50 text-emerald-700'
+                                                        : order.status === 'out_for_delivery'
+                                                            ? 'bg-blue-50 text-blue-700'
+                                                            : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: order.status.replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }), _jsxs("button", { onClick: () => {
+                                            setIsAddingStore(true);
+                                            setEditingStore(null);
+                                        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })] }), (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Name" }), _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }), _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }), _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }), _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }), _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Store" }), _jsx("button", { type: "button", onClick: () => {
+                                                    setIsAddingStore(false);
+                                                    setEditingStore(null);
+                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "space-y-2", children: stores.map(store => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex items-center justify-between shadow-xs", children: [_jsxs("div", { className: "flex items-center space-x-3", children: [_jsx("img", { src: store.image, alt: store.name, className: "w-12 h-12 rounded-xl object-cover border", onError: e => {
+                                                        e.target.src = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80';
+                                                    } }), _jsxs("div", { children: [_jsx("h4", { className: "font-extrabold text-sm text-gray-900", children: store.name }), _jsx("p", { className: "text-xs text-gray-500", children: store.cuisines.join(', ') })] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("button", { onClick: () => startEditStore(store), className: "p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors", title: "Edit Store", children: _jsx(Edit3, { className: "w-3.5 h-3.5" }) }), _jsx("button", { onClick: () => handleDeleteStore(store.id), className: "p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors", title: "Delete Store", children: _jsx(Trash2, { className: "w-3.5 h-3.5" }) })] })] }, store.id))) })] })), activeSubTab === 'items' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex flex-col space-y-2", children: [_jsx("label", { className: "text-xs font-black text-gray-500 uppercase tracking-wider", children: "Select Store to Edit Menu" }), _jsx("select", { value: selectedStoreId, onChange: e => setSelectedStoreId(e.target.value), className: "w-full p-2 border border-gray-200 rounded-xl text-xs bg-white font-bold", children: stores.map(s => (_jsx("option", { value: s.id, children: s.name }, s.id))) })] }), selectedStoreId && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsxs("h3", { className: "font-extrabold text-sm text-gray-900", children: ["Menu of ", stores.find(s => s.id === selectedStoreId)?.name] }), _jsxs("button", { onClick: () => {
+                                                    setIsAddingItem(true);
+                                                    setEditingItem(null);
+                                                }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Menu Item" })] })] }), (isAddingItem || editingItem) && (_jsxs("form", { onSubmit: handleSaveItem, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingItem ? 'Add New Menu Item' : 'Edit Menu Item' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Item Name" }), _jsx("input", { type: "text", required: true, value: itemForm.name, onChange: e => setItemForm({ ...itemForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Price (\u20B9)" }), _jsx("input", { type: "number", required: true, value: itemForm.price, onChange: e => setItemForm({ ...itemForm, price: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Category" }), _jsx("input", { type: "text", required: true, value: itemForm.category, onChange: e => setItemForm({ ...itemForm, category: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Veg Pizzas, Scoops" })] })] }), _jsxs("div", { className: "flex space-x-4 py-1", children: [_jsxs("label", { className: "flex items-center space-x-1.5 font-bold cursor-pointer", children: [_jsx("input", { type: "checkbox", checked: itemForm.isVeg, onChange: e => setItemForm({ ...itemForm, isVeg: e.target.checked }) }), _jsx("span", { children: "Pure Veg" })] }), _jsxs("label", { className: "flex items-center space-x-1.5 font-bold cursor-pointer", children: [_jsx("input", { type: "checkbox", checked: itemForm.isBestseller, onChange: e => setItemForm({ ...itemForm, isBestseller: e.target.checked }) }), _jsx("span", { children: "Bestseller Tag" })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Description" }), _jsx("textarea", { value: itemForm.description, onChange: e => setItemForm({ ...itemForm, description: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl h-16 resize-none" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Item Image URL" }), _jsx("input", { type: "text", value: itemForm.image, onChange: e => setItemForm({ ...itemForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Item" }), _jsx("button", { type: "button", onClick: () => {
+                                                            setIsAddingItem(false);
+                                                            setEditingItem(null);
+                                                        }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "space-y-2", children: (stores.find(s => s.id === selectedStoreId)?.items || []).map(item => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex items-center justify-between shadow-xs", children: [_jsxs("div", { className: "flex items-center space-x-3", children: [_jsx("img", { src: item.image, alt: item.name, className: "w-10 h-10 rounded-lg object-cover border", onError: e => {
+                                                                e.target.src = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80';
+                                                            } }), _jsxs("div", { children: [_jsxs("div", { className: "flex items-center space-x-1.5", children: [_jsx("span", { className: `w-2.5 h-2.5 rounded-full ${item.isVeg ? 'bg-emerald-600' : 'bg-red-600'}` }), _jsx("span", { className: "font-extrabold text-xs text-gray-900", children: item.name })] }), _jsxs("p", { className: "text-[10px] text-gray-500 mt-0.5", children: ["\u20B9", item.price, " \u2022 ", item.category] })] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("button", { onClick: () => startEditItem(item), className: "p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors", title: "Edit Item", children: _jsx(Edit3, { className: "w-3.5 h-3.5" }) }), _jsx("button", { onClick: () => handleDeleteItem(item.id), className: "p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors", title: "Delete Item", children: _jsx(Trash2, { className: "w-3.5 h-3.5" }) })] })] }, item.id))) })] }))] })), activeSubTab === 'categories' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Home Categories Slider" }), _jsxs("button", { onClick: () => {
+                                            setIsAddingCategory(true);
+                                            setEditingCategory(null);
+                                        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Category" })] })] }), (isAddingCategory || editingCategory) && (_jsxs("form", { onSubmit: handleSaveCategory, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingCategory ? 'Add Category' : 'Edit Category' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Category Name" }), _jsx("input", { type: "text", required: true, value: categoryForm.name, onChange: e => setCategoryForm({ ...categoryForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Image URL" }), _jsx("input", { type: "text", value: categoryForm.image, onChange: e => setCategoryForm({ ...categoryForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Category" }), _jsx("button", { type: "button", onClick: () => {
+                                                    setIsAddingCategory(false);
+                                                    setEditingCategory(null);
+                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "grid grid-cols-2 gap-3", children: categories.map(cat => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex flex-col items-center shadow-xs text-center relative group", children: [_jsx("img", { src: cat.image, alt: cat.name, className: "w-12 h-12 rounded-full object-cover border" }), _jsx("span", { className: "font-extrabold text-xs text-gray-900 mt-2", children: cat.name }), _jsxs("div", { className: "flex items-center space-x-1.5 mt-3", children: [_jsx("button", { onClick: () => startEditCategory(cat), className: "p-1 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-md transition-colors", children: _jsx(Edit3, { className: "w-3 h-3" }) }), _jsx("button", { onClick: () => handleDeleteCategory(cat.id), className: "p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-md transition-colors", children: _jsx(Trash2, { className: "w-3 h-3" }) })] })] }, cat.id))) })] })), activeSubTab === 'orders' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Live Order Fulfillment Tracker" }), _jsxs("p", { className: "text-xs text-gray-500", children: ["Total ", orders.length, " orders recorded"] })] }), _jsxs("div", { className: "flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold", children: [_jsxs("button", { onClick: () => setOrderFilter('all'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["All (", orders.length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('active'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Active (", orders.filter(o => o.status !== 'delivered').length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('delivered'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Delivered (", orders.filter(o => o.status === 'delivered').length, ")"] })] })] }), (() => {
+                                const displayedOrders = orders.filter(o => {
+                                    if (orderFilter === 'active')
+                                        return o.status !== 'delivered';
+                                    if (orderFilter === 'delivered')
+                                        return o.status === 'delivered';
+                                    return true;
+                                });
+                                if (displayedOrders.length === 0) {
+                                    return (_jsxs("div", { className: "bg-white p-8 rounded-2xl border border-gray-100 text-center space-y-2", children: [_jsx("div", { className: "w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center mx-auto", children: _jsx(ShoppingBag, { className: "w-6 h-6" }) }), _jsxs("div", { className: "text-xs font-bold text-gray-700", children: ["No ", orderFilter === 'all' ? '' : orderFilter, " orders found"] }), _jsx("p", { className: "text-[11px] text-gray-400", children: "When customers place orders, they will appear here live with address and phone number." })] }));
+                                }
+                                return (_jsx("div", { className: "space-y-3", children: displayedOrders.map(order => (_jsxs("div", { className: "bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3", children: [_jsxs("div", { className: "flex justify-between items-start", children: [_jsxs("div", { children: [_jsx("div", { className: "font-extrabold text-sm text-gray-900", children: order.store.name }), _jsxs("div", { className: "text-[10px] text-gray-400 mt-0.5", children: ["Order ID: ", order.orderNumber, " \u2022 ", order.placedAt] })] }), _jsx("span", { className: `px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered'
+                                                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                                            : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'}`, children: order.status.replace('_', ' ') })] }), _jsxs("div", { className: "p-2.5 bg-gray-50 rounded-xl space-y-1.5 text-xs text-gray-700", children: [order.customerPhone && (_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "flex items-center space-x-1.5 font-bold text-gray-900", children: [_jsx(Phone, { className: "w-3.5 h-3.5 text-emerald-600" }), _jsxs("span", { children: ["Customer: ", order.customerPhone] })] }), _jsxs("a", { href: `https://wa.me/91${order.customerPhone.replace(/\D/g, '')}`, target: "_blank", rel: "noreferrer", className: "px-2 py-0.5 bg-emerald-600 text-white rounded-md text-[10px] font-bold flex items-center space-x-1 hover:bg-emerald-700", children: [_jsx(MessageSquare, { className: "w-3 h-3" }), _jsx("span", { children: "WhatsApp" })] })] })), order.deliveryAddress && (_jsxs("div", { className: "flex items-start space-x-1.5 text-[11px] text-gray-600", children: [_jsx(MapPin, { className: "w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" }), _jsx("span", { children: order.deliveryAddress })] })), order.paymentMethod && (_jsxs("div", { className: "flex items-center space-x-1.5 text-[11px] text-gray-500 font-medium", children: [_jsx(CreditCard, { className: "w-3.5 h-3.5 text-blue-500" }), _jsxs("span", { children: ["Payment: ", order.paymentMethod] })] }))] }), _jsx("div", { className: "text-xs text-gray-600 pl-2 border-l-2 border-red-200 space-y-1 py-1", children: order.items.map((item, idx) => (_jsxs("div", { className: "flex justify-between", children: [_jsxs("span", { children: [item.quantity, "x ", item.name] }), _jsxs("span", { className: "font-semibold", children: ["\u20B9", item.price * item.quantity] })] }, idx))) }), _jsxs("div", { className: "flex justify-between items-center text-xs pt-2 border-t border-gray-100", children: [_jsxs("span", { className: "font-bold text-gray-900 text-sm", children: ["Total: \u20B9", order.grandTotal.toFixed(0)] }), _jsxs("div", { className: "flex space-x-2", children: [order.status !== 'delivered' && (_jsxs("button", { onClick: () => handleAdvanceStatus(order.id, order.status), className: "flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-bold transition-all active:scale-95", children: [_jsx("span", { children: "Next Step" }), _jsx(ChevronRight, { className: "w-3.5 h-3.5" })] })), _jsx("button", { onClick: () => handleCancelOrder(order.id), className: "px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold transition-all", children: "Cancel / Delete" })] })] })] }, order.id))) }));
+                            })()] })), activeSubTab === 'cloud' && (_jsxs("div", { className: "space-y-5", children: [_jsxs("div", { className: "bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4", children: [_jsxs("div", { className: "flex items-start justify-between", children: [_jsxs("div", { className: "flex items-center space-x-3", children: [_jsx("div", { className: "p-3 rounded-2xl bg-indigo-50 text-indigo-600", children: _jsx(Database, { className: "w-6 h-6" }) }), _jsxs("div", { children: [_jsx("h3", { className: "text-base font-extrabold text-gray-900", children: "⚡ Supabase Cloud Backend" }), _jsx("p", { className: "text-xs text-gray-500", children: "Live PostgreSQL database & Edge Function for stores, menus, and orders" })] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("button", { type: "button", onClick: checkDb, disabled: isCheckingDb, title: "Test Supabase connection", className: "p-2 hover:bg-gray-100 rounded-xl text-gray-500 transition-colors cursor-pointer", children: _jsx(RefreshCw, { className: `w-3.5 h-3.5 ${isCheckingDb ? 'animate-spin' : ''}` }) }), _jsx("span", { className: `px-3 py-1 text-xs font-bold rounded-full border ${dbStatus?.connected
+                                                            ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                                            : dbStatus?.connected === false
+                                                                ? 'bg-rose-100 text-rose-800 border-rose-200'
+                                                                : 'bg-amber-100 text-amber-800 border-amber-200'}`, children: isCheckingDb
+                                                            ? '⏳ Checking...'
+                                                            : dbStatus?.connected
+                                                                ? '🟢 Supabase Connected'
+                                                                : '🔴 Disconnected / Pending Backend' })] })] }), dbStatus?.error && (_jsxs("div", { className: "p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-2xl flex items-start space-x-2", children: [_jsx(XCircle, { className: "w-4 h-4 text-rose-600 shrink-0 mt-0.5" }), _jsxs("div", { children: [_jsx("p", { className: "font-bold", children: "Database Connection Notice:" }), _jsx("p", { className: "font-mono text-[11px] mt-0.5", children: dbStatus.error })] })] })), cloudStatusMsg && (_jsxs("div", { className: "p-3.5 bg-gray-900 text-white text-xs rounded-2xl flex items-center space-x-2 animate-in fade-in duration-200", children: [_jsx(Check, { className: "w-4 h-4 text-emerald-400 shrink-0" }), _jsx("span", { children: cloudStatusMsg })] })), _jsxs("div", { className: "grid grid-cols-3 gap-2.5 pt-2", children: [_jsxs("div", { className: "bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center", children: [_jsx("div", { className: "text-lg font-black text-gray-900", children: dbStatus?.counts?.stores ?? stores?.length ?? 0 }), _jsx("div", { className: "text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5", children: "Stores in DB" })] }), _jsxs("div", { className: "bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center", children: [_jsx("div", { className: "text-lg font-black text-gray-900", children: dbStatus?.counts?.categories ?? categories?.length ?? 0 }), _jsx("div", { className: "text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5", children: "Categories in DB" })] }), _jsxs("div", { className: "bg-gray-50 border border-gray-100 p-3 rounded-2xl text-center", children: [_jsx("div", { className: "text-lg font-black text-gray-900", children: dbStatus?.counts?.orders ?? orders?.length ?? 0 }), _jsx("div", { className: "text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-0.5", children: "Orders in DB" })] })] }), _jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2", children: [_jsxs("button", { type: "button", disabled: isFetchingDb, onClick: handleFetchFromPostgres, className: "p-3.5 bg-indigo-50 hover:bg-indigo-100 active:scale-98 border border-indigo-200 text-indigo-900 rounded-2xl text-xs font-black transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-xs", children: [_jsx(RefreshCw, { className: `w-4 h-4 text-indigo-600 ${isFetchingDb ? 'animate-spin' : ''}` }), _jsx("span", { children: isFetchingDb ? 'Fetching from Supabase...' : '📥 Fetch Data from Supabase' })] }), _jsxs("button", { type: "button", disabled: isCloudSyncing, onClick: async () => {
+                                                    setIsCloudSyncing(true);
+                                                    setCloudStatusMsg(null);
+                                                    try {
+                                                        const allStoresToSync = [...STORES];
+                                                        (stores || []).forEach(s => {
+                                                            const idx = allStoresToSync.findIndex(existing => existing.id === s.id);
+                                                            if (idx >= 0) {
+                                                                allStoresToSync[idx] = s;
+                                                            }
+                                                            else {
+                                                                allStoresToSync.push(s);
+                                                            }
+                                                        });
+                                                        const allCatsToSync = [...CATEGORIES];
+                                                        (categories || []).forEach(c => {
+                                                            const idx = allCatsToSync.findIndex(existing => existing.id === c.id);
+                                                            if (idx >= 0) {
+                                                                allCatsToSync[idx] = c;
+                                                            }
+                                                            else {
+                                                                allCatsToSync.push(c);
+                                                            }
+                                                        });
+                                                        await saveStoresToDb(allStoresToSync);
+                                                        await saveCategoriesToDb(allCatsToSync);
+                                                        await seedDatabase(allStoresToSync, allCatsToSync);
+                                                        onUpdateStores(allStoresToSync);
+                                                        onUpdateCategories(allCatsToSync);
+                                                        await checkDb();
+                                                        setCloudStatusMsg(`✅ Successfully synced ${allStoresToSync.length} stores & ${allCatsToSync.length} categories to Supabase!`);
+                                                    }
+                                                    catch (e) {
+                                                        setCloudStatusMsg(`⚠️ Failed to sync to Supabase: ${e?.message || 'Check connection'}`);
+                                                    }
+                                                    finally {
+                                                        setIsCloudSyncing(false);
+                                                    }
+                                                }, className: "p-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white rounded-2xl text-xs font-black transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-indigo-500/20", children: [_jsx(Sparkles, { className: `w-4 h-4 ${isCloudSyncing ? 'animate-spin' : ''}` }), _jsx("span", { children: isCloudSyncing ? 'Syncing to Supabase...' : '📤 Push & Seed to Supabase' })] })] })] }), _jsxs("div", { className: "bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4", children: [_jsxs("div", { className: "border-b border-gray-100 pb-3", children: [_jsx("h3", { className: "text-sm font-bold text-gray-900", children: "⚡ Supabase Backend Info" }), _jsx("p", { className: "text-xs text-gray-500", children: "Hosted serverless Postgres database and Edge Functions" })] }), _jsxs("div", { className: "space-y-3 text-xs text-gray-700", children: [_jsxs("div", { children: [_jsx("label", { className: "text-[11px] font-bold text-gray-600 block mb-1", children: "Edge Function Endpoint:" }), _jsx("div", { className: "p-3.5 bg-gray-50 rounded-2xl border border-gray-200 font-mono text-[11px] text-gray-800 break-all select-all", children: "https://pdteqhpihbgxcsyrxdgj.supabase.co/functions/v1/food-street" })] }), _jsxs("div", { className: "space-y-2 text-[11px] text-gray-600", children: [_jsx("p", { className: "font-bold text-gray-800", children: "⚡ Supabase Architecture:" }), _jsxs("ul", { className: "list-disc pl-4 space-y-1", children: [_jsxs("li", { children: [_jsx("strong", { children: "PostgreSQL Database" }), ": Tables (stores, categories, orders) hosted on Supabase cloud with Row-Level Security enabled."] }), _jsxs("li", { children: [_jsx("strong", { children: "Serverless Edge Functions" }), ": Deployed Deno Edge Function at /food-street providing REST endpoints."] }), _jsxs("li", { children: [_jsx("strong", { children: "Front-end Integration" }), ": Direct REST communication via services/api.js, with optional local Express proxy."] })] }), _jsxs("div", { className: "pt-2 border-t border-gray-100 space-y-1", children: [_jsx("p", { className: "font-bold text-gray-800", children: "🚀 Status:" }), _jsx("p", { children: "Connected & Deployed on Supabase project pdteqhpihbgxcsyrxdgj" })] })] })] })] })] }))] })] }));
+};

@@ -17,6 +17,7 @@ import { AdminLogin } from './components/AdminLogin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
+import { verifyAdminSession, clearAdminSession } from './utils/adminAuth';
 const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 export default function App() {
@@ -176,10 +177,17 @@ export default function App() {
     const isAdmin = currentPath.startsWith('/admin') ||
         currentPath === '#/admin' ||
         window.location.search.includes('admin=true');
-    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
-        return Boolean(localStorage.getItem('admin_session_token') ||
-            sessionStorage.getItem('admin_session_token'));
-    });
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+    React.useEffect(() => {
+        if (!isAdmin) return;
+        let isCurrent = true;
+        verifyAdminSession().then(isValid => {
+            if (isCurrent) {
+                setIsAdminAuthenticated(isValid);
+            }
+        });
+        return () => { isCurrent = false; };
+    }, [isAdmin, currentPath]);
     // App navigation state
     const [activeTab, setActiveTab] = useState('home');
     const [searchQuery, setSearchQuery] = useState('');
@@ -547,8 +555,7 @@ export default function App() {
         setOrders(newOrders);
     };
     return (_jsx("div", { className: "min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans", children: _jsxs("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white min-h-screen shadow-xl relative flex flex-col", children: [toastMessage && (_jsx("div", { className: "fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-gray-900/95 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-top-4 duration-200", children: _jsx("span", { children: toastMessage }) })), isAdmin ? (isAdminAuthenticated ? (_jsx("div", { className: "flex-1", children: _jsx(AdminTab, { stores: stores, categories: categories, orders: orders, onUpdateStores: handleUpdateStores, onUpdateCategories: handleUpdateCategories, onUpdateOrders: handleUpdateOrders, onLogout: () => {
-                            localStorage.removeItem('admin_session_token');
-                            sessionStorage.removeItem('admin_session_token');
+                            clearAdminSession();
                             setIsAdminAuthenticated(false);
                             showToast('🔒 Logged out of Admin Panel');
                         } }) })) : (_jsx(AdminLogin, { onLoginSuccess: () => {

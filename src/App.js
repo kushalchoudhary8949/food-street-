@@ -14,7 +14,6 @@ import { OrdersTab } from './components/OrdersTab';
 import { ProfileTab } from './components/ProfileTab';
 import { AdminTab } from './components/AdminTab';
 import { AdminLogin } from './components/AdminLogin';
-import VersionChecker from './components/VersionChecker';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
@@ -416,9 +415,9 @@ export default function App() {
         const totalQuantity = cartItemsForOrder.reduce((sum, ci) => sum + ci.quantity, 0);
         const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
         const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
-        const offerDiscount = 0;
+        const offerDiscount = discount || 0;
         const deliveryFee = 20;
-        const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + tip - discount);
+        const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + tip - (discount || 0));
         const storeMap = new Map();
         cartItemsForOrder.forEach(ci => storeMap.set(ci.store.id, ci.store));
         const uniqueStores = Array.from(storeMap.values());
@@ -598,7 +597,7 @@ export default function App() {
     const handleUpdateOrders = (newOrders) => {
         setOrders(newOrders);
     };
-    return (_jsx("div", { className: "min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans", children: _jsxs("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white min-h-screen shadow-xl relative flex flex-col", children: [_jsx(VersionChecker, {}), toastMessage && (_jsx("div", { className: "fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-gray-900/95 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-top-4 duration-200", children: _jsx("span", { children: toastMessage }) })), isAdmin ? (isAdminAuthenticated ? (_jsx("div", { className: "flex-1", children: _jsx(AdminTab, { stores: stores, categories: categories, orders: orders, onUpdateStores: handleUpdateStores, onUpdateCategories: handleUpdateCategories, onUpdateOrders: handleUpdateOrders, onLogout: () => {
+    return (_jsx("div", { className: "min-h-screen bg-gray-50 flex justify-center text-gray-900 font-sans", children: _jsxs("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white min-h-screen shadow-xl relative flex flex-col", children: [toastMessage && (_jsx("div", { className: "fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-gray-900/95 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center space-x-2 animate-in fade-in slide-in-from-top-4 duration-200", children: _jsx("span", { children: toastMessage }) })), isAdmin ? (isAdminAuthenticated ? (_jsx("div", { className: "flex-1", children: _jsx(AdminTab, { stores: stores, categories: categories, orders: orders, onUpdateStores: handleUpdateStores, onUpdateCategories: handleUpdateCategories, onUpdateOrders: handleUpdateOrders, onLogout: () => {
                             clearAdminSession();
                             setIsAdminAuthenticated(false);
                             showToast('🔒 Logged out of Admin Panel');

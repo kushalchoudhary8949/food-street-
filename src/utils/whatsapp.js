@@ -29,8 +29,8 @@ ${itemsText}
 ━━━━━━━━━━━━━━━━━━━━
 💵 *Item Total:* ₹${Number(order.itemTotal || 0).toFixed(0)}
 💼 *Platform Fee:* ₹${Number(order.deliveryFee || 0).toFixed(0)}
-${order.offerDiscount && order.offerDiscount > 0 ? `🏷️ *Biriyani Zone Offer (10%):* -₹${Number(order.offerDiscount).toFixed(0)}\n` : ''}🧾 *Taxes & Charges:* ₹${Number(order.taxesAndCharges || 0).toFixed(0)}
-${order.discount > 0 ? `🏷️ *Offer Discount:* -₹${Number(order.discount).toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${Number(order.tip).toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${Number(order.grandTotal || 0).toFixed(0)}
+🧾 *Taxes & Charges:* ₹${Number(order.taxesAndCharges || 0).toFixed(0)}
+${(order.discount > 0 || order.offerDiscount > 0) ? `🏷️ *Store Offer Discount:* -₹${Number(order.discount || order.offerDiscount).toFixed(0)}\n` : ''}${order.tip > 0 ? `🤝 *Partner Tip:* ₹${Number(order.tip).toFixed(0)}\n` : ''}💰 *GRAND TOTAL:* ₹${Number(order.grandTotal || 0).toFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
 ${cancellationNote}📌 *PAYMENT COLLECTION DETAILS:*
 🔗 *UPI ID:* ${PAYMENT_UPI_ID}

@@ -207,18 +207,6 @@ app.post('/api/seed', databaseRequired(async (req, res) => {
   });
 }));
 
-app.get('/version.json', (_req, res) => {
-  const versionFile = path.join(__dirname, isDevelopment ? 'public' : 'dist', 'version.json');
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  res.setHeader('Content-Type', 'application/json');
-  if (fs.existsSync(versionFile)) {
-    return res.sendFile(versionFile);
-  }
-  return res.json({ version: Date.now().toString(), builtAt: new Date().toISOString() });
-});
-
 if (isDevelopment) {
   const { createServer } = await import('vite');
   const vite = await createServer({ server: { middlewareMode: true }, appType: 'spa' });

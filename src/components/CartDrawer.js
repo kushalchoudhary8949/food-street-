@@ -10,7 +10,14 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
     const currentStore = cartItems[0]?.store;
     if (!isOpen)
         return null;
-    // Calculate bill
+    const isSpecialDiscountStore = (store) => {
+        if (!store) return false;
+        const id = String(store.id || '').toLowerCase();
+        const name = String(store.name || '').toLowerCase();
+        return id === 'store-kfc' || id === 'store-pizzahut' || name.includes('kfc') || name.includes('pizza hut');
+    };
+
+    // Calculate bill & store-level item totals for discount eligibility
     const itemTotal = cartItems.reduce((sum, ci) => {
         const addonsCost = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
         return sum + (ci.item.price + addonsCost) * ci.quantity;
@@ -19,7 +26,25 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
     const containerCharge = containerChargePerItem > 0 ? totalQuantity * containerChargePerItem : 0;
     const taxesAndPacking = Number((itemTotal * 0.05).toFixed(2));
     const deliveryFee = 20;
-    const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip);
+
+    const storeGroupsMap = cartItems.reduce((acc, ci) => {
+        const key = ci.store.id;
+        if (!acc[key]) acc[key] = { store: ci.store, itemsTotal: 0, items: [] };
+        const addonsCost = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
+        acc[key].itemsTotal += (ci.item.price + addonsCost) * ci.quantity;
+        acc[key].items.push(ci);
+        return acc;
+    }, {});
+    const storeGroups = Object.values(storeGroupsMap);
+
+    let storeDiscount = 0;
+    storeGroups.forEach(group => {
+        if (isSpecialDiscountStore(group.store) && group.itemsTotal >= 150) {
+            storeDiscount += 40;
+        }
+    });
+
+    const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip - storeDiscount);
     const handleCheckout = () => {
         if (cartItems.length === 0)
             return;
@@ -39,8 +64,8 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
         }
         onPlaceOrder({
             tip: selectedTip,
-            discount: 0,
-            couponCode: '',
+            discount: storeDiscount,
+            couponCode: storeDiscount > 0 ? 'STORE40' : '',
             instructions: deliveryNote,
             paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / Online',
             cancellationConfirmed: isCancellationConfirmed,
@@ -65,7 +90,14 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
                                             { id: 'cod', label: 'Cash on Delivery' },
                                         ].map((pm) => (_jsx("button", { onClick: () => setPaymentMethod(pm.id), className: `py-3 px-3 text-center rounded-xl text-xs font-bold border transition-all ${paymentMethod === pm.id
                                                 ? 'bg-gray-900 text-white border-gray-900 shadow-xs'
-                                                : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}`, children: pm.label }, pm.id))) })] }), _jsxs("div", { className: "bg-white rounded-2xl p-4 border border-gray-100 shadow-xs space-y-2 text-xs", children: [_jsx("h4", { className: "font-bold text-gray-900 pb-1 border-b border-gray-100", children: "Bill Details" }), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Item Total" }), _jsxs("span", { children: ["\u20B9", itemTotal.toFixed(0)] })] }), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Taxes" }), _jsxs("span", { children: ["\u20B9", taxesAndPacking.toFixed(0)] })] }), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Platform Fee" }), _jsxs("span", { children: ["\u20B9", deliveryFee] })] }), selectedTip > 0 && (_jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Delivery Partner Tip" }), _jsxs("span", { children: ["\u20B9", selectedTip] })] })), containerCharge > 0 && (_jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsxs("span", { children: ["Container Charges ", _jsxs("span", { className: "text-gray-400", children: ["(\u20B9", containerChargePerItem, " \u00D7 ", totalQuantity, ")"] })] }), _jsxs("span", { children: ["\u20B9", containerCharge] })] })), _jsxs("div", { className: "flex justify-between text-sm font-extrabold text-gray-900 pt-2 border-t border-gray-100", children: [_jsx("span", { children: "To Pay" }), _jsxs("span", { className: "text-red-600", children: ["\u20B9", grandTotal.toFixed(0)] })] })] }), _jsxs("label", { className: "flex items-start gap-3 rounded-2xl border border-gray-200 bg-white p-3 text-left shadow-xs", children: [_jsx("input", { type: "checkbox", checked: isCancellationConfirmed, onChange: (e) => setIsCancellationConfirmed(e.target.checked), className: "mt-0.5 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500" }), _jsx("span", { className: "text-[11px] font-medium text-gray-700 leading-relaxed", children: "I understand this order cannot be cancelled after it is placed." })] })] })) }), cartItems.length > 0 && (_jsxs("div", { className: "p-4 sm:p-5 bg-white border-t border-gray-100 space-y-2", children: [(() => {
+                                                : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}`, children: pm.label }, pm.id))) })] }), storeGroups.some(g => isSpecialDiscountStore(g.store)) && (_jsxs("div", { className: "space-y-2", children: storeGroups.map(group => {
+                                        if (!isSpecialDiscountStore(group.store)) return null;
+                                        if (group.itemsTotal < 150) {
+                                            const remaining = (150 - group.itemsTotal).toFixed(0);
+                                            return (_jsxs("div", { key: group.store.id, className: "bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded-2xl text-xs flex items-center justify-between font-medium shadow-xs", children: [_jsxs("span", { className: "flex items-center gap-2", children: [_jsx("span", { className: "text-base", children: "🏷️" }), _jsxs("span", { children: ["Add ", _jsxs("strong", { children: ["\u20B9", remaining] }), " more from ", _jsx("strong", { children: group.store.name }), " to get ", _jsx("strong", { children: "\u20B940 OFF" }), "!"] })] })] }));
+                                        }
+                                        return (_jsxs("div", { key: group.store.id, className: "bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-2xl text-xs flex items-center justify-between font-medium shadow-xs", children: [_jsxs("span", { className: "flex items-center gap-2", children: [_jsx("span", { className: "text-base", children: "🎉" }), _jsxs("span", { children: [_jsx("strong", { children: "\u20B940 Discount Applied" }), " on ", group.store.name, "!"] })] }), _jsx("span", { className: "font-black text-emerald-700 bg-emerald-100/90 border border-emerald-300 px-2.5 py-0.5 rounded-lg text-xs", children: "-\u20B940" })] }));
+                                    }) })), _jsxs("div", { className: "bg-white rounded-2xl p-4 border border-gray-100 shadow-xs space-y-2 text-xs", children: [_jsx("h4", { className: "font-bold text-gray-900 pb-1 border-b border-gray-100", children: "Bill Details" }), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Item Total" }), _jsxs("span", { children: ["\u20B9", itemTotal.toFixed(0)] })] }), storeDiscount > 0 && (_jsxs("div", { className: "flex justify-between items-center text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200", children: [_jsxs("span", { className: "flex items-center gap-1.5", children: [_jsx("span", { children: "🏷️" }), _jsx("span", { children: "Special Offer (KFC / Pizza Hut)" })] }), _jsxs("span", { className: "font-black", children: ["-\u20B9", storeDiscount.toFixed(0)] })] })), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Taxes" }), _jsxs("span", { children: ["\u20B9", taxesAndPacking.toFixed(0)] })] }), _jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Platform Fee" }), _jsxs("span", { children: ["\u20B9", deliveryFee] })] }), selectedTip > 0 && (_jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsx("span", { children: "Delivery Partner Tip" }), _jsxs("span", { children: ["\u20B9", selectedTip] })] })), containerCharge > 0 && (_jsxs("div", { className: "flex justify-between text-gray-600", children: [_jsxs("span", { children: ["Container Charges ", _jsxs("span", { className: "text-gray-400", children: ["(\u20B9", containerChargePerItem, " \u00D7 ", totalQuantity, ")"] })] }), _jsxs("span", { children: ["\u20B9", containerCharge] })] })), _jsxs("div", { className: "flex justify-between text-sm font-extrabold text-gray-900 pt-2 border-t border-gray-100", children: [_jsx("span", { children: "To Pay" }), _jsxs("span", { className: "text-red-600", children: ["\u20B9", grandTotal.toFixed(0)] })] })] }), _jsxs("label", { className: "flex items-start gap-3 rounded-2xl border border-gray-200 bg-white p-3 text-left shadow-xs", children: [_jsx("input", { type: "checkbox", checked: isCancellationConfirmed, onChange: (e) => setIsCancellationConfirmed(e.target.checked), className: "mt-0.5 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500" }), _jsx("span", { className: "text-[11px] font-medium text-gray-700 leading-relaxed", children: "I understand this order cannot be cancelled after it is placed." })] })] })) }), cartItems.length > 0 && (_jsxs("div", { className: "p-4 sm:p-5 bg-white border-t border-gray-100 space-y-2", children: [(() => {
                             const ws = getOrderWindowStatus(currentStore?.id, undefined, currentStore);
                             return (_jsxs("div", { className: `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold ${ws.isOpen
                                     ? 'bg-green-50 border border-green-200 text-green-800'

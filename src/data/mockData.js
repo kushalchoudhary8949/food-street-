@@ -8,7 +8,7 @@ import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
-export const DATA_VERSION = 'food_street_v2_tummy_treat_menu_cleanup_2026_10_14';
+export const DATA_VERSION = 'food_street_v3_kfc_pizzahut_discount_2026_10_16';
 const deduplicateMenuItems = (items) => {
     const seenNames = new Set();
     return items.filter((item) => {
@@ -2451,6 +2451,7 @@ export const RAW_STORES = [
         distance: '2.8 km',
         image: '/images/storeImage/kfc.jpeg',
         cuisines: ['Crispy Chicken', 'Burgers', 'Fast Food', 'Wings', 'Chicken', 'Snacks'],
+        discountOffer: '₹40 OFF on orders above ₹150',
         tags: ['Chicken', 'Burgers', 'Fast Delivery', 'Bestseller'],
         menuCategories: [
             'Veg Burgers',
@@ -3751,7 +3752,7 @@ export const RAW_STORES = [
         distance: '2.8 km',
         image: '/images/storeImage/pizzahut.png',
         cuisines: ['Pizzas', 'Italian', 'Wings & Sides', 'Pastas', 'Garlic Breads', 'Desserts'],
-        discountOffer: 'Buy Any Pizza & Get 2 sides @ \u20B959 each',
+        discountOffer: '₹40 OFF on orders above ₹150',
         tags: ['Pizzas', 'Italian', 'Wings', 'Bestseller', 'Combos'],
         menuCategories: [
             'Triple Spice Pizzas',

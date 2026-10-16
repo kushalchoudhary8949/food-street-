@@ -237,7 +237,7 @@ export const RAW_STORES = [
     {
         "id": "store-biriyani-zone",
         "name": "Biriyani Zone",
-        "rating": 4.7,
+        "rating": 4.6,
         "reviewsCount": 2840,
         "deliveryTime": "40-50 mins",
         "deliveryFee": 20,

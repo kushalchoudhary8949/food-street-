@@ -8,7 +8,7 @@ import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
-export const DATA_VERSION = 'food_street_v3_kfc_pizzahut_discount_2026_10_16';
+export const DATA_VERSION = 'food_street_v4_store_discounts_control_2026_10_17';
 const deduplicateMenuItems = (items) => {
     const seenNames = new Set();
     return items.filter((item) => {
@@ -2452,6 +2452,9 @@ export const RAW_STORES = [
         image: '/images/storeImage/kfc.jpeg',
         cuisines: ['Crispy Chicken', 'Burgers', 'Fast Food', 'Wings', 'Chicken', 'Snacks'],
         discountOffer: '₹40 OFF on orders above ₹150',
+        discountActive: true,
+        discountAmount: 40,
+        minOrderValue: 150,
         tags: ['Chicken', 'Burgers', 'Fast Delivery', 'Bestseller'],
         menuCategories: [
             'Veg Burgers',
@@ -3753,6 +3756,9 @@ export const RAW_STORES = [
         image: '/images/storeImage/pizzahut.png',
         cuisines: ['Pizzas', 'Italian', 'Wings & Sides', 'Pastas', 'Garlic Breads', 'Desserts'],
         discountOffer: '₹40 OFF on orders above ₹150',
+        discountActive: true,
+        discountAmount: 40,
+        minOrderValue: 150,
         tags: ['Pizzas', 'Italian', 'Wings', 'Bestseller', 'Combos'],
         menuCategories: [
             'Triple Spice Pizzas',

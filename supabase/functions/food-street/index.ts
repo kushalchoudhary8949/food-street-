@@ -143,10 +143,37 @@ async function handleDelete(resource: string, req: Request) {
 async function handleOrdersList(req: Request) {
   const { data, error } = await supabase
     .from("orders")
-    .select("id,data")
+    .select('id,order_number,status,grand_total,"grand Total",created_at,updated_at,name,room_no,"room No.",hostel,"Hostel",contact,data')
     .order("created_at", { ascending: false });
   if (error) return jsonResponse({ success: false, error: error.message }, 500);
-  const orders = (data || []).map((r: any) => r.data);
+  const orders = (data || []).map((r: any) => {
+    const rawData = r.data || {};
+    const name = r.name || rawData.name || rawData.customerName || '';
+    const roomNo = r.room_no || r["room No."] || rawData.roomNo || rawData.room_no || '';
+    const hostel = r.hostel || r["Hostel"] || rawData.hostel || rawData.hostelName || '';
+    const contact = r.contact || rawData.contact || rawData.customerPhone || '';
+    const grandTotalVal = r["grand Total"] ?? r.grand_total ?? rawData.grandTotal ?? rawData.grand_total ?? 0;
+    return {
+      ...rawData,
+      id: r.id,
+      orderNumber: r.order_number || rawData.orderNumber || r.id,
+      status: r.status || rawData.status || 'placed',
+      grandTotal: Number(grandTotalVal),
+      grand_total: Number(grandTotalVal),
+      "grand Total": Number(grandTotalVal),
+      created_at: r.created_at || rawData.created_at,
+      updated_at: r.updated_at || rawData.updated_at,
+      name,
+      roomNo,
+      "room No.": roomNo,
+      room_no: roomNo,
+      hostel,
+      "Hostel": hostel,
+      contact,
+      customerPhone: contact || rawData.customerPhone || '',
+      data: rawData,
+    };
+  });
   const page = paginate(req, orders);
   return jsonResponse({
     success: true,
@@ -164,16 +191,34 @@ async function handleOrdersUpsert(body: any) {
       400,
     );
   const now = new Date().toISOString();
+  const name = body.name ?? body.customerName ?? '';
+  const roomNo = body.roomNo ?? body.room_no ?? body['room No.'] ?? '';
+  const hostel = body.hostel ?? body.hostelName ?? body['Hostel'] ?? '';
+  const contact = body.contact ?? body.customerPhone ?? '';
+  const grandTotalVal = Number(body.grandTotal ?? body.grand_total ?? body['grand Total'] ?? 0);
   const orderData = {
     ...body,
-    created_at: body.createdAtTimestamp ?? now,
+    name,
+    roomNo,
+    hostel,
+    contact,
+    customerPhone: contact || body.customerPhone || '',
+    grandTotal: grandTotalVal,
+    created_at: body.createdAtTimestamp ?? body.created_at ?? now,
     updated_at: now,
   };
   const { error } = await supabase.from("orders").upsert({
     id: body.id,
     order_number: body.orderNumber ?? body.id,
     status: body.status ?? "placed",
-    grand_total: Number(body.grandTotal ?? 0),
+    grand_total: grandTotalVal,
+    "grand Total": grandTotalVal,
+    name,
+    "room No.": roomNo,
+    room_no: roomNo,
+    "Hostel": hostel,
+    hostel,
+    contact,
     data: orderData,
     created_at: orderData.created_at,
     updated_at: orderData.updated_at,

@@ -438,6 +438,10 @@ export default function App() {
         const newOrder = {
             id: `ord-${Date.now()}`,
             orderNumber: `#FD-${Math.floor(10000 + Math.random() * 90000)}`,
+            name: currentAddress.name || '',
+            roomNo: currentAddress.roomNo || '',
+            hostel: currentAddress.hostelName || '',
+            contact: currentAddress.phone || '',
             store: { id: storeId, name: storeName, image: storeImage, deliveryTime: uniqueStores[0].deliveryTime },
             items: cartItemsForOrder.map(ci => ({
                 name: `${ci.item.name} (${ci.store.name})`,
@@ -455,6 +459,7 @@ export default function App() {
             grandTotal,
             status: 'confirmed',
             placedAt: 'Just now',
+            created_at: new Date().toISOString(),
             estimatedDeliveryTime: 'In ~20 mins',
             deliveryAddress: formattedAddress,
             customerPhone: currentAddress.phone,
@@ -472,6 +477,11 @@ export default function App() {
             const currentSaved = localStorage.getItem('food_street_orders');
             const parsed = currentSaved ? JSON.parse(currentSaved) : [];
             localStorage.setItem('food_street_orders', JSON.stringify([newOrder, ...parsed]));
+
+            const myIds = JSON.parse(localStorage.getItem('food_street_my_order_ids') || '[]');
+            if (!myIds.includes(newOrder.id)) {
+                localStorage.setItem('food_street_my_order_ids', JSON.stringify([newOrder.id, ...myIds]));
+            }
         } catch (e) {}
 
         clearCart();
@@ -583,8 +593,31 @@ export default function App() {
     }, [selectedCategory, categoryKeywords, stores]);
     const totalCartCount = cartItems.reduce((sum, ci) => sum + ci.quantity, 0);
     const cartPrice = cartItems.reduce((acc, ci) => acc + (ci.item.price + ci.selectedAddons.reduce((s, a) => s + a.price, 0)) * ci.quantity, 0);
-    // Only track active orders among the customer's top 4 recent orders
-    const activeOrdersCount = orders.slice(0, 4).filter(o => o.status !== 'delivered').length;
+    // Compute customer's placed orders (matching my order IDs or current address phone)
+    const customerOrders = useMemo(() => {
+        let myIds = [];
+        try {
+            const s = localStorage.getItem('food_street_my_order_ids');
+            myIds = s ? JSON.parse(s) : [];
+        } catch (e) {}
+        const phone = (currentAddress?.phone || '').replace(/\D/g, '');
+        const myIdSet = new Set(myIds);
+
+        return orders.filter(o => {
+            if (!o || !o.id) return false;
+            if (myIdSet.has(o.id)) return true;
+            if (phone && phone.length >= 7) {
+                const orderPhone = (o.contact || o.customerPhone || '').replace(/\D/g, '');
+                if (orderPhone && (orderPhone.endsWith(phone) || phone.endsWith(orderPhone))) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }, [orders, currentAddress?.phone]);
+
+    // Only count active orders belonging to this customer
+    const activeOrdersCount = customerOrders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
     // Handlers to synchronize Admin updates to local state and Supabase backend
     const handleUpdateStores = (newStores) => {
         setStores(newStores);
@@ -612,9 +645,9 @@ export default function App() {
                                                         setSelectedCategory(null);
                                                         setSearchQuery('');
                                                     }, className: "mt-2 text-xs font-bold text-red-600 hover:underline", children: "Reset all filters" })] }))] })] })), activeTab === 'search' && (_jsx("div", { className: "flex-1", children: _jsx(SearchTab, { stores: stores, initialQuery: searchQuery, onSelectStore: handleOpenStore, onSelectMenuItem: (item, store) => {
-                                    setCustomizingItemStore(store);
-                                    setCustomizingItem(item);
-                                } }) })), activeTab === 'orders' && (_jsx("div", { className: "flex-1", children: _jsx(OrdersTab, { orders: orders, stores: stores, pendingOrders: pendingOrders, onCompleteOrder: handleCompleteOrder, onExploreFood: () => setActiveTab('home'), onSendPendingOrder: handleSendPendingOrder }) })), activeTab === 'profile' && (_jsx("div", { className: "flex-1", children: _jsx(ProfileTab, { currentAddress: currentAddress, addresses: addresses, onOpenLocationModal: () => setIsLocationModalOpen(true), favoritesCount: favorites.length, onViewFavorites: () => setActiveTab('home') }) })), cartItems.length > 0 && activeTab !== 'orders' && !isStoreModalOpen && (_jsx("div", { className: "fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200", children: _jsx("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2", children: _jsxs("button", { id: "floating-cart-btn", onClick: () => setIsCartOpen(true), className: "w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all", children: [_jsxs("div", { className: "flex items-center gap-2.5 min-w-0 leading-none", children: [_jsxs("span", { className: "inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0", children: [totalCartCount, " ", totalCartCount === 1 ? 'ITEM' : 'ITEMS'] }), _jsxs("span", { className: "text-sm font-extrabold text-white leading-none", children: ["\u20B9", cartPrice.toFixed(0)] })] }), _jsx("span", { className: "text-xs font-black uppercase tracking-wider whitespace-nowrap", children: "View Cart \u2192" })] }) }) })), _jsx(BottomNav, { activeTab: activeTab, onTabChange: (tab) => {
+                                     setCustomizingItemStore(store);
+                                     setCustomizingItem(item);
+                                 } }) })), activeTab === 'orders' && (_jsx("div", { className: "flex-1", children: _jsx(OrdersTab, { orders: customerOrders, stores: stores, pendingOrders: pendingOrders, onCompleteOrder: handleCompleteOrder, onExploreFood: () => setActiveTab('home'), onSendPendingOrder: handleSendPendingOrder }) })), activeTab === 'profile' && (_jsx("div", { className: "flex-1", children: _jsx(ProfileTab, { currentAddress: currentAddress, addresses: addresses, onOpenLocationModal: () => setIsLocationModalOpen(true), favoritesCount: favorites.length, onViewFavorites: () => setActiveTab('home') }) })), cartItems.length > 0 && activeTab !== 'orders' && !isStoreModalOpen && (_jsx("div", { className: "fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200", children: _jsx("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2", children: _jsxs("button", { id: "floating-cart-btn", onClick: () => setIsCartOpen(true), className: "w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all", children: [_jsxs("div", { className: "flex items-center gap-2.5 min-w-0 leading-none", children: [_jsxs("span", { className: "inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0", children: [totalCartCount, " ", totalCartCount === 1 ? 'ITEM' : 'ITEMS'] }), _jsxs("span", { className: "text-sm font-extrabold text-white leading-none", children: ["\u20B9", cartPrice.toFixed(0)] })] }), _jsx("span", { className: "text-xs font-black uppercase tracking-wider whitespace-nowrap", children: "View Cart \u2192" })] }) }) })), _jsx(BottomNav, { activeTab: activeTab, onTabChange: (tab) => {
                                 setActiveTab(tab);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                             }, activeOrdersCount: activeOrdersCount, cartItemsCount: totalCartCount, onOpenCart: () => setIsCartOpen(true), showAdmin: false }), _jsx(StoreDetailModal, { store: selectedStore, isOpen: isStoreModalOpen, onClose: () => setIsStoreModalOpen(false), isFavorite: selectedStore ? favorites.includes(selectedStore.id) : false, onToggleFavorite: (storeId) => handleToggleFavorite(undefined, storeId), cartItems: cartItems, onOpenItemModal: (item) => {

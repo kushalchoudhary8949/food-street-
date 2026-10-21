@@ -8,6 +8,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
     const [deliveryNote, setDeliveryNote] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('upi');
     const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
+    const [isPlacing, setIsPlacing] = useState(false);
     const currentStore = cartItems[0]?.store;
     if (!isOpen)
         return null;
@@ -58,14 +59,20 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
             alert('Please confirm that the order cannot be cancelled after it is placed.');
             return;
         }
-        onPlaceOrder({
-            tip: selectedTip,
-            discount: storeDiscount,
-            couponCode: storeDiscount > 0 ? (storeGroups.map(g => getStoreDiscount(g.store)?.couponCode).filter(Boolean).join(',') || 'DISCOUNT') : '',
-            instructions: deliveryNote,
-            paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / Online',
-            cancellationConfirmed: isCancellationConfirmed,
-        });
+        if (isPlacing) return;
+        setIsPlacing(true);
+        try {
+            onPlaceOrder({
+                tip: selectedTip,
+                discount: storeDiscount,
+                couponCode: storeDiscount > 0 ? (storeGroups.map(g => getStoreDiscount(g.store)?.couponCode).filter(Boolean).join(',') || 'DISCOUNT') : '',
+                instructions: deliveryNote,
+                paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / Online',
+                cancellationConfirmed: isCancellationConfirmed,
+            });
+        } finally {
+            setTimeout(() => setIsPlacing(false), 2500);
+        }
     };
     return (_jsx("div", { className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200", children: _jsxs("div", { className: "w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-in slide-in-from-bottom duration-300", children: [_jsxs("div", { className: "flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white", children: [_jsxs("div", { className: "flex items-center space-x-2.5", children: [_jsx("div", { className: "w-9 h-9 rounded-full bg-red-50 text-red-600 flex items-center justify-center", children: _jsx(ShoppingBag, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("h3", { className: "text-lg font-bold text-gray-900", children: "Your Cart" }), cartItems.length > 0 && (_jsx("p", { className: "text-xs text-gray-500 font-medium", children: new Set(cartItems.map(ci => ci.store.id)).size === 1
                                                 ? `From ${cartItems[0].store.name}`
@@ -99,5 +106,5 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
                             return (_jsxs("div", { className: `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold ${ws.isOpen
                                     ? 'bg-green-50 border border-green-200 text-green-800'
                                     : 'bg-red-50 border border-red-200 text-red-700'}`, children: [_jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("span", { className: `w-2 h-2 rounded-full flex-shrink-0 ${ws.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}` }), _jsx("span", { children: ws.isOpen ? 'Orders open now' : ws.isClosedForToday ? 'Orders closed' : `Orders closed · Opens at ${ws.opensAt}` })] }), ws.isOpen || !ws.isClosedForToday ? (_jsxs("span", { className: "opacity-70 ml-2 whitespace-nowrap", children: ["\u23F0 ", ws.opensAt, " \u2013 ", ws.closesAt] })) : null] }));
-                        })(), _jsxs("button", { id: "place-order-checkout-btn", onClick: handleCheckout, disabled: !isCancellationConfirmed || !getOrderWindowStatus(currentStore?.id, undefined, currentStore).isOpen, className: "w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600", children: [_jsxs("div", { className: "text-left", children: [_jsx("span", { className: "text-xs uppercase tracking-wider opacity-90 block font-semibold", children: "Total" }), _jsxs("span", { className: "text-lg", children: ["\u20B9", grandTotal.toFixed(0)] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("span", { children: "Place Order" }), _jsx(ArrowRight, { className: "w-5 h-5" })] })] })] }))] }) }));
+                        })(), _jsxs("button", { id: "place-order-checkout-btn", onClick: handleCheckout, disabled: isPlacing || !isCancellationConfirmed || !getOrderWindowStatus(currentStore?.id, undefined, currentStore).isOpen, className: "w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600", children: [_jsxs("div", { className: "text-left", children: [_jsx("span", { className: "text-xs uppercase tracking-wider opacity-90 block font-semibold", children: "Total" }), _jsxs("span", { className: "text-lg", children: ["\u20B9", grandTotal.toFixed(0)] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("span", { children: isPlacing ? "Placing..." : "Place Order" }), _jsx(ArrowRight, { className: "w-5 h-5" })] })] })] }))] }) }));
 };

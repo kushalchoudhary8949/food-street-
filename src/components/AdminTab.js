@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
-import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock, Tag, Percent, BadgePercent, Search } from 'lucide-react';
+import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock, Tag, Percent, BadgePercent, Search, User, Home, Building } from 'lucide-react';
 import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb, saveOrderToDb, subscribeToOrders } from '../services/api';
 import { STORES, CATEGORIES } from '../data/mockData';
 import { getOrderWindowStatus, getStoreManualOverride, getStoreTimings, formatTimeTo12Hour, setStoreStatusCache } from '../utils/orderTiming';
@@ -60,6 +60,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
     const [dbStatus, setDbStatus] = useState(null);
     const [cloudStatusMsg, setCloudStatusMsg] = useState(null);
     const [orderFilter, setOrderFilter] = useState('all');
+    const [orderSearchQuery, setOrderSearchQuery] = useState('');
     const checkDb = async () => {
         setIsCheckingDb(true);
         try {
@@ -96,6 +97,22 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         } finally {
             setIsRefreshingOrders(false);
         }
+    };
+    const formatOrderDate = (order) => {
+        if (order?.created_at) {
+            try {
+                const d = new Date(order.created_at);
+                if (!isNaN(d.getTime())) {
+                    const now = new Date();
+                    const isToday = d.toDateString() === now.toDateString();
+                    const timeStr = d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
+                    if (isToday) return `Today, ${timeStr}`;
+                    const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                    return `${dateStr}, ${timeStr}`;
+                }
+            } catch (e) {}
+        }
+        return order?.placedAt || 'Recently';
     };
     // Live orders sync across all admin panel tabs (overview, orders, etc.)
     React.useEffect(() => {
@@ -610,11 +627,11 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                     );
                 }) })
             ] }),
-            _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 space-y-3", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Recent Live Orders" }), orders.length === 0 ? (_jsx("div", { className: "text-center py-6 text-xs text-gray-400", children: "No recent orders placed" })) : (_jsx("div", { className: "divide-y divide-gray-100", children: orders.slice(0, 5).map(order => (_jsxs("div", { className: "py-2.5 flex items-center justify-between text-xs", children: [_jsxs("div", { children: [_jsxs("div", { className: "font-bold text-gray-900", children: [order.store.name, " (", order.orderNumber, ")"] }), _jsxs("div", { className: "text-gray-500 mt-0.5", children: ["\u20B9", order.grandTotal.toFixed(0), " \u2022 ", order.items.length, " items"] })] }), _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered'
+            _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 space-y-3", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Recent Live Orders" }), orders.length === 0 ? (_jsx("div", { className: "text-center py-6 text-xs text-gray-400", children: "No recent orders placed" })) : (_jsx("div", { className: "divide-y divide-gray-100", children: orders.slice(0, 5).map(order => (_jsxs("div", { className: "py-2.5 flex items-center justify-between text-xs", children: [_jsxs("div", { children: [_jsxs("div", { className: "font-bold text-gray-900", children: [order.store?.name || 'Food Order', " (", order.orderNumber || order.id, ")"] }), _jsxs("div", { className: "text-gray-500 mt-0.5", children: ["\u20B9", (order.grandTotal ?? 0).toFixed(0), " \u2022 ", order.items?.length || 0, " items"] })] }), _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered'
                                                         ? 'bg-emerald-50 text-emerald-700'
                                                         : order.status === 'out_for_delivery'
                                                             ? 'bg-blue-50 text-blue-700'
-                                                            : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: order.status.replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }), _jsxs("button", { onClick: () => {
+                                                            : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: (order.status || 'placed').replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }), _jsxs("button", { onClick: () => {
                                             setIsAddingStore(true);
                                             setEditingStore(null);
                                         }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })] }), (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }), _jsxs("div", { className: "space-y-2.5 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Name" }), _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }), _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }), _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "p-3 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2", children: [_jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-rose-800 text-xs", children: [_jsx(Clock, { className: "w-3.5 h-3.5 text-red-600" }), _jsx("span", { children: "Store Operating Timings (Database Controlled)" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Opening Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.openTime || '11:00', onChange: e => setStoreForm({ ...storeForm, openTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Opens at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.openTime || '11:00', '11:00 AM') })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Closing Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.closeTime || '23:00', onChange: e => setStoreForm({ ...storeForm, closeTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Closes at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.closeTime || '23:00', '11:00 PM') })] })] })] }), _jsx("p", { className: "text-[10px] text-rose-600 font-medium", children: "Customers will see \"OPENS AT ...\" label on the home store card based on this opening time." })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }), _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }), _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Ordering Status" }), _jsxs("select", { value: storeForm.isOpen === undefined ? 'auto' : storeForm.isOpen ? 'open' : 'closed', onChange: e => setStoreForm({ ...storeForm, isOpen: e.target.value === 'auto' ? undefined : (e.target.value === 'open') }), className: "w-full p-2 border border-gray-200 rounded-xl bg-white font-medium text-xs", children: [_jsx("option", { value: "auto", children: "⏱️ Auto (Follow schedule hours)" }), _jsx("option", { value: "open", children: "🟢 Force Open (Accept orders now)" }), _jsx("option", { value: "closed", children: "🔴 Force Closed (Disable ordering)" })] })] }), _jsxs("div", { className: "p-3 bg-amber-50/80 rounded-xl border border-amber-200/90 space-y-2.5", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-amber-900 text-xs", children: [_jsx(Tag, { className: "w-3.5 h-3.5 text-amber-600" }), _jsx("span", { children: "Store Discount & Minimum Order Value" })] }), _jsxs("label", { className: "flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700", children: [_jsx("input", { type: "checkbox", checked: Boolean(storeForm.discountActive), onChange: e => setStoreForm({ ...storeForm, discountActive: e.target.checked, discountAmount: e.target.checked ? (storeForm.discountAmount || 40) : 0, minOrderValue: e.target.checked ? (storeForm.minOrderValue || 150) : 0 }), className: "rounded text-red-600 focus:ring-red-500 cursor-pointer" }), _jsx("span", { children: storeForm.discountActive ? "Active" : "Disabled" })] })] }), storeForm.discountActive && (_jsxs("div", { className: "space-y-2 pt-1 border-t border-amber-200/60", children: [_jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Discount Amount (₹)" }), _jsx("input", { type: "number", min: "1", required: true, value: storeForm.discountAmount ?? 40, onChange: e => setStoreForm({ ...storeForm, discountAmount: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "e.g. 40" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Min Order Value (₹)" }), _jsx("input", { type: "number", min: "0", value: storeForm.minOrderValue ?? 150, onChange: e => setStoreForm({ ...storeForm, minOrderValue: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "0 for no minimum" })] })] }), _jsxs("div", { className: "text-[10px] text-amber-900 font-semibold bg-white p-2 rounded-lg border border-amber-200/80 flex items-center justify-between", children: [_jsx("span", { children: "Customer Preview:" }), _jsxs("span", { className: "px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-black", children: ["🏷️ ", formatDiscountLabel(storeForm.discountAmount || 0, storeForm.minOrderValue || 0)] })] })] }))] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 cursor-pointer", children: "Save Store" }), _jsx("button", { type: "button", onClick: () => {
@@ -849,21 +866,203 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                         }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Category" })] })] }), (isAddingCategory || editingCategory) && (_jsxs("form", { onSubmit: handleSaveCategory, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingCategory ? 'Add Category' : 'Edit Category' }), _jsxs("div", { className: "space-y-2 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Category Name" }), _jsx("input", { type: "text", required: true, value: categoryForm.name, onChange: e => setCategoryForm({ ...categoryForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Image URL" }), _jsx("input", { type: "text", value: categoryForm.image, onChange: e => setCategoryForm({ ...categoryForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800", children: "Save Category" }), _jsx("button", { type: "button", onClick: () => {
                                                     setIsAddingCategory(false);
                                                     setEditingCategory(null);
-                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "grid grid-cols-2 gap-3", children: categories.map(cat => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex flex-col items-center shadow-xs text-center relative group", children: [_jsx("img", { src: cat.image, alt: cat.name, className: "w-12 h-12 rounded-full object-cover border" }), _jsx("span", { className: "font-extrabold text-xs text-gray-900 mt-2", children: cat.name }), _jsxs("div", { className: "flex items-center space-x-1.5 mt-3", children: [_jsx("button", { onClick: () => startEditCategory(cat), className: "p-1 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-md transition-colors", children: _jsx(Edit3, { className: "w-3 h-3" }) }), _jsx("button", { onClick: () => handleDeleteCategory(cat.id), className: "p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-md transition-colors", children: _jsx(Trash2, { className: "w-3 h-3" }) })] })] }, cat.id))) })] })), activeSubTab === 'orders' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex items-center justify-between gap-2 flex-wrap", children: [_jsxs("div", { children: [_jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Live Order Fulfillment Tracker" }), _jsxs("span", { className: "inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200", children: [_jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }), _jsx("span", { children: "Live Cloud Sync" })] })] }), _jsxs("div", { className: "flex items-center space-x-3 mt-0.5", children: [_jsxs("p", { className: "text-xs text-gray-500", children: ["Total ", orders.length, " orders recorded"] }), _jsxs("button", { onClick: refreshOrders, disabled: isRefreshingOrders, className: "flex items-center space-x-1 text-xs text-red-600 hover:text-red-700 font-bold cursor-pointer transition-colors", children: [_jsx(RefreshCw, { className: `w-3 h-3 ${isRefreshingOrders ? 'animate-spin' : ''}` }), _jsx("span", { children: isRefreshingOrders ? "Syncing..." : "Refresh" })] })] })] }), _jsxs("div", { className: "flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold", children: [_jsxs("button", { onClick: () => setOrderFilter('all'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["All (", orders.length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('active'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Active (", orders.filter(o => o.status !== 'delivered').length, ")"] }), _jsxs("button", { onClick: () => setOrderFilter('delivered'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Delivered (", orders.filter(o => o.status === 'delivered').length, ")"] })] })] }), (() => {
-                                const displayedOrders = orders.filter(o => {
-                                    if (orderFilter === 'active')
-                                        return o.status !== 'delivered';
-                                    if (orderFilter === 'delivered')
-                                        return o.status === 'delivered';
-                                    return true;
-                                });
-                                if (displayedOrders.length === 0) {
-                                    return (_jsxs("div", { className: "bg-white p-8 rounded-2xl border border-gray-100 text-center space-y-2", children: [_jsx("div", { className: "w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center mx-auto", children: _jsx(ShoppingBag, { className: "w-6 h-6" }) }), _jsxs("div", { className: "text-xs font-bold text-gray-700", children: ["No ", orderFilter === 'all' ? '' : orderFilter, " orders found"] }), _jsx("p", { className: "text-[11px] text-gray-400", children: "When customers place orders, they will appear here live with address and phone number." })] }));
-                                }
-                                return (_jsx("div", { className: "space-y-3", children: displayedOrders.map(order => (_jsxs("div", { className: "bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3", children: [_jsxs("div", { className: "flex justify-between items-start", children: [_jsxs("div", { children: [_jsx("div", { className: "font-extrabold text-sm text-gray-900", children: order.store.name }), _jsxs("div", { className: "text-[10px] text-gray-400 mt-0.5", children: ["Order ID: ", order.orderNumber, " \u2022 ", order.placedAt] })] }), _jsx("span", { className: `px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${order.status === 'delivered'
-                                                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                                            : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'}`, children: order.status.replace('_', ' ') })] }), _jsxs("div", { className: "p-2.5 bg-gray-50 rounded-xl space-y-1.5 text-xs text-gray-700", children: [order.customerPhone && (_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "flex items-center space-x-1.5 font-bold text-gray-900", children: [_jsx(Phone, { className: "w-3.5 h-3.5 text-emerald-600" }), _jsxs("span", { children: ["Customer: ", order.customerPhone] })] }), _jsxs("a", { href: `https://wa.me/91${order.customerPhone.replace(/\D/g, '')}`, target: "_blank", rel: "noreferrer", className: "px-2 py-0.5 bg-emerald-600 text-white rounded-md text-[10px] font-bold flex items-center space-x-1 hover:bg-emerald-700", children: [_jsx(MessageSquare, { className: "w-3 h-3" }), _jsx("span", { children: "WhatsApp" })] })] })), order.deliveryAddress && (_jsxs("div", { className: "flex items-start space-x-1.5 text-[11px] text-gray-600", children: [_jsx(MapPin, { className: "w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" }), _jsx("span", { children: order.deliveryAddress })] })), order.paymentMethod && (_jsxs("div", { className: "flex items-center space-x-1.5 text-[11px] text-gray-500 font-medium", children: [_jsx(CreditCard, { className: "w-3.5 h-3.5 text-blue-500" }), _jsxs("span", { children: ["Payment: ", order.paymentMethod] })] }))] }), _jsx("div", { className: "text-xs text-gray-600 pl-2 border-l-2 border-red-200 space-y-1 py-1", children: order.items.map((item, idx) => (_jsxs("div", { className: "flex justify-between", children: [_jsxs("span", { children: [item.quantity, "x ", item.name] }), _jsxs("span", { className: "font-semibold", children: ["\u20B9", item.price * item.quantity] })] }, idx))) }), _jsxs("div", { className: "flex justify-between items-center text-xs pt-2 border-t border-gray-100", children: [_jsxs("span", { className: "font-bold text-gray-900 text-sm", children: ["Total: \u20B9", order.grandTotal.toFixed(0)] }), _jsxs("div", { className: "flex space-x-2", children: [order.status !== 'delivered' && (_jsxs("button", { onClick: () => handleAdvanceStatus(order.id, order.status), className: "flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-bold transition-all active:scale-95", children: [_jsx("span", { children: "Next Step" }), _jsx(ChevronRight, { className: "w-3.5 h-3.5" })] })), _jsx("button", { onClick: () => handleCancelOrder(order.id), className: "px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold transition-all", children: "Cancel / Delete" })] })] })] }, order.id))) }));
-                            })()] })), activeSubTab === 'cloud' && (_jsxs("div", { className: "space-y-5", children: [_jsxs("div", { className: "bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4", children: [_jsxs("div", { className: "flex items-start justify-between", children: [_jsxs("div", { className: "flex items-center space-x-3", children: [_jsx("div", { className: "p-3 rounded-2xl bg-indigo-50 text-indigo-600", children: _jsx(Database, { className: "w-6 h-6" }) }), _jsxs("div", { children: [_jsx("h3", { className: "text-base font-extrabold text-gray-900", children: "⚡ Supabase Cloud Backend" }), _jsx("p", { className: "text-xs text-gray-500", children: "Live PostgreSQL database & Edge Function for stores, menus, and orders" })] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("button", { type: "button", onClick: checkDb, disabled: isCheckingDb, title: "Test Supabase connection", className: "p-2 hover:bg-gray-100 rounded-xl text-gray-500 transition-colors cursor-pointer", children: _jsx(RefreshCw, { className: `w-3.5 h-3.5 ${isCheckingDb ? 'animate-spin' : ''}` }) }), _jsx("span", { className: `px-3 py-1 text-xs font-bold rounded-full border ${dbStatus?.connected
+                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200", children: "Cancel" })] })] })), _jsx("div", { className: "grid grid-cols-2 gap-3", children: categories.map(cat => (_jsxs("div", { className: "bg-white p-3 rounded-2xl border border-gray-100 flex flex-col items-center shadow-xs text-center relative group", children: [_jsx("img", { src: cat.image, alt: cat.name, className: "w-12 h-12 rounded-full object-cover border" }), _jsx("span", { className: "font-extrabold text-xs text-gray-900 mt-2", children: cat.name }), _jsxs("div", { className: "flex items-center space-x-1.5 mt-3", children: [_jsx("button", { onClick: () => startEditCategory(cat), className: "p-1 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-md transition-colors", children: _jsx(Edit3, { className: "w-3 h-3" }) }), _jsx("button", { onClick: () => handleDeleteCategory(cat.id), className: "p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-md transition-colors", children: _jsx(Trash2, { className: "w-3 h-3" }) })] })] }, cat.id))) })] })), activeSubTab === 'orders' && (_jsxs("div", { className: "space-y-4", children: [
+                _jsxs("div", { className: "flex items-center justify-between gap-3 flex-wrap", children: [
+                    _jsxs("div", { children: [
+                        _jsxs("div", { className: "flex items-center space-x-2", children: [
+                            _jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Live Order Fulfillment Tracker" }),
+                            _jsxs("span", { className: "inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200", children: [
+                                _jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }),
+                                _jsx("span", { children: "Live Cloud Sync" })
+                            ] })
+                        ] }),
+                        _jsxs("div", { className: "flex items-center space-x-3 mt-0.5", children: [
+                            _jsxs("p", { className: "text-xs text-gray-500", children: ["Total ", orders.length, " orders recorded"] }),
+                            _jsxs("button", { onClick: refreshOrders, disabled: isRefreshingOrders, className: "flex items-center space-x-1 text-xs text-red-600 hover:text-red-700 font-bold cursor-pointer transition-colors", children: [
+                                _jsx(RefreshCw, { className: `w-3 h-3 ${isRefreshingOrders ? 'animate-spin' : ''}` }),
+                                _jsx("span", { children: isRefreshingOrders ? "Syncing..." : "Refresh" })
+                            ] })
+                        ] })
+                    ] }),
+                    _jsxs("div", { className: "flex bg-gray-100 p-1 rounded-xl text-[11px] font-bold flex-wrap gap-1", children: [
+                        _jsxs("button", { onClick: () => setOrderFilter('all'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["All (", orders.length, ")"] }),
+                        _jsxs("button", { onClick: () => setOrderFilter('active'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'active' ? 'bg-white text-red-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Active (", orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length, ")"] }),
+                        _jsxs("button", { onClick: () => setOrderFilter('delivered'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'delivered' ? 'bg-white text-emerald-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Delivered (", orders.filter(o => o.status === 'delivered').length, ")"] }),
+                        _jsxs("button", { onClick: () => setOrderFilter('cancelled'), className: `px-2.5 py-1 rounded-lg transition-all ${orderFilter === 'cancelled' ? 'bg-white text-rose-600 shadow-xs' : 'text-gray-500 hover:text-gray-800'}`, children: ["Cancelled (", orders.filter(o => o.status === 'cancelled').length, ")"] })
+                    ] })
+                ] }),
+                _jsxs("div", { className: "relative", children: [
+                    _jsx(Search, { className: "w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" }),
+                    _jsx("input", {
+                        type: "text",
+                        placeholder: "Search orders by customer name, room no, hostel, contact, order ID...",
+                        value: orderSearchQuery,
+                        onChange: e => setOrderSearchQuery(e.target.value),
+                        className: "w-full pl-9 pr-8 py-2 bg-white rounded-xl border border-gray-200 text-xs placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    }),
+                    orderSearchQuery && _jsx("button", {
+                        onClick: () => setOrderSearchQuery(''),
+                        className: "absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5",
+                        children: _jsx(XCircle, { className: "w-3.5 h-3.5" })
+                    })
+                ] }),
+                (() => {
+                    const seen = new Set();
+                    const uniqueOrders = (orders || []).filter(o => {
+                        if (!o || !o.id) return false;
+                        if (seen.has(o.id)) return false;
+                        seen.add(o.id);
+                        return true;
+                    });
+                    const displayedOrders = uniqueOrders.filter(o => {
+                        if (orderFilter === 'active' && (o.status === 'delivered' || o.status === 'cancelled')) return false;
+                        if (orderFilter === 'delivered' && o.status !== 'delivered') return false;
+                        if (orderFilter === 'cancelled' && o.status !== 'cancelled') return false;
+                        if (orderSearchQuery.trim()) {
+                            const q = orderSearchQuery.toLowerCase();
+                            const matchName = (o.name || '').toLowerCase().includes(q);
+                            const matchRoom = (o.roomNo || o['room No.'] || o.room_no || '').toLowerCase().includes(q);
+                            const matchHostel = (o.hostel || o.Hostel || '').toLowerCase().includes(q);
+                            const matchPhone = (o.contact || o.customerPhone || '').toLowerCase().includes(q);
+                            const matchId = (o.orderNumber || o.id || '').toLowerCase().includes(q);
+                            const matchStore = (o.store?.name || o.store || '').toLowerCase().includes(q);
+                            return matchName || matchRoom || matchHostel || matchPhone || matchId || matchStore;
+                        }
+                        return true;
+                    });
+                    if (displayedOrders.length === 0) {
+                        return (
+                            _jsxs("div", { className: "bg-white p-8 rounded-2xl border border-gray-100 text-center space-y-2", children: [
+                                _jsx("div", { className: "w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center mx-auto", children: _jsx(ShoppingBag, { className: "w-6 h-6" }) }),
+                                _jsxs("div", { className: "text-xs font-bold text-gray-700", children: [orderSearchQuery ? 'No orders match your search' : `No ${orderFilter === 'all' ? '' : orderFilter} orders found`] }),
+                                _jsx("p", { className: "text-[11px] text-gray-400", children: orderSearchQuery ? "Try searching with a different name, room number, or phone." : "When customers place orders, they will appear here live with structured customer details." })
+                            ] })
+                        );
+                    }
+                    return (
+                        _jsx("div", { className: "space-y-3", children: displayedOrders.map(order => {
+                            const storeName = (order.store && typeof order.store === 'object' ? order.store.name : order.store) || 'Foodza Store';
+                            const grandTotal = Number(order['grand Total'] ?? order.grand_total ?? order.grandTotal ?? 0);
+                            const itemsList = Array.isArray(order.items) ? order.items : [];
+                            const customerName = order.name || 'Not provided';
+                            const roomNumber = order.roomNo || order['room No.'] || order.room_no || 'N/A';
+                            const hostelName = order.hostel || order.Hostel || 'N/A';
+                            const contactPhone = order.contact || order.customerPhone || '';
+                            const cleanPhone = contactPhone.replace(/\D/g, '');
+                            const orderNum = order.orderNumber || (order.id && String(order.id).startsWith('#') ? order.id : `#FD-${String(order.id || '').slice(-5)}`);
+
+                            return (
+                                _jsxs("div", { className: "bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3", children: [
+                                    _jsxs("div", { className: "flex justify-between items-start", children: [
+                                        _jsxs("div", { children: [
+                                            _jsx("div", { className: "font-extrabold text-sm text-gray-900", children: storeName }),
+                                            _jsxs("div", { className: "text-[10px] text-gray-400 mt-0.5", children: [
+                                                "Order ID: ", orderNum,
+                                                " • ",
+                                                formatOrderDate(order)
+                                            ] })
+                                        ] }),
+                                        _jsx("span", {
+                                            className: `px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                                order.status === 'delivered'
+                                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                                    : order.status === 'cancelled'
+                                                        ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                                        : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'
+                                            }`,
+                                            children: (order.status || 'pending').replace('_', ' ')
+                                        })
+                                    ] }),
+
+                                    _jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-gray-50 rounded-2xl border border-gray-100 text-xs", children: [
+                                        _jsxs("div", { className: "flex items-center space-x-2 min-w-0", children: [
+                                            _jsx("div", { className: "w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0", children: _jsx(User, { className: "w-3.5 h-3.5" }) }),
+                                            _jsxs("div", { className: "min-w-0", children: [
+                                                _jsx("div", { className: "text-[9px] uppercase font-bold text-gray-400 tracking-wider", children: "Name" }),
+                                                _jsx("div", { className: "font-extrabold text-gray-900 truncate text-[11px]", title: customerName, children: customerName })
+                                            ] })
+                                        ] }),
+                                        _jsxs("div", { className: "flex items-center space-x-2 min-w-0", children: [
+                                            _jsx("div", { className: "w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0", children: _jsx(Home, { className: "w-3.5 h-3.5" }) }),
+                                            _jsxs("div", { className: "min-w-0", children: [
+                                                _jsx("div", { className: "text-[9px] uppercase font-bold text-gray-400 tracking-wider", children: "Room No." }),
+                                                _jsx("div", { className: "font-extrabold text-gray-900 truncate text-[11px]", title: roomNumber, children: roomNumber })
+                                            ] })
+                                        ] }),
+                                        _jsxs("div", { className: "flex items-center space-x-2 min-w-0", children: [
+                                            _jsx("div", { className: "w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0", children: _jsx(Building, { className: "w-3.5 h-3.5" }) }),
+                                            _jsxs("div", { className: "min-w-0", children: [
+                                                _jsx("div", { className: "text-[9px] uppercase font-bold text-gray-400 tracking-wider", children: "Hostel" }),
+                                                _jsx("div", { className: "font-extrabold text-gray-900 truncate text-[11px]", title: hostelName, children: hostelName })
+                                            ] })
+                                        ] }),
+                                        _jsxs("div", { className: "flex items-center space-x-2 min-w-0", children: [
+                                            _jsx("div", { className: "w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0", children: _jsx(Phone, { className: "w-3.5 h-3.5" }) }),
+                                            _jsxs("div", { className: "min-w-0 flex-1", children: [
+                                                _jsx("div", { className: "text-[9px] uppercase font-bold text-gray-400 tracking-wider", children: "Contact" }),
+                                                _jsxs("div", { className: "flex items-center space-x-1", children: [
+                                                    contactPhone ? _jsx("a", { href: `tel:${contactPhone}`, className: "font-extrabold text-gray-900 hover:text-emerald-600 truncate text-[11px]", children: contactPhone }) : _jsx("span", { className: "font-extrabold text-gray-400 text-[11px]", children: "N/A" }),
+                                                    cleanPhone && _jsx("a", {
+                                                        href: `https://wa.me/91${cleanPhone}`,
+                                                        target: "_blank",
+                                                        rel: "noreferrer",
+                                                        className: "p-0.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded shrink-0",
+                                                        title: "WhatsApp Customer",
+                                                        children: _jsx(MessageSquare, { className: "w-3 h-3" })
+                                                    })
+                                                ] })
+                                            ] })
+                                        ] })
+                                    ] }),
+
+                                    (order.deliveryAddress || order.paymentMethod) && (
+                                        _jsxs("div", { className: "px-2.5 py-1.5 bg-gray-50/60 rounded-xl flex items-center justify-between text-[10px] text-gray-500", children: [
+                                            order.deliveryAddress && _jsxs("div", { className: "flex items-center space-x-1 truncate max-w-[70%]", children: [
+                                                _jsx(MapPin, { className: "w-3 h-3 text-red-500 shrink-0" }),
+                                                _jsx("span", { className: "truncate", title: order.deliveryAddress, children: order.deliveryAddress })
+                                            ] }),
+                                            order.paymentMethod && _jsxs("div", { className: "flex items-center space-x-1 shrink-0 font-medium", children: [
+                                                _jsx(CreditCard, { className: "w-3 h-3 text-blue-500" }),
+                                                _jsx("span", { children: order.paymentMethod })
+                                            ] })
+                                        ] })
+                                    ),
+
+                                    itemsList.length > 0 && (
+                                        _jsx("div", { className: "text-xs text-gray-600 pl-2 border-l-2 border-red-200 space-y-1 py-1", children: itemsList.map((item, idx) => (
+                                            _jsxs("div", { className: "flex justify-between", children: [
+                                                _jsxs("span", { children: [item.quantity, "x ", item.name] }),
+                                                _jsxs("span", { className: "font-semibold", children: ["₹", (item.price || 0) * (item.quantity || 1)] })
+                                            ] }, idx)
+                                        )) })
+                                    ),
+
+                                    _jsxs("div", { className: "flex justify-between items-center text-xs pt-2 border-t border-gray-100", children: [
+                                        _jsxs("span", { className: "font-bold text-gray-900 text-sm", children: [
+                                            "Total: ₹", grandTotal.toFixed(0)
+                                        ] }),
+                                        _jsxs("div", { className: "flex space-x-2", children: [
+                                            order.status !== 'delivered' && order.status !== 'cancelled' && _jsxs("button", {
+                                                onClick: () => handleAdvanceStatus(order.id, order.status),
+                                                className: "flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer",
+                                                children: [
+                                                    _jsx("span", { children: "Next Step" }),
+                                                    _jsx(ChevronRight, { className: "w-3.5 h-3.5" })
+                                                ]
+                                            }),
+                                            _jsx("button", {
+                                                onClick: () => handleCancelOrder(order.id),
+                                                className: "px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold transition-all cursor-pointer",
+                                                children: "Cancel / Delete"
+                                            })
+                                        ] })
+                                    ] })
+                                ] }, order.id || Math.random())
+                            );
+                        }) })
+                    );
+                })()
+            ] })), activeSubTab === 'cloud' && (_jsxs("div", { className: "space-y-5", children: [_jsxs("div", { className: "bg-white rounded-3xl p-6 border border-gray-100 shadow-xs space-y-4", children: [_jsxs("div", { className: "flex items-start justify-between", children: [_jsxs("div", { className: "flex items-center space-x-3", children: [_jsx("div", { className: "p-3 rounded-2xl bg-indigo-50 text-indigo-600", children: _jsx(Database, { className: "w-6 h-6" }) }), _jsxs("div", { children: [_jsx("h3", { className: "text-base font-extrabold text-gray-900", children: "⚡ Supabase Cloud Backend" }), _jsx("p", { className: "text-xs text-gray-500", children: "Live PostgreSQL database & Edge Function for stores, menus, and orders" })] })] }), _jsxs("div", { className: "flex items-center space-x-2", children: [_jsx("button", { type: "button", onClick: checkDb, disabled: isCheckingDb, title: "Test Supabase connection", className: "p-2 hover:bg-gray-100 rounded-xl text-gray-500 transition-colors cursor-pointer", children: _jsx(RefreshCw, { className: `w-3.5 h-3.5 ${isCheckingDb ? 'animate-spin' : ''}` }) }), _jsx("span", { className: `px-3 py-1 text-xs font-bold rounded-full border ${dbStatus?.connected
                                                             ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
                                                             : dbStatus?.connected === false
                                                                 ? 'bg-rose-100 text-rose-800 border-rose-200'

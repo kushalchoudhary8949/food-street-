@@ -8,6 +8,71 @@ const API_BASE =
   import.meta.env.VITE_API_BASE ||
   'https://pdteqhpihbgxcsyrxdgj.supabase.co/functions/v1/food-street';
 
+const SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
+
+function normalizeOrder(order) {
+  if (!order) return null;
+  const rawData = typeof order.data === 'string' ? JSON.parse(order.data) : (order.data || {});
+  const merged = { ...rawData, ...order };
+
+  const name = order.name || rawData.name || rawData.customerName || merged.name || '';
+  const roomNo = order.roomNo || order.room_no || order['room No.'] || rawData.roomNo || rawData.room_no || rawData['room No.'] || merged.roomNo || '';
+  const hostel = order.hostel || order['Hostel'] || rawData.hostel || rawData['Hostel'] || rawData.hostelName || merged.hostel || '';
+  const contact = order.contact || rawData.contact || rawData.customerPhone || order.customerPhone || merged.contact || '';
+
+  const rawGt =
+    order['grand Total'] ??
+    order.grand_total ??
+    order.grandTotal ??
+    rawData['grand Total'] ??
+    rawData.grand_total ??
+    rawData.grandTotal ??
+    merged.grandTotal;
+
+  let grandTotal = Number(rawGt);
+  if (isNaN(grandTotal) || (grandTotal === 0 && Array.isArray(merged.items) && merged.items.length > 0)) {
+    const itemsSum = (merged.items || []).reduce(
+      (sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 1),
+      0
+    );
+    if (itemsSum > 0) {
+      grandTotal = itemsSum + (Number(merged.deliveryFee) || 0) + (Number(merged.taxesAndCharges) || 0) + (Number(merged.tip) || 0) - (Number(merged.offerDiscount || merged.discount) || 0);
+    }
+  }
+  if (isNaN(grandTotal)) grandTotal = 0;
+
+  const orderNumber =
+    order.order_number ||
+    order.orderNumber ||
+    rawData.orderNumber ||
+    rawData.order_number ||
+    (order.id && String(order.id).startsWith('#') ? order.id : `#FD-${String(order.id || '').slice(-5)}`);
+
+  return {
+    ...merged,
+    id: order.id || rawData.id,
+    orderNumber,
+    status: order.status || rawData.status || 'placed',
+    grandTotal,
+    'grand Total': grandTotal,
+    grand_total: grandTotal,
+    created_at: order.created_at || rawData.created_at || new Date().toISOString(),
+    updated_at: order.updated_at || rawData.updated_at || new Date().toISOString(),
+    name,
+    roomNo,
+    'room No.': roomNo,
+    room_no: roomNo,
+    hostel,
+    Hostel: hostel,
+    contact,
+    customerPhone: contact || rawData.customerPhone || '',
+    items: Array.isArray(merged.items) ? merged.items : [],
+    store: merged.store || { name: 'Foodza Store' },
+  };
+}
+
 /**
  * Fetch database connection status & record counts
  */
@@ -29,9 +94,10 @@ export async function fetchDatabaseStatus() {
 }
 
 /**
- * Fetch all orders from Supabase via the Edge Function
+ * Fetch all orders from Supabase via Edge Function with direct PostgREST fallback
  */
 export async function fetchOrdersFromDb() {
+  // Strategy 1: Edge Function
   try {
     const res = await fetch(`${API_BASE}/orders?_t=${Date.now()}`, {
       headers: {
@@ -39,30 +105,92 @@ export async function fetchOrdersFromDb() {
       },
       cache: 'no-store',
     });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const data = await res.json();
-    return data.orders || [];
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data.orders)) {
+        return data.orders.map(normalizeOrder).filter(Boolean);
+      }
+    }
   } catch (error) {
-    console.warn('API: Failed to fetch orders:', error);
-    return [];
+    console.warn('API: Edge function orders fetch failed, falling back to direct PostgREST:', error);
   }
+
+  // Strategy 2: Direct PostgREST query
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/orders?select=id,order_number,status,grand_total,%22grand%20Total%22,created_at,updated_at,name,room_no,%22room%20No.%22,hostel,%22Hostel%22,contact,data&order=created_at.desc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+    if (res.ok) {
+      const rows = await res.json();
+      if (Array.isArray(rows)) {
+        return rows.map(normalizeOrder).filter(Boolean);
+      }
+    }
+  } catch (fallbackErr) {
+    console.error('API: Direct PostgREST orders fetch failed:', fallbackErr);
+  }
+
+  return [];
 }
 
 /**
- * Save / Create an order in Supabase
+ * Save / Create an order in Supabase with direct PostgREST fallback
  */
 export async function saveOrderToDb(order) {
+  const grandTotalVal = Number(order.grandTotal ?? order.grand_total ?? order['grand Total'] ?? 0);
   try {
     const res = await fetch(`${API_BASE}/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order),
+      body: JSON.stringify({ ...order, grandTotal: grandTotalVal, 'grand Total': grandTotalVal }),
       keepalive: true,
     });
-    const data = await res.json();
-    return Boolean(data.success);
+    if (res.ok) {
+      const data = await res.json();
+      return Boolean(data.success);
+    }
   } catch (error) {
-    console.error('API: Failed to save order:', error);
+    console.warn('API: Edge function save order notice, falling back to PostgREST:', error);
+  }
+
+  // Strategy 2: Direct PostgREST
+  try {
+    const now = new Date().toISOString();
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates',
+      },
+      body: JSON.stringify({
+        id: order.id,
+        order_number: order.orderNumber || order.id,
+        status: order.status || 'placed',
+        grand_total: grandTotalVal,
+        'grand Total': grandTotalVal,
+        name: order.name || '',
+        'room No.': order.roomNo || '',
+        room_no: order.roomNo || '',
+        Hostel: order.hostel || '',
+        hostel: order.hostel || '',
+        contact: order.contact || order.customerPhone || '',
+        data: order,
+        created_at: order.created_at || now,
+        updated_at: now,
+      }),
+    });
+    return res.ok;
+  } catch (e) {
+    console.error('API: Direct PostgREST save order failed:', e);
     return false;
   }
 }

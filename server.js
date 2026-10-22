@@ -14,7 +14,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const port = Number(process.env.PORT || 3000);
+const port = Number(process.env.PORT || 4000);
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 app.use(express.json({ limit: '2mb' }));

@@ -306,6 +306,10 @@ export default function App() {
     };
     // Open store details
     const handleOpenStore = (store) => {
+        if (store && store.isVisible === false) {
+            showToast('This store is currently not available');
+            return;
+        }
         setSelectedStore(store);
         setIsStoreModalOpen(true);
     };
@@ -396,7 +400,13 @@ export default function App() {
     const buildAndPlaceOrder = async (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
         if (cartItemsForOrder.length === 0)
             return;
-        const windowStatus = getOrderWindowStatus(cartItemsForOrder[0]?.store);
+        const targetStore = cartItemsForOrder[0]?.store;
+        const liveStore = stores.find(s => s.id === targetStore?.id);
+        if (liveStore && liveStore.isVisible === false) {
+            showToast(`${liveStore.name} is currently not available for orders`);
+            return;
+        }
+        const windowStatus = getOrderWindowStatus(targetStore);
         if (!windowStatus.isOpen) {
             showToast(windowStatus.message);
             return;
@@ -545,6 +555,8 @@ export default function App() {
     const filteredStores = useMemo(() => {
         return stores
             .filter((store) => {
+            if (store.isVisible === false)
+                return false;
             if (selectedCategory) {
                 const matchesCat = categoryKeywords.some(kw => store.cuisines.some(c => c.toLowerCase().includes(kw)) ||
                     (store.tags && store.tags.some(t => t.toLowerCase().includes(kw))) ||
@@ -578,7 +590,7 @@ export default function App() {
         if (!selectedCategory)
             return [];
         const dishes = [];
-        stores.forEach((store) => {
+        stores.filter(s => s.isVisible !== false).forEach((store) => {
             store.items.forEach((item) => {
                 const isMatch = categoryKeywords.some(kw => item.category.toLowerCase().includes(kw) ||
                     item.name.toLowerCase().includes(kw) ||
@@ -644,7 +656,7 @@ export default function App() {
                     } }))) : (_jsxs(_Fragment, { children: [activeTab === 'home' && (_jsxs("div", { className: "flex-1 pb-24", children: [_jsx(Header, { currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), searchQuery: searchQuery, onSearchChange: setSearchQuery, onSearchFocus: () => { }, onAvatarClick: () => setActiveTab('profile'), onOpenCart: () => setIsCartOpen(true), cartCount: totalCartCount, cartTotal: cartPrice }), _jsx("div", { className: "mt-1", children: _jsx(CategoryBar, { categories: categories, selectedCategory: selectedCategory, onSelectCategory: handleSelectCategory }) }), selectedCategory && (_jsxs("div", { className: "px-4 mt-4 flex items-center justify-between", children: [_jsxs("h2", { className: "text-base font-extrabold text-gray-900 tracking-tight", children: [selectedCategory.toUpperCase(), " SPOTS"] }), _jsx("button", { onClick: () => setSelectedCategory(null), className: "text-xs font-bold text-red-600 hover:text-red-700 underline", children: "Clear filter" })] })), _jsxs("div", { className: "px-4 mt-3 space-y-4", children: [filteredStores.map((store) => (_jsx(StoreCard, { store: store, isFavorite: favorites.includes(store.id), onToggleFavorite: (e) => handleToggleFavorite(e, store.id), onClick: () => handleOpenStore(store) }, store.id))), filteredStores.length === 0 && (_jsxs("div", { className: "text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200", children: [_jsx("p", { className: "text-sm font-bold text-gray-500", children: "No restaurants match your search" }), _jsx("button", { onClick: () => {
                                                         setSelectedCategory(null);
                                                         setSearchQuery('');
-                                                    }, className: "mt-2 text-xs font-bold text-red-600 hover:underline", children: "Reset all filters" })] }))] })] })), activeTab === 'search' && (_jsx("div", { className: "flex-1", children: _jsx(SearchTab, { stores: stores, initialQuery: searchQuery, onSelectStore: handleOpenStore, onSelectMenuItem: (item, store) => {
+                                                    }, className: "mt-2 text-xs font-bold text-red-600 hover:underline", children: "Reset all filters" })] }))] })] })), activeTab === 'search' && (_jsx("div", { className: "flex-1", children: _jsx(SearchTab, { stores: stores.filter(s => s.isVisible !== false), initialQuery: searchQuery, onSelectStore: handleOpenStore, onSelectMenuItem: (item, store) => {
                                      setCustomizingItemStore(store);
                                      setCustomizingItem(item);
                                  } }) })), activeTab === 'orders' && (_jsx("div", { className: "flex-1", children: _jsx(OrdersTab, { orders: customerOrders, stores: stores, pendingOrders: pendingOrders, onCompleteOrder: handleCompleteOrder, onExploreFood: () => setActiveTab('home'), onSendPendingOrder: handleSendPendingOrder }) })), activeTab === 'profile' && (_jsx("div", { className: "flex-1", children: _jsx(ProfileTab, { currentAddress: currentAddress, addresses: addresses, onOpenLocationModal: () => setIsLocationModalOpen(true), favoritesCount: favorites.length, onViewFavorites: () => setActiveTab('home') }) })), cartItems.length > 0 && activeTab !== 'orders' && !isStoreModalOpen && (_jsx("div", { className: "fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200", children: _jsx("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2", children: _jsxs("button", { id: "floating-cart-btn", onClick: () => setIsCartOpen(true), className: "w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all", children: [_jsxs("div", { className: "flex items-center gap-2.5 min-w-0 leading-none", children: [_jsxs("span", { className: "inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0", children: [totalCartCount, " ", totalCartCount === 1 ? 'ITEM' : 'ITEMS'] }), _jsxs("span", { className: "text-sm font-extrabold text-white leading-none", children: ["\u20B9", cartPrice.toFixed(0)] })] }), _jsx("span", { className: "text-xs font-black uppercase tracking-wider whitespace-nowrap", children: "View Cart \u2192" })] }) }) })), _jsx(BottomNav, { activeTab: activeTab, onTabChange: (tab) => {

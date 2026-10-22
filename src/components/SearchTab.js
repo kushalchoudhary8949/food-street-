@@ -18,6 +18,8 @@ export const SearchTab = ({ stores, initialQuery = '', onSelectStore, onSelectMe
     // Match stores & dishes
     const normalizedQuery = query.toLowerCase().trim();
     const matchingStores = stores.filter((store) => {
+        if (store.isVisible === false)
+            return false;
         if (selectedFilter === 'veg') {
             const hasVeg = store.items.some(i => i.isVeg);
             if (!hasVeg)
@@ -39,6 +41,8 @@ export const SearchTab = ({ stores, initialQuery = '', onSelectStore, onSelectMe
     // Extract matching dishes
     const matchingDishes = [];
     stores.forEach((st) => {
+        if (st.isVisible === false)
+            return;
         st.items.forEach((item) => {
             if (selectedFilter === 'veg' && !item.isVeg)
                 return;

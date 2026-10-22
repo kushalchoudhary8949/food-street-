@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
-import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock, Tag, Percent, BadgePercent, Search, User, Home, Building } from 'lucide-react';
+import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock, Tag, Percent, BadgePercent, Search, User, Home, Building, Eye, EyeOff } from 'lucide-react';
 import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFromDb, deleteOrderFromDb, updateOrderStatusInDb, seedDatabase, fetchDatabaseStatus, fetchOrdersFromDb, fetchStoresFromDb, fetchCategoriesFromDb, saveOrderToDb, subscribeToOrders } from '../services/api';
 import { STORES, CATEGORIES } from '../data/mockData';
 import { getOrderWindowStatus, getStoreManualOverride, getStoreTimings, formatTimeTo12Hour, setStoreStatusCache } from '../utils/orderTiming';
@@ -21,10 +21,13 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         openTime: '11:00',
         closeTime: '23:00',
         isOpen: undefined,
+        isVisible: true,
         discountActive: false,
         discountAmount: '',
         minOrderValue: '',
     });
+    const [storeSearchQuery, setStoreSearchQuery] = useState('');
+    const [storeVisibilityFilter, setStoreVisibilityFilter] = useState('all'); // 'all' | 'visible' | 'hidden'
     // Discounts Management State
     const [editingDiscountStoreId, setEditingDiscountStoreId] = useState(null);
     const [discountForm, setDiscountForm] = useState({
@@ -188,6 +191,22 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
     const activeOrdersCount = orders.filter(o => o.status !== 'delivered').length;
     const totalItemsCount = stores.reduce((sum, s) => sum + (s.items?.length || 0), 0);
 
+    // Store Visibility Stats & Filters
+    const visibleStoresCount = stores.filter(s => s.isVisible !== false).length;
+    const hiddenStoresCount = stores.length - visibleStoresCount;
+
+    const filteredAdminStores = stores.filter(s => {
+        if (storeVisibilityFilter === 'visible' && s.isVisible === false) return false;
+        if (storeVisibilityFilter === 'hidden' && s.isVisible !== false) return false;
+        if (storeSearchQuery.trim()) {
+            const q = storeSearchQuery.toLowerCase().trim();
+            const matchName = s.name?.toLowerCase().includes(q);
+            const matchCuisines = s.cuisines?.some(c => c.toLowerCase().includes(q));
+            return matchName || matchCuisines;
+        }
+        return true;
+    });
+
     // Discount Calculation & Handlers
     const storesWithDiscount = stores.filter(s => {
         const d = getStoreDiscount(s);
@@ -313,6 +332,28 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         await saveStoresToDb(updatedStores);
     };
 
+    // Store Website Visibility Handler
+    const handleToggleStoreVisibility = async (storeId) => {
+        const targetStore = stores.find(s => s.id === storeId);
+        if (!targetStore) return;
+        const newVisible = targetStore.isVisible === false ? true : false;
+        const updatedStores = stores.map(s => {
+            if (s.id === storeId) {
+                return {
+                    ...s,
+                    isVisible: newVisible,
+                };
+            }
+            return s;
+        });
+        setStoreStatusCache(updatedStores);
+        onUpdateStores(updatedStores);
+        await saveStoresToDb(updatedStores);
+        showDiscountToast(newVisible 
+            ? `👁️ "${targetStore.name}" is now VISIBLE on website` 
+            : `🙈 "${targetStore.name}" is now HIDDEN from website`);
+    };
+
     // Store Handlers
     const handleSaveStore = async (e) => {
         e.preventDefault();
@@ -346,6 +387,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                 openTime: storeForm.openTime || '11:00',
                 closeTime: storeForm.closeTime || '23:00',
                 isOpen: storeForm.isOpen,
+                isVisible: storeForm.isVisible !== false,
             };
             updatedList = [...stores, newStore];
             setStoreStatusCache(updatedList);
@@ -368,6 +410,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                         openTime: storeForm.openTime || s.openTime || '11:00',
                         closeTime: storeForm.closeTime || s.closeTime || '23:00',
                         isOpen: storeForm.isOpen,
+                        isVisible: storeForm.isVisible !== false,
                         discountActive: hasDiscount && dAmount > 0,
                         discountAmount: dAmount,
                         minOrderValue: dMinOrder,
@@ -392,6 +435,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             openTime: '11:00',
             closeTime: '23:00',
             isOpen: undefined,
+            isVisible: true,
             discountActive: false,
             discountAmount: '',
             minOrderValue: '',
@@ -416,6 +460,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
             openTime: store.openTime || timings.openTime || '11:00',
             closeTime: store.closeTime || timings.closeTime || '23:00',
             isOpen: store.isOpen,
+            isVisible: store.isVisible !== false,
             discountActive: hasDisc,
             discountAmount: discAmount,
             minOrderValue: discMinOrder,
@@ -593,7 +638,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
     };
     return (_jsxs("div", { className: "bg-[#F8F9FA] min-h-screen pb-24 text-gray-800", children: [_jsxs("div", { className: "bg-linear-to-r from-red-600 to-rose-500 text-white px-4 py-5 shadow-md flex items-center justify-between", children: [_jsxs("div", { children: [_jsxs("h1", { className: "text-xl font-black flex items-center space-x-2", children: [_jsx(Building2, { className: "w-6 h-6" }), _jsx("span", { children: "FoodZa Admin Panel" })] }), _jsx("p", { className: "text-xs text-rose-100 mt-0.5", children: "Manage your stores, menus, categories, and tracking" })] }), onLogout && (_jsxs("button", { onClick: onLogout, className: "flex items-center space-x-1.5 px-3.5 py-2 bg-white/15 hover:bg-white/25 active:bg-white/30 rounded-xl text-xs font-bold text-white transition-colors border border-white/20 cursor-pointer shadow-xs", title: "Log out of Admin Panel", children: [_jsx(LogOut, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Log Out" })] }))] }), _jsx("div", { className: "flex border-b border-gray-200 bg-white overflow-x-auto no-scrollbar shadow-xs", children: ['overview', 'stores', 'discounts', 'items', 'categories', 'orders', 'cloud'].map(tab => (_jsx("button", { onClick: () => setActiveSubTab(tab), className: `flex-1 py-3 px-3.5 text-center font-bold text-xs uppercase tracking-wider border-b-2 whitespace-nowrap transition-colors ${activeSubTab === tab
                         ? 'border-red-600 text-red-600 bg-red-50/50'
-                        : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`, children: tab === 'cloud' ? '⚡ Supabase' : tab === 'discounts' ? `🏷️ Discounts (${storesWithDiscount.length})` : tab }, tab))) }), _jsxs("div", { className: "p-4 max-w-lg mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl space-y-5", children: [discountToast && (_jsxs("div", { className: "p-3 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-between transition-all", children: [_jsx("span", { children: discountToast }), _jsx("button", { onClick: () => setDiscountToast(null), className: "text-white/80 hover:text-white font-black ml-2 cursor-pointer text-sm", children: "✕" })] })), activeSubTab === 'overview' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "grid grid-cols-2 gap-3", children: [_jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-rose-50 text-rose-600 rounded-xl", children: _jsx(DollarSign, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Sales" }), _jsxs("div", { className: "text-lg font-black text-gray-900", children: ["\u20B9", totalRevenue.toFixed(0)] })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-red-50 text-red-600 rounded-xl", children: _jsx(ShoppingBag, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Active Orders" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: activeOrdersCount })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-emerald-50 text-emerald-600 rounded-xl", children: _jsx(Building2, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Stores" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: stores.length })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-amber-50 text-amber-600 rounded-xl", children: _jsx(Utensils, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Menu Items" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: totalItemsCount })] })] })] }),             _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 space-y-3", children: [
+                        : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`, children: tab === 'cloud' ? '⚡ Supabase' : tab === 'discounts' ? `🏷️ Discounts (${storesWithDiscount.length})` : tab }, tab))) }), _jsxs("div", { className: "p-4 max-w-lg mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl space-y-5", children: [discountToast && (_jsxs("div", { className: "p-3 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-between transition-all", children: [_jsx("span", { children: discountToast }), _jsx("button", { onClick: () => setDiscountToast(null), className: "text-white/80 hover:text-white font-black ml-2 cursor-pointer text-sm", children: "✕" })] })), activeSubTab === 'overview' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "grid grid-cols-2 gap-3", children: [_jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-rose-50 text-rose-600 rounded-xl", children: _jsx(DollarSign, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Sales" }), _jsxs("div", { className: "text-lg font-black text-gray-900", children: ["\u20B9", totalRevenue.toFixed(0)] })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-red-50 text-red-600 rounded-xl", children: _jsx(ShoppingBag, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Active Orders" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: activeOrdersCount })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-emerald-50 text-emerald-600 rounded-xl", children: _jsx(Building2, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Total Stores" }), _jsxs("div", { className: "text-lg font-black text-gray-900", children: [stores.length, _jsxs("span", { className: "text-[11px] font-bold text-emerald-600 ml-1.5", children: ["(", visibleStoresCount, " Live)"] })] })] })] }), _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 flex items-center space-x-3", children: [_jsx("div", { className: "p-3 bg-amber-50 text-amber-600 rounded-xl", children: _jsx(Utensils, { className: "w-5 h-5" }) }), _jsxs("div", { children: [_jsx("div", { className: "text-[10px] uppercase font-black tracking-wider text-gray-400", children: "Menu Items" }), _jsx("div", { className: "text-lg font-black text-gray-900", children: totalItemsCount })] })] })] }),             _jsxs("div", { className: "bg-white p-4 rounded-2xl shadow-xs border border-gray-100 space-y-3", children: [
                 _jsxs("div", { className: "flex items-center justify-between", children: [
                     _jsxs("div", { children: [
                         _jsxs("h3", { className: "font-extrabold text-sm text-gray-900 flex items-center gap-1.5", children: [_jsx(Store, { className: "w-4 h-4 text-red-600" }), _jsx("span", { children: "Store Open / Close Controls" })] }),
@@ -610,7 +655,10 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                             _jsxs("div", { className: "min-w-0 flex items-center space-x-2", children: [
                                 _jsx("span", { className: `w-2.5 h-2.5 rounded-full shrink-0 ${status.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}` }),
                                 _jsxs("div", { className: "min-w-0", children: [
-                                    _jsx("div", { className: "font-bold text-xs text-gray-900 truncate", children: store.name }),
+                                    _jsxs("div", { className: "font-bold text-xs text-gray-900 truncate flex items-center gap-1.5", children: [
+                                        _jsx("span", { className: "truncate", children: store.name }),
+                                        store.isVisible === false && _jsx("span", { className: "text-[9px] px-1 py-0.2 bg-rose-100 text-rose-700 rounded font-black shrink-0", children: "HIDDEN" })
+                                    ] }),
                                     _jsxs("div", { className: "text-[10px] text-gray-500 font-medium truncate flex items-center gap-1.5", children: [
                                         _jsx("span", { children: status.isOpen ? '🟢 Open' : '🔴 Closed' }),
                                         _jsx("span", { className: "text-gray-300", children: "•" }),
@@ -618,10 +666,26 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                     ] })
                                 ] })
                             ] }),
-                            _jsxs("div", { className: "flex items-center bg-gray-200/80 p-0.5 rounded-lg text-[10px] font-bold shrink-0", children: [
-                                _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'open'), className: `px-2 py-0.5 rounded-md transition-all cursor-pointer ${manualSetting === 'open' ? 'bg-emerald-600 text-white shadow-xs' : 'text-gray-600 hover:text-emerald-700'}`, title: "Force Open", children: "Open" }),
-                                _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'closed'), className: `px-2 py-0.5 rounded-md transition-all cursor-pointer ${manualSetting === 'closed' ? 'bg-rose-600 text-white shadow-xs' : 'text-gray-600 hover:text-rose-700'}`, title: "Force Close", children: "Close" }),
-                                _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'auto'), className: `px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${isAuto ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-400 hover:text-gray-700'}`, title: "Follow Schedule", children: "Auto" })
+                            _jsxs("div", { className: "flex items-center gap-1.5 shrink-0", children: [
+                                _jsxs("button", {
+                                    type: "button",
+                                    onClick: () => handleToggleStoreVisibility(store.id),
+                                    className: `p-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
+                                        store.isVisible !== false
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                            : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                                    }`,
+                                    title: store.isVisible !== false ? "Visible on website (Click to hide)" : "Hidden from website (Click to make visible)",
+                                    children: [
+                                        store.isVisible !== false ? _jsx(Eye, { className: "w-3.5 h-3.5" }) : _jsx(EyeOff, { className: "w-3.5 h-3.5" }),
+                                        _jsx("span", { className: "text-[10px] hidden sm:inline", children: store.isVisible !== false ? 'Live' : 'Hidden' })
+                                    ]
+                                }),
+                                _jsxs("div", { className: "flex items-center bg-gray-200/80 p-0.5 rounded-lg text-[10px] font-bold shrink-0", children: [
+                                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'open'), className: `px-2 py-0.5 rounded-md transition-all cursor-pointer ${manualSetting === 'open' ? 'bg-emerald-600 text-white shadow-xs' : 'text-gray-600 hover:text-emerald-700'}`, title: "Force Open", children: "Open" }),
+                                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'closed'), className: `px-2 py-0.5 rounded-md transition-all cursor-pointer ${manualSetting === 'closed' ? 'bg-rose-600 text-white shadow-xs' : 'text-gray-600 hover:text-rose-700'}`, title: "Force Close", children: "Close" }),
+                                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'auto'), className: `px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${isAuto ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-400 hover:text-gray-700'}`, title: "Follow Schedule", children: "Auto" })
+                                ] })
                             ] })
                         ] }, store.id)
                     );
@@ -631,78 +695,283 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
                                                         ? 'bg-emerald-50 text-emerald-700'
                                                         : order.status === 'out_for_delivery'
                                                             ? 'bg-blue-50 text-blue-700'
-                                                            : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: (order.status || 'placed').replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [_jsxs("div", { className: "flex justify-between items-center", children: [_jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }), _jsxs("button", { onClick: () => {
-                                            setIsAddingStore(true);
-                                            setEditingStore(null);
-                                        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })] }), (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [_jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }), _jsxs("div", { className: "space-y-2.5 text-xs", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Name" }), _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }), _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }), _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })] })] }), _jsxs("div", { className: "p-3 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2", children: [_jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-rose-800 text-xs", children: [_jsx(Clock, { className: "w-3.5 h-3.5 text-red-600" }), _jsx("span", { children: "Store Operating Timings (Database Controlled)" })] }), _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Opening Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.openTime || '11:00', onChange: e => setStoreForm({ ...storeForm, openTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Opens at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.openTime || '11:00', '11:00 AM') })] })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Closing Time (24h)" }), _jsx("input", { type: "time", required: true, value: storeForm.closeTime || '23:00', onChange: e => setStoreForm({ ...storeForm, closeTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }), _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Closes at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.closeTime || '23:00', '11:00 PM') })] })] })] }), _jsx("p", { className: "text-[10px] text-rose-600 font-medium", children: "Customers will see \"OPENS AT ...\" label on the home store card based on this opening time." })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }), _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }), _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold mb-1", children: "Store Ordering Status" }), _jsxs("select", { value: storeForm.isOpen === undefined ? 'auto' : storeForm.isOpen ? 'open' : 'closed', onChange: e => setStoreForm({ ...storeForm, isOpen: e.target.value === 'auto' ? undefined : (e.target.value === 'open') }), className: "w-full p-2 border border-gray-200 rounded-xl bg-white font-medium text-xs", children: [_jsx("option", { value: "auto", children: "⏱️ Auto (Follow schedule hours)" }), _jsx("option", { value: "open", children: "🟢 Force Open (Accept orders now)" }), _jsx("option", { value: "closed", children: "🔴 Force Closed (Disable ordering)" })] })] }), _jsxs("div", { className: "p-3 bg-amber-50/80 rounded-xl border border-amber-200/90 space-y-2.5", children: [_jsxs("div", { className: "flex items-center justify-between", children: [_jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-amber-900 text-xs", children: [_jsx(Tag, { className: "w-3.5 h-3.5 text-amber-600" }), _jsx("span", { children: "Store Discount & Minimum Order Value" })] }), _jsxs("label", { className: "flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700", children: [_jsx("input", { type: "checkbox", checked: Boolean(storeForm.discountActive), onChange: e => setStoreForm({ ...storeForm, discountActive: e.target.checked, discountAmount: e.target.checked ? (storeForm.discountAmount || 40) : 0, minOrderValue: e.target.checked ? (storeForm.minOrderValue || 150) : 0 }), className: "rounded text-red-600 focus:ring-red-500 cursor-pointer" }), _jsx("span", { children: storeForm.discountActive ? "Active" : "Disabled" })] })] }), storeForm.discountActive && (_jsxs("div", { className: "space-y-2 pt-1 border-t border-amber-200/60", children: [_jsxs("div", { className: "grid grid-cols-2 gap-2", children: [_jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Discount Amount (₹)" }), _jsx("input", { type: "number", min: "1", required: true, value: storeForm.discountAmount ?? 40, onChange: e => setStoreForm({ ...storeForm, discountAmount: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "e.g. 40" })] }), _jsxs("div", { children: [_jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Min Order Value (₹)" }), _jsx("input", { type: "number", min: "0", value: storeForm.minOrderValue ?? 150, onChange: e => setStoreForm({ ...storeForm, minOrderValue: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "0 for no minimum" })] })] }), _jsxs("div", { className: "text-[10px] text-amber-900 font-semibold bg-white p-2 rounded-lg border border-amber-200/80 flex items-center justify-between", children: [_jsx("span", { children: "Customer Preview:" }), _jsxs("span", { className: "px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-black", children: ["🏷️ ", formatDiscountLabel(storeForm.discountAmount || 0, storeForm.minOrderValue || 0)] })] })] }))] })] }), _jsxs("div", { className: "flex space-x-2 pt-2", children: [_jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 cursor-pointer", children: "Save Store" }), _jsx("button", { type: "button", onClick: () => {
-                                                    setIsAddingStore(false);
-                                                    setEditingStore(null);
-                                                }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200 cursor-pointer", children: "Cancel" })] })] })), _jsx("div", { className: "space-y-3", children: stores.map(store => {
-    const status = getOrderWindowStatus(store.id, undefined, store);
-    const manualSetting = store.isOpen !== undefined ? (store.isOpen ? 'open' : 'closed') : (getStoreManualOverride(store.id) || 'auto');
-    const isAuto = manualSetting === 'auto';
-    const storeDiscount = getStoreDiscount(store);
-    return (
-        _jsxs("div", { className: "bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3", children: [
-            _jsxs("div", { className: "flex items-center justify-between", children: [
-                _jsxs("div", { className: "flex items-center space-x-3 min-w-0", children: [
-                    _jsx("img", { src: store.image, alt: store.name, className: "w-12 h-12 rounded-xl object-cover border shrink-0", onError: e => {
-                        e.target.src = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80';
-                    } }),
-                    _jsxs("div", { className: "min-w-0", children: [
-                        _jsxs("div", { className: "flex items-center gap-2", children: [
-                            _jsx("h4", { className: "font-extrabold text-sm text-gray-900 truncate", children: store.name }),
-                            _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 ${status.isOpen ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`, children: status.isOpen ? '● Open' : '○ Closed' })
-                        ] }),
-                        _jsx("p", { className: "text-xs text-gray-500 truncate mt-0.5", children: store.cuisines.join(', ') }),
-                        _jsxs("div", { className: "flex items-center gap-1.5 text-[11px] text-gray-600 font-semibold mt-1", children: [
-                            _jsx(Clock, { className: "w-3 h-3 text-red-500 shrink-0" }),
-                            _jsxs("span", { children: ["Timings: ", status.timingLabel] })
-                        ] })
+                                                            : 'bg-amber-50 text-amber-700 animate-pulse'}`, children: (order.status || 'placed').replace('_', ' ') })] }, order.id))) }))] })] })), activeSubTab === 'stores' && (_jsxs("div", { className: "space-y-4", children: [
+    _jsxs("div", { className: "flex justify-between items-center", children: [
+        _jsxs("div", { children: [
+            _jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Stores" }),
+            _jsxs("p", { className: "text-xs text-gray-500 mt-0.5", children: [
+                stores.length, " stores (", visibleStoresCount, " visible on website, ", hiddenStoresCount, " hidden)"
+            ] })
+        ] }),
+        _jsxs("button", { onClick: () => {
+            setIsAddingStore(true);
+            setEditingStore(null);
+            setStoreForm({
+                name: '',
+                deliveryTime: '25-35 mins',
+                deliveryFee: 20,
+                distance: '2.5 km',
+                image: '',
+                cuisines: '',
+                tags: '',
+                openTime: '11:00',
+                closeTime: '23:00',
+                isOpen: undefined,
+                isVisible: true,
+                discountActive: false,
+                discountAmount: '',
+                minOrderValue: '',
+            });
+        }, className: "flex items-center space-x-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95 shadow-xs cursor-pointer", children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), _jsx("span", { children: "Add Store" })] })
+    ] }),
+    _jsxs("div", { className: "flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between", children: [
+        _jsxs("div", { className: "relative flex-1", children: [
+            _jsx(Search, { className: "w-4 h-4 text-gray-400 absolute left-3 top-2.5" }),
+            _jsx("input", { type: "text", value: storeSearchQuery, onChange: e => setStoreSearchQuery(e.target.value), placeholder: "Search store by name or cuisine...", className: "w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-red-500 shadow-xs" })
+        ] }),
+        _jsxs("div", { className: "flex items-center gap-1.5 overflow-x-auto no-scrollbar", children: [
+            _jsx("button", { type: "button", onClick: () => setStoreVisibilityFilter('all'), className: `px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${storeVisibilityFilter === 'all' ? 'bg-gray-900 text-white shadow-xs' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`, children: `All (${stores.length})` }),
+            _jsxs("button", { type: "button", onClick: () => setStoreVisibilityFilter('visible'), className: `px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-1 ${storeVisibilityFilter === 'visible' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white border border-gray-200 text-emerald-700 hover:bg-emerald-50'}`, children: [_jsx(Eye, { className: "w-3 h-3" }), `Visible (${visibleStoresCount})`] }),
+            _jsxs("button", { type: "button", onClick: () => setStoreVisibilityFilter('hidden'), className: `px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-1 ${storeVisibilityFilter === 'hidden' ? 'bg-rose-600 text-white shadow-xs' : 'bg-white border border-gray-200 text-rose-700 hover:bg-rose-50'}`, children: [_jsx(EyeOff, { className: "w-3 h-3" }), `Hidden (${hiddenStoresCount})`] })
+        ] })
+    ] }),
+    (isAddingStore || editingStore) && (_jsxs("form", { onSubmit: handleSaveStore, className: "bg-white p-4 rounded-2xl border border-gray-200 space-y-3 shadow-xs", children: [
+        _jsx("h4", { className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider", children: isAddingStore ? 'Add New Store' : 'Edit Store Details' }),
+        _jsxs("div", { className: "space-y-2.5 text-xs", children: [
+            _jsxs("div", { children: [
+                _jsx("label", { className: "block font-bold mb-1", children: "Store Name" }),
+                _jsx("input", { type: "text", required: true, value: storeForm.name, onChange: e => setStoreForm({ ...storeForm, name: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. KFC, Subway, Vaango" })
+            ] }),
+            _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                _jsxs("div", { children: [
+                    _jsx("label", { className: "block font-bold mb-1", children: "Delivery Time" }),
+                    _jsx("input", { type: "text", value: storeForm.deliveryTime, onChange: e => setStoreForm({ ...storeForm, deliveryTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. 20-30 mins" })
+                ] }),
+                _jsxs("div", { children: [
+                    _jsx("label", { className: "block font-bold mb-1", children: "Platform Fee (\u20B9)" }),
+                    _jsx("input", { type: "number", value: storeForm.deliveryFee, onChange: e => setStoreForm({ ...storeForm, deliveryFee: Number(e.target.value) }), className: "w-full p-2 border border-gray-200 rounded-xl" })
+                ] })
+            ] }),
+            _jsxs("div", { className: "p-3 bg-rose-50/60 rounded-xl border border-rose-100 space-y-2", children: [
+                _jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-rose-800 text-xs", children: [
+                    _jsx(Clock, { className: "w-3.5 h-3.5 text-red-600" }),
+                    _jsx("span", { children: "Store Operating Timings (Database Controlled)" })
+                ] }),
+                _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                    _jsxs("div", { children: [
+                        _jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Opening Time (24h)" }),
+                        _jsx("input", { type: "time", required: true, value: storeForm.openTime || '11:00', onChange: e => setStoreForm({ ...storeForm, openTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }),
+                        _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Opens at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.openTime || '11:00', '11:00 AM') })] })
+                    ] }),
+                    _jsxs("div", { children: [
+                        _jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Closing Time (24h)" }),
+                        _jsx("input", { type: "time", required: true, value: storeForm.closeTime || '23:00', onChange: e => setStoreForm({ ...storeForm, closeTime: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-lg bg-white font-semibold text-xs" }),
+                        _jsxs("span", { className: "text-[10px] text-gray-500 mt-1 block font-medium", children: ["Closes at: ", _jsx("strong", { className: "text-gray-800", children: formatTimeTo12Hour(storeForm.closeTime || '23:00', '11:00 PM') })] })
                     ] })
                 ] }),
-                _jsxs("div", { className: "flex items-center space-x-1.5 shrink-0", children: [
-                    _jsx("button", { onClick: () => startEditStore(store), className: "p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors cursor-pointer", title: "Edit Store", children: _jsx(Edit3, { className: "w-3.5 h-3.5" }) }),
-                    _jsx("button", { onClick: () => handleDeleteStore(store.id), className: "p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors cursor-pointer", title: "Delete Store", children: _jsx(Trash2, { className: "w-3.5 h-3.5" }) })
-                ] })
+                _jsx("p", { className: "text-[10px] text-rose-600 font-medium", children: "Customers will see \"OPENS AT ...\" label on the home store card based on this opening time." })
             ] }),
-            _jsxs("div", { className: "flex items-center justify-between bg-amber-50/60 p-2 rounded-xl border border-amber-100 text-xs", children: [
-                _jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-                    _jsx(Tag, { className: "w-3.5 h-3.5 text-amber-600 shrink-0" }),
-                    _jsx("span", { className: "font-bold text-gray-700 text-[11px] shrink-0", children: "Discount:" }),
-                    storeDiscount ? (
-                        _jsxs("span", { className: "font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 text-[10px] truncate", children: [
-                            "🏷️ ", storeDiscount.label
+            _jsxs("div", { className: `p-3 rounded-xl border space-y-1.5 transition-colors ${storeForm.isVisible !== false ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}`, children: [
+                _jsxs("div", { className: "flex items-center justify-between", children: [
+                    _jsxs("div", { className: "flex items-center gap-2", children: [
+                        _jsx("div", { className: `p-1.5 rounded-lg ${storeForm.isVisible !== false ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}`, children: storeForm.isVisible !== false ? _jsx(Eye, { className: "w-4 h-4" }) : _jsx(EyeOff, { className: "w-4 h-4" }) }),
+                        _jsxs("div", { children: [
+                            _jsx("span", { className: "block font-extrabold text-xs text-gray-900", children: "Store Website Visibility" }),
+                            _jsx("span", { className: "text-[10px] text-gray-500 font-medium", children: storeForm.isVisible !== false ? "Visible to customers on home screen and search" : "Hidden from customers on the website" })
                         ] })
-                    ) : (
-                        _jsx("span", { className: "text-gray-400 font-medium text-[11px]", children: "No discount active" })
-                    )
-                ] }),
-                _jsxs("button", { type: "button", onClick: () => {
-                    setDiscountForm({
-                        discountActive: Boolean(storeDiscount),
-                        discountAmount: storeDiscount?.amount || 40,
-                        minOrderValue: storeDiscount?.minOrder || 150,
-                    });
-                    setEditingDiscountStoreId(store.id);
-                    setActiveSubTab('discounts');
-                }, className: "text-[11px] font-bold text-red-600 hover:text-red-700 underline shrink-0 cursor-pointer", children: "Manage Discount →" })
-            ] }),
-            _jsxs("div", { className: "pt-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs", children: [
-                _jsxs("div", { className: "flex items-center space-x-1.5 text-[11px] font-medium text-gray-500", children: [
-                    _jsx("span", { children: "Status:" }),
-                    _jsx("span", { className: `font-bold ${status.isOpen ? 'text-emerald-700' : 'text-rose-700'}`, children: status.isOpen ? 'Open for Orders' : 'Closed for Orders' }),
-                    !isAuto && (_jsx("span", { className: "text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded font-semibold", children: "Manual Override" }))
-                ] }),
-                _jsxs("div", { className: "flex items-center bg-gray-100 p-0.5 rounded-xl text-[11px] font-bold", children: [
-                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'open'), className: `px-3 py-1 rounded-lg transition-all cursor-pointer ${manualSetting === 'open' ? 'bg-emerald-600 text-white shadow-xs' : 'text-gray-600 hover:text-emerald-700'}`, title: "Force Open Store", children: "🟢 Open" }),
-                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'closed'), className: `px-3 py-1 rounded-lg transition-all cursor-pointer ${manualSetting === 'closed' ? 'bg-rose-600 text-white shadow-xs' : 'text-gray-600 hover:text-rose-700'}`, title: "Force Close Store", children: "🔴 Close" }),
-                    _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'auto'), className: `px-2 py-1 rounded-lg transition-all cursor-pointer ${isAuto ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-400 hover:text-gray-700'}`, title: "Follow Schedule", children: "⏱️ Auto" })
+                    ] }),
+                    _jsxs("button", {
+                        type: "button",
+                        onClick: () => setStoreForm({ ...storeForm, isVisible: storeForm.isVisible === false ? true : false }),
+                        className: `px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
+                            storeForm.isVisible !== false
+                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                : 'bg-rose-600 hover:bg-rose-700 text-white'
+                        }`,
+                        children: [
+                            storeForm.isVisible !== false ? _jsx(Eye, { className: "w-3.5 h-3.5" }) : _jsx(EyeOff, { className: "w-3.5 h-3.5" }),
+                            _jsx("span", { children: storeForm.isVisible !== false ? "Visible" : "Hidden" })
+                        ]
+                    })
                 ] })
+            ] }),
+            _jsxs("div", { children: [
+                _jsx("label", { className: "block font-bold mb-1", children: "Cuisines (comma separated)" }),
+                _jsx("input", { type: "text", value: storeForm.cuisines, onChange: e => setStoreForm({ ...storeForm, cuisines: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "e.g. Pizzas, Desserts, Burgers" })
+            ] }),
+            _jsxs("div", { children: [
+                _jsx("label", { className: "block font-bold mb-1", children: "Store Card Image URL" }),
+                _jsx("input", { type: "text", value: storeForm.image, onChange: e => setStoreForm({ ...storeForm, image: e.target.value }), className: "w-full p-2 border border-gray-200 rounded-xl", placeholder: "Image URL or local path" })
+            ] }),
+            _jsxs("div", { children: [
+                _jsx("label", { className: "block font-bold mb-1", children: "Store Ordering Status" }),
+                _jsxs("select", { value: storeForm.isOpen === undefined ? 'auto' : storeForm.isOpen ? 'open' : 'closed', onChange: e => setStoreForm({ ...storeForm, isOpen: e.target.value === 'auto' ? undefined : (e.target.value === 'open') }), className: "w-full p-2 border border-gray-200 rounded-xl bg-white font-medium text-xs", children: [
+                    _jsx("option", { value: "auto", children: "⏱️ Auto (Follow schedule hours)" }),
+                    _jsx("option", { value: "open", children: "🟢 Force Open (Accept orders now)" }),
+                    _jsx("option", { value: "closed", children: "🔴 Force Closed (Disable ordering)" })
+                ] })
+            ] }),
+            _jsxs("div", { className: "p-3 bg-amber-50/80 rounded-xl border border-amber-200/90 space-y-2.5", children: [
+                _jsxs("div", { className: "flex items-center justify-between", children: [
+                    _jsxs("div", { className: "flex items-center gap-1.5 font-extrabold text-amber-900 text-xs", children: [
+                        _jsx(Tag, { className: "w-3.5 h-3.5 text-amber-600" }),
+                        _jsx("span", { children: "Store Discount & Minimum Order Value" })
+                    ] }),
+                    _jsxs("label", { className: "flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700", children: [
+                        _jsx("input", { type: "checkbox", checked: Boolean(storeForm.discountActive), onChange: e => setStoreForm({ ...storeForm, discountActive: e.target.checked, discountAmount: e.target.checked ? (storeForm.discountAmount || 40) : 0, minOrderValue: e.target.checked ? (storeForm.minOrderValue || 150) : 0 }), className: "rounded text-red-600 focus:ring-red-500 cursor-pointer" }),
+                        _jsx("span", { children: storeForm.discountActive ? "Active" : "Disabled" })
+                    ] })
+                ] }),
+                storeForm.discountActive && (
+                    _jsxs("div", { className: "space-y-2 pt-1 border-t border-amber-200/60", children: [
+                        _jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                            _jsxs("div", { children: [
+                                _jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Discount Amount (₹)" }),
+                                _jsx("input", { type: "number", min: "1", required: true, value: storeForm.discountAmount ?? 40, onChange: e => setStoreForm({ ...storeForm, discountAmount: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "e.g. 40" })
+                            ] }),
+                            _jsxs("div", { children: [
+                                _jsx("label", { className: "block font-bold text-gray-700 mb-1 text-[11px]", children: "Min Order Value (₹)" }),
+                                _jsx("input", { type: "number", min: "0", value: storeForm.minOrderValue ?? 150, onChange: e => setStoreForm({ ...storeForm, minOrderValue: Number(e.target.value) }), className: "w-full p-2 border border-amber-200 rounded-lg bg-white font-bold text-xs", placeholder: "0 for no minimum" })
+                            ] })
+                        ] }),
+                        _jsxs("div", { className: "text-[10px] text-amber-900 font-semibold bg-white p-2 rounded-lg border border-amber-200/80 flex items-center justify-between", children: [
+                            _jsx("span", { children: "Customer Preview:" }),
+                            _jsxs("span", { className: "px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-black", children: ["🏷️ ", formatDiscountLabel(storeForm.discountAmount || 0, storeForm.minOrderValue || 0)] })
+                        ] })
+                    ] })
+                )
             ] })
-        ] }, store.id)
-    );
-}) })] })), activeSubTab === 'discounts' && (_jsxs("div", { className: "space-y-4", children: [
+        ] }),
+        _jsxs("div", { className: "flex space-x-2 pt-2", children: [
+            _jsx("button", { type: "submit", className: "px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 cursor-pointer", children: "Save Store" }),
+            _jsx("button", { type: "button", onClick: () => {
+                setIsAddingStore(false);
+                setEditingStore(null);
+            }, className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200 cursor-pointer", children: "Cancel" })
+        ] })
+    ] })),
+    filteredAdminStores.length === 0 ? (
+        _jsxs("div", { className: "bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-xs space-y-2", children: [
+            _jsx("p", { className: "text-sm font-bold text-gray-800", children: "No stores match your search or filter" }),
+            _jsx("button", { type: "button", onClick: () => { setStoreSearchQuery(''); setStoreVisibilityFilter('all'); }, className: "text-xs font-bold text-red-600 hover:underline cursor-pointer", children: "Reset filters" })
+        ] })
+    ) : (
+        _jsx("div", { className: "space-y-3", children: filteredAdminStores.map(store => {
+            const status = getOrderWindowStatus(store.id, undefined, store);
+            const manualSetting = store.isOpen !== undefined ? (store.isOpen ? 'open' : 'closed') : (getStoreManualOverride(store.id) || 'auto');
+            const isAuto = manualSetting === 'auto';
+            const storeDiscount = getStoreDiscount(store);
+            const isStoreVisible = store.isVisible !== false;
+            return (
+                _jsxs("div", { className: `bg-white p-4 rounded-2xl border shadow-xs space-y-3 transition-all ${!isStoreVisible ? 'border-rose-200 bg-linear-to-r from-rose-50/20 to-white' : 'border-gray-100'}`, children: [
+                    _jsxs("div", { className: "flex items-center justify-between", children: [
+                        _jsxs("div", { className: "flex items-center space-x-3 min-w-0", children: [
+                            _jsx("img", { src: store.image, alt: store.name, className: `w-12 h-12 rounded-xl object-cover border shrink-0 ${!isStoreVisible ? 'grayscale opacity-75' : ''}`, onError: e => {
+                                e.target.src = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80';
+                            } }),
+                            _jsxs("div", { className: "min-w-0", children: [
+                                _jsxs("div", { className: "flex items-center gap-2 flex-wrap", children: [
+                                    _jsx("h4", { className: "font-extrabold text-sm text-gray-900 truncate", children: store.name }),
+                                    _jsx("span", { className: `px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 ${status.isOpen ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`, children: status.isOpen ? '● Open' : '○ Closed' }),
+                                    isStoreVisible ? (
+                                        _jsxs("span", { className: "px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1 shrink-0", children: [
+                                            _jsx(Eye, { className: "w-2.5 h-2.5" }),
+                                            _jsx("span", { children: "Live" })
+                                        ] })
+                                    ) : (
+                                        _jsxs("span", { className: "px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1 shrink-0", children: [
+                                            _jsx(EyeOff, { className: "w-2.5 h-2.5" }),
+                                            _jsx("span", { children: "Hidden" })
+                                        ] })
+                                    )
+                                ] }),
+                                _jsx("p", { className: "text-xs text-gray-500 truncate mt-0.5", children: store.cuisines?.join(', ') || 'Fast Food' }),
+                                _jsxs("div", { className: "flex items-center gap-1.5 text-[11px] text-gray-600 font-semibold mt-1", children: [
+                                    _jsx(Clock, { className: "w-3 h-3 text-red-500 shrink-0" }),
+                                    _jsxs("span", { children: ["Timings: ", status.timingLabel] })
+                                ] })
+                            ] })
+                        ] }),
+                        _jsxs("div", { className: "flex items-center space-x-1.5 shrink-0", children: [
+                            _jsx("button", { onClick: () => startEditStore(store), className: "p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors cursor-pointer", title: "Edit Store", children: _jsx(Edit3, { className: "w-3.5 h-3.5" }) }),
+                            _jsx("button", { onClick: () => handleDeleteStore(store.id), className: "p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors cursor-pointer", title: "Delete Store", children: _jsx(Trash2, { className: "w-3.5 h-3.5" }) })
+                        ] })
+                    ] }),
+                    _jsxs("div", { className: `p-3 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
+                        isStoreVisible
+                            ? 'bg-emerald-50/60 border-emerald-200/90'
+                            : 'bg-rose-50/70 border-rose-200/90'
+                    }`, children: [
+                        _jsxs("div", { className: "flex items-center gap-2.5 min-w-0", children: [
+                            _jsx("div", { className: `p-2 rounded-xl shrink-0 ${
+                                isStoreVisible ? 'bg-emerald-600 text-white shadow-xs' : 'bg-rose-600 text-white shadow-xs'
+                            }`, children: isStoreVisible ? _jsx(Eye, { className: "w-4 h-4" }) : _jsx(EyeOff, { className: "w-4 h-4" }) }),
+                            _jsxs("div", { className: "min-w-0", children: [
+                                _jsxs("div", { className: "flex items-center gap-1.5", children: [
+                                    _jsx("span", { className: `font-black text-xs ${
+                                        isStoreVisible ? 'text-emerald-950' : 'text-rose-950'
+                                    }`, children: isStoreVisible ? "Visible on Website" : "Hidden from Website" }),
+                                    _jsx("span", { className: `px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider ${
+                                        isStoreVisible ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-rose-100 text-rose-800 border border-rose-200'
+                                    }`, children: isStoreVisible ? "LIVE" : "HIDDEN" })
+                                ] }),
+                                _jsx("p", { className: "text-[10px] text-gray-500 font-medium truncate mt-0.5", children: isStoreVisible ? "Customers can see and order from this store on website" : "Hidden: customers cannot see or search for this store" })
+                            ] })
+                        ] }),
+                        _jsxs("button", {
+                            type: "button",
+                            onClick: () => handleToggleStoreVisibility(store.id),
+                            className: `px-3.5 py-2 rounded-xl font-black text-xs flex items-center gap-1.5 shrink-0 transition-all active:scale-95 cursor-pointer shadow-xs ${
+                                isStoreVisible
+                                    ? 'bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 hover:border-rose-300'
+                                    : 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600'
+                            }`,
+                            title: isStoreVisible ? "Hide this store from customer website" : "Make this store visible on customer website",
+                            children: [
+                                isStoreVisible ? _jsx(EyeOff, { className: "w-3.5 h-3.5" }) : _jsx(Eye, { className: "w-3.5 h-3.5" }),
+                                _jsx("span", { children: isStoreVisible ? "Hide Store" : "Show Store" })
+                            ]
+                        })
+                    ] }),
+                    _jsxs("div", { className: "flex items-center justify-between bg-amber-50/60 p-2 rounded-xl border border-amber-100 text-xs", children: [
+                        _jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
+                            _jsx(Tag, { className: "w-3.5 h-3.5 text-amber-600 shrink-0" }),
+                            _jsx("span", { className: "font-bold text-gray-700 text-[11px] shrink-0", children: "Discount:" }),
+                            storeDiscount ? (
+                                _jsxs("span", { className: "font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 text-[10px] truncate", children: [
+                                    "🏷️ ", storeDiscount.label
+                                ] })
+                            ) : (
+                                _jsx("span", { className: "text-gray-400 font-medium text-[11px]", children: "No discount active" })
+                            )
+                        ] }),
+                        _jsxs("button", { type: "button", onClick: () => {
+                            setDiscountForm({
+                                discountActive: Boolean(storeDiscount),
+                                discountAmount: storeDiscount?.amount || 40,
+                                minOrderValue: storeDiscount?.minOrder || 150,
+                            });
+                            setEditingDiscountStoreId(store.id);
+                            setActiveSubTab('discounts');
+                        }, className: "text-[11px] font-bold text-red-600 hover:text-red-700 underline shrink-0 cursor-pointer", children: "Manage Discount →" })
+                    ] }),
+                    _jsxs("div", { className: "pt-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs", children: [
+                        _jsxs("div", { className: "flex items-center space-x-1.5 text-[11px] font-medium text-gray-500", children: [
+                            _jsx("span", { children: "Status:" }),
+                            _jsx("span", { className: `font-bold ${status.isOpen ? 'text-emerald-700' : 'text-rose-700'}`, children: status.isOpen ? 'Open for Orders' : 'Closed for Orders' }),
+                            !isAuto && (_jsx("span", { className: "text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded font-semibold", children: "Manual Override" }))
+                        ] }),
+                        _jsxs("div", { className: "flex items-center bg-gray-100 p-0.5 rounded-xl text-[11px] font-bold", children: [
+                            _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'open'), className: `px-3 py-1 rounded-lg transition-all cursor-pointer ${manualSetting === 'open' ? 'bg-emerald-600 text-white shadow-xs' : 'text-gray-600 hover:text-emerald-700'}`, title: "Force Open Store", children: "🟢 Open" }),
+                            _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'closed'), className: `px-3 py-1 rounded-lg transition-all cursor-pointer ${manualSetting === 'closed' ? 'bg-rose-600 text-white shadow-xs' : 'text-gray-600 hover:text-rose-700'}`, title: "Force Close Store", children: "🔴 Close" }),
+                            _jsx("button", { type: "button", onClick: () => handleToggleStoreStatus(store.id, 'auto'), className: `px-2 py-1 rounded-lg transition-all cursor-pointer ${isAuto ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-400 hover:text-gray-700'}`, title: "Follow Schedule", children: "⏱️ Auto" })
+                        ] })
+                    ] })
+                ] }, store.id)
+            );
+        }) })
+    )
+] })), activeSubTab === 'discounts' && (_jsxs("div", { className: "space-y-4", children: [
     _jsxs("div", { className: "bg-linear-to-r from-red-600 to-rose-600 rounded-2xl p-4 text-white shadow-sm space-y-2.5", children: [
         _jsxs("div", { className: "flex items-center space-x-2", children: [
             _jsx(Tag, { className: "w-5 h-5 text-rose-200" }),

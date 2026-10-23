@@ -1,3 +1,44 @@
+/**
+ * ============================================================================
+ * FOODZA MASTER APPLICATION ORCHESTRATOR (`App.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * This is the central root component of FoodZa. It holds global client state,
+ * manages synchronization between LocalStorage and Supabase Cloud, controls
+ * navigation/routing (Storefront vs. Admin Portal), and coordinates cart/order flows.
+ * 
+ * KEY STATE & SUB-SYSTEMS:
+ * 1. Data Hydration & Versioning:
+ *    - `stores`: List of restaurants with menus, operating hours, discounts, and visibility.
+ *    - `categories`: Horizontal category taxonomy (Pizzas, Burgers, Biryani, etc.).
+ *    - `DATA_VERSION`: Cache invalidation key that forces a fresh pull if schemas change.
+ * 2. Cloud Synchronization:
+ *    - On mount: Concurrently fetches latest stores, categories, and orders from Supabase.
+ *    - Real-Time: Subscribes to order updates via polling listener (`subscribeToOrders`).
+ * 3. Routing & Dual Modes:
+ *    - Storefront Mode: Tabs for `home`, `search`, `orders`, `profile`.
+ *    - Admin Portal Mode: Triggered via URL hash (`#admin`) or Profile link.
+ *      Protected by `AdminLogin` with cryptographic session verification (`verifyAdminSession`).
+ * 4. Cart & Checkout Engine:
+ *    - Handles item customizations (addons, veg/non-veg tags).
+ *    - Validates order windows and operating hours before allowing checkout.
+ *    - Computes item totals, platform fee, taxes, tips, and store offer discounts.
+ *    - Dispatches confirmed orders to Supabase and opens formatted WhatsApp receipt.
+ * 5. Customer Privacy & Isolation:
+ *    - `customerOrders`: Filters orders so customers only see their placed orders on their device.
+ * 6. Store Visibility Control:
+ *    - Admin-controlled `isVisible` flag excludes disabled stores from customer home & search.
+ * 
+ * RELATED MODULES:
+ * - `src/components/Header.js`: App banner, location picker, and global search trigger.
+ * - `src/components/StoreCard.js` & `StoreDetailModal.js`: Restaurant storefront display.
+ * - `src/components/CartDrawer.js`: Checkout slide-over drawer.
+ * - `src/components/AdminTab.js`: Back-office management portal.
+ * - `src/services/api.js`: Supabase Cloud backend API service.
+ * ============================================================================
+ */
+
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import React, { useState, useMemo } from 'react';
 import { BITE_ADDA_STORE_ID, getGraduateBiryaniOrderWindowStatus, getOrderWindowStatus, OPEN_STORE_ID, TUMMY_TREAT_STORE_ID, setStoreStatusCache } from './utils/orderTiming';
@@ -19,8 +60,11 @@ import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
 import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
 import { verifyAdminSession, clearAdminSession } from './utils/adminAuth';
+
+// Local storage keys for saved delivery addresses
 const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
+
 export default function App() {
     // Load initial states from localStorage if available (invalidates on data version mismatch)
     const [stores, setStores] = useState(() => {

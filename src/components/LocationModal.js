@@ -1,7 +1,39 @@
+/**
+ * @file LocationModal.js
+ * @module components/LocationModal
+ * @description
+ * Customer Delivery Address & Campus Location Management Modal for FoodZa.
+ * 
+ * Architectural Role:
+ * - Allows students and campus customers to manage their saved delivery locations (Hostel, Home, Work, Other).
+ * - Collects critical campus-specific metadata:
+ *   - `name`: Recipient name.
+ *   - `hostelName`: E.g. "Ganga Hostel", "Kaveri Hostel".
+ *   - `block`: E.g. "Block A", "Wing 2".
+ *   - `roomNo`: E.g. "Room 204".
+ *   - `phone`: Contact phone number.
+ * - Database Integration:
+ *   - These structured fields map directly to Supabase order columns (`name`, `Hostel`, `room No.`, `contact`)
+ *     during checkout dispatch in `App.js` and `api.js`.
+ * 
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Controls modal visibility.
+ * @param {Function} props.onClose - Dismisses the modal.
+ * @param {Array<Object>} props.addresses - Array of saved customer addresses from `localStorage`.
+ * @param {Object} props.currentAddress - Currently active delivery address.
+ * @param {Function} props.onSelectAddress - Selects an address and makes it active.
+ * @param {Function} props.onAddAddress - Persists a newly created address.
+ * @param {Function} props.onDeleteAddress - Deletes a saved address.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
 import { MapPin, Plus, Check, X, Building, Home, GraduationCap, Trash2 } from 'lucide-react';
+
 export const LocationModal = ({ isOpen, onClose, addresses, currentAddress, onSelectAddress, onAddAddress, onDeleteAddress, }) => {
+    // -------------------------------------------------------------
+    // New Address Form State
+    // -------------------------------------------------------------
     const [showAddForm, setShowAddForm] = useState(false);
     const [newLabel, setNewLabel] = useState('Hostel');
     const [newName, setNewName] = useState('');
@@ -10,6 +42,7 @@ export const LocationModal = ({ isOpen, onClose, addresses, currentAddress, onSe
     const [newRoomNo, setNewRoomNo] = useState('');
     const [newLine, setNewLine] = useState('');
     const [newPhone, setNewPhone] = useState('');
+
     if (!isOpen)
         return null;
     const handleCreateAddress = (e) => {

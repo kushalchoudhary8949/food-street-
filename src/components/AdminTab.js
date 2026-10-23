@@ -1,3 +1,54 @@
+/**
+ * ============================================================================
+ * FOODZA BACK-OFFICE OPERATIONS DASHBOARD (`AdminTab.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * Serves as the central administration and management portal for FoodZa.
+ * It provides full CRUD operations, live order tracking, business controls,
+ * and database maintenance capabilities.
+ * 
+ * SUB-TABS BREAKDOWN:
+ * 1. Overview (`overview`):
+ *    - High-level KPIs: Total Revenue, Active Orders, Total Stores (with Live count), Menu Items.
+ *    - Instant Store Operating Controls: Quick Open, Close, or Auto (Schedule) toggle for each store.
+ *    - Quick Live/Hidden website visibility toggle.
+ *    - Real-time recent live orders preview.
+ * 2. Stores Manager (`stores`):
+ *    - Full Store List with Search and Visibility Filters (`All`, `Visible`, `Hidden`).
+ *    - Website Visibility Control Bar (`Live` vs `Hidden`) with instant toggle.
+ *    - Operating Hours: Configure Opening & Closing 24h times with 12h preview.
+ *    - Add New Store / Edit Store modal form with image URL, fees, and cuisines.
+ * 3. Discounts Manager (`discounts`):
+ *    - Store Discount KPIs: Active count, average discount amount.
+ *    - Search and Filter stores by discount status.
+ *    - Inline discount configuration: discount amount (₹), minimum order value (₹),
+ *      and customer-facing discount badge preview.
+ * 4. Menu Items Manager (`items`):
+ *    - Store selector dropdown.
+ *    - Add, edit, or remove menu items with prices, categories, veg/non-veg flags, and bestseller tags.
+ * 5. Categories Manager (`categories`):
+ *    - Manage home screen category carousel items (name, slug, image).
+ * 6. Live Orders Tracker (`orders`):
+ *    - Live order fulfillment pipeline with status stepper:
+ *      `placed` -> `preparing` -> `out_for_delivery` -> `delivered` / `cancelled`.
+ *    - Search orders by ID, customer name, room number, hostel, or phone.
+ *    - Display formatted Grand Total, item breakdown, and delivery details.
+ * 7. Cloud & Database (`cloud`):
+ *    - Supabase PostgreSQL connection diagnostics & table row count statistics.
+ *    - Database Seeding tool to populate or reset mock stores and categories.
+ * 
+ * PROPS:
+ * @param {Array} stores - Array of all store objects.
+ * @param {Array} categories - Array of category taxonomy items.
+ * @param {Array} orders - Array of all normalized orders.
+ * @param {Function} onUpdateStores - Callback to update stores in App.js state.
+ * @param {Function} onUpdateCategories - Callback to update categories in App.js state.
+ * @param {Function} onUpdateOrders - Callback to update orders in App.js state.
+ * @param {Function} onLogout - Callback to end admin session and return to storefront.
+ * ============================================================================
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
 import { Building2, Utensils, ShoppingBag, Plus, Trash2, Edit3, XCircle, ChevronRight, DollarSign, LogOut, Database, RefreshCw, Check, Sparkles, Phone, MapPin, CreditCard, MessageSquare, Power, Store, Clock, Tag, Percent, BadgePercent, Search, User, Home, Building, Eye, EyeOff } from 'lucide-react';
@@ -5,6 +56,7 @@ import { saveStoresToDb, saveCategoriesToDb, deleteStoreFromDb, deleteCategoryFr
 import { STORES, CATEGORIES } from '../data/mockData';
 import { getOrderWindowStatus, getStoreManualOverride, getStoreTimings, formatTimeTo12Hour, setStoreStatusCache } from '../utils/orderTiming';
 import { getStoreDiscount, formatDiscountLabel } from '../utils/discount';
+
 export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateCategories, onUpdateOrders, onLogout, }) => {
     const [activeSubTab, setActiveSubTab] = useState('overview');
     // Edit / Add Form States

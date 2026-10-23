@@ -1,8 +1,36 @@
-// ─── API Service ─────────────────────────────────────────────────────────────
-// All backend calls go through the Supabase Edge Function.
-// In development you can override this with VITE_API_BASE (e.g. /api for the
-// local Express proxy).  In production it points to the deployed Edge Function.
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * ============================================================================
+ * UNIFIED BACKEND API SERVICE LAYER (`api.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * Serves as the primary data-access and persistence layer connecting the React frontend
+ * to the Supabase Cloud backend (PostgreSQL database & Deno Edge Function).
+ * 
+ * ARCHITECTURE & FALLBACK STRATEGY:
+ * 1. Edge Function Gateway (`API_BASE`):
+ *    - In Production: Hits `https://<ref>.supabase.co/functions/v1/food-street`
+ *    - In Development: Can route through local Express proxy (`/api`)
+ * 2. High-Availability Dual Strategy:
+ *    - For order fetching, it first requests the Edge Function.
+ *    - If the Edge Function times out or is unreachable, it automatically falls back
+ *      to direct PostgREST querying via `https://<ref>.supabase.co/rest/v1/orders`.
+ * 3. Data Normalization (`normalizeOrder`):
+ *    - Supabase orders have evolved with both dedicated columns (`name`, `room No.`,
+ *      `Hostel`, `contact`, `grand Total`) and a JSON `data` payload.
+ *    - `normalizeOrder` seamlessly resolves discrepancies, ensuring frontend components
+ *      always receive consistent keys (`roomNo`, `hostel`, `contact`, `grandTotal`, etc.).
+ * 4. Real-Time Order Sync:
+ *    - `subscribeToOrders` provides resilient polling that synchronizes order updates
+ *      across multiple admin tabs and customer devices.
+ * 
+ * RELATED MODULES:
+ * - `src/App.js`: Fetches initial data on startup and syncs placed orders.
+ * - `src/components/AdminTab.js`: Uses all CRUD functions for Stores, Menu Items, Categories, and Orders.
+ * - `src/components/CartDrawer.js`: Persists new orders on checkout.
+ * - `supabase/functions/food-street/index.ts`: The backend Edge Function handling these requests.
+ * ============================================================================
+ */
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
@@ -12,6 +40,14 @@ const SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
 
+/**
+ * Normalizes an order record from Supabase into a consistent, strongly-typed frontend object.
+ * Resolves both dedicated PostgreSQL column names (`"room No."`, `"Hostel"`, `"grand Total"`)
+ * and nested JSON payload fields in `data`.
+ * 
+ * @param {Object} order - Raw order record from Supabase or Edge Function.
+ * @returns {Object|null} Normalized order object with standard camelCase and display properties.
+ */
 function normalizeOrder(order) {
   if (!order) return null;
   const rawData = typeof order.data === 'string' ? JSON.parse(order.data) : (order.data || {});

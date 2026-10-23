@@ -1,14 +1,43 @@
+/**
+ * @file OrderTrackerModal.js
+ * @module components/OrderTrackerModal
+ * @description
+ * Real-Time Order Tracking & Delivery Status Modal for FoodZa.
+ * 
+ * Architectural Role:
+ * - Opened immediately following checkout in `App.js` or via recent order interactions.
+ * - Displays a live visual status stepper tracking order progression across 4 stages:
+ *   1. `confirmed`: Restaurant accepted the incoming order.
+ *   2. `cooking`: Kitchen is actively preparing the items.
+ *   3. `out_for_delivery`: Delivery driver is en route with live map path visualization.
+ *   4. `delivered`: Delivery completed successfully.
+ * - Features:
+ *   - Route map graphic with live Google Maps navigation deep link.
+ *   - Delivery partner contact buttons (`tel:` call link & messaging).
+ *   - Status simulation tool (`simulateNextStep`) allowing developers and testers to advance order state.
+ *   - WhatsApp receipt re-dispatch button (`sendOrderToWhatsApp`).
+ * 
+ * @param {Object} props
+ * @param {Object} props.order - Active order record with items, grandTotal, deliveryAddress, and status.
+ * @param {boolean} props.isOpen - Controls modal visibility.
+ * @param {Function} props.onClose - Dismisses the tracker modal.
+ * @param {Function} props.onAdvanceStatus - Callback updating the order's status in `App.js` & Supabase.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import { X, CheckCircle2, Phone, MessageSquare, Clock, MapPin, Bike, ChevronRight, Navigation, MessageCircle } from 'lucide-react';
 import { sendOrderToWhatsApp } from '../utils/whatsapp';
+
 export const OrderTrackerModal = ({ order, isOpen, onClose, onAdvanceStatus, }) => {
     const [currentStep, setCurrentStep] = useState('cooking');
+
     useEffect(() => {
         if (order) {
             setCurrentStep(order.status);
         }
     }, [order]);
+
     if (!isOpen || !order)
         return null;
     const steps = [

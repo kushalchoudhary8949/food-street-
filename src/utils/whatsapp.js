@@ -1,8 +1,40 @@
+/**
+ * ============================================================================
+ * WHATSAPP ORDER DISPATCH & RECEIPT FORMATTER (`whatsapp.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * Formats placed customer orders into a clean, human-readable WhatsApp receipt
+ * and generates deep-links (`https://wa.me/...`) to send orders directly to the
+ * operations team/store dispatch WhatsApp number.
+ * 
+ * KEY RESPONSIBILITIES:
+ * 1. Receipt Formatting: Builds structured text including Order ID, date/time,
+ *    line-item quantities, veg/non-veg tags, platform fees, discounts, tips,
+ *    grand total, customer contact number, and hostel room delivery address.
+ * 2. UPI Payment Integration: Embeds official UPI ID (`9180468256@axl`) for easy
+ *    payment verification by dispatch staff.
+ * 3. Deep Linking: Constructs URI-encoded WhatsApp links (`wa.me`) for instant
+ *    browser redirection or mobile app handoff.
+ * 
+ * RELATED MODULES:
+ * - `src/components/CartDrawer.js`: Invokes `sendOrderToWhatsApp` on checkout submission.
+ * - `src/components/OrdersTab.js`: Allows customers to re-send or view order receipts.
+ * - `src/App.js`: Coordinates checkout and pending order dispatches.
+ * ============================================================================
+ */
+
 export const WHATSAPP_NUMBER = '919180468256';
 export const DISPLAY_PHONE_NUMBER = '9180468256';
 export const PHONEPE_UPI_URI = 'upi://pay?pa=foodza@upi&pn=FoodZa%20Delivery&cu=INR';
 export const PAYMENT_UPI_ID = '9180468256@axl';
 
+/**
+ * Builds a markdown-formatted WhatsApp message representing the full order receipt.
+ * 
+ * @param {Object} order - The normalized order object.
+ * @returns {string} Formatted WhatsApp text receipt with emojis and structured fields.
+ */
 export function generateWhatsAppOrderMessage(order) {
     const orderId = order.orderNumber
         ? (order.orderNumber.startsWith('#') ? order.orderNumber : `#${order.orderNumber}`)

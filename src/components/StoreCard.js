@@ -1,3 +1,26 @@
+/**
+ * @file StoreCard.js
+ * @module components/StoreCard
+ * @description
+ * Primary Restaurant Card component rendered in the customer home feed.
+ * 
+ * Architectural Role:
+ * - Represents a single merchant or food court in the home storefront listing.
+ * - Dynamic Status Badges:
+ *   - Discount Ribbon: Renders active promotional badge (e.g., "Flat ₹50 OFF") via `utils/discount.js`.
+ *   - Operational Hours: Renders "Orders closed" or "Opens at [time]" if outside active ordering windows (`utils/orderTiming.js`).
+ *   - Food Court Tag: Highlights composite multi-outlet restaurants (e.g., Food Street with child outlets).
+ * - User Actions:
+ *   - Tap card: Opens `StoreDetailModal` to browse full restaurant menu.
+ *   - Heart icon: Toggles bookmark saved state in `App.js`.
+ * 
+ * @param {Object} props
+ * @param {Object} props.store - Merchant data object (name, image, cuisines, outlets, discounts).
+ * @param {boolean} props.isFavorite - Whether this merchant is currently bookmarked by the user.
+ * @param {Function} props.onToggleFavorite - Callback handling favorite toggle event.
+ * @param {Function} props.onClick - Callback opening store details modal.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Heart } from 'lucide-react';
 import { getOrderWindowStatus } from '../utils/orderTiming';

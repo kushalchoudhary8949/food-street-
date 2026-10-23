@@ -1,5 +1,29 @@
+/**
+ * @file BottomNav.js
+ * @module components/BottomNav
+ * @description
+ * Fixed Mobile Bottom Navigation Dock for FoodZa.
+ * 
+ * Architectural Role:
+ * - Provides primary viewport-bottom tab switching for mobile and desktop screens:
+ *   - "Home": Main storefront restaurant feed.
+ *   - "Search": Omnisearch and cuisine discover tab.
+ *   - "Cart": Slide-over checkout drawer trigger with real-time badge count.
+ *   - "Orders": Customer order history and WhatsApp receipt trigger with active count badge.
+ *   - "Admin": Operations portal icon (conditionally rendered only when `showAdmin === true`).
+ * 
+ * @param {Object} props
+ * @param {'home'|'search'|'orders'|'profile'|'admin'} props.activeTab - Currently active application tab.
+ * @param {Function} props.onTabChange - Tab change handler in `App.js`.
+ * @param {number} [props.activeOrdersCount=0] - Number of non-completed orders to display as badge on Orders tab.
+ * @param {number} [props.cartItemsCount=0] - Total line item quantity currently in shopping cart.
+ * @param {Function} props.onOpenCart - Triggers the slide-over CartDrawer.
+ * @param {boolean} [props.showAdmin=false] - Whether to expose the Admin Operations icon on the dock.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Home, Search, Receipt, ShoppingBag, Settings } from 'lucide-react';
+
 export const BottomNav = ({ activeTab, onTabChange, activeOrdersCount = 0, cartItemsCount = 0, onOpenCart, showAdmin = false, }) => {
     return (_jsxs("nav", { id: "bottom-navigation-bar", className: "fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-md border-t border-gray-200/80 px-3 py-2 flex items-center justify-around shadow-lg max-w-md mx-auto sm:max-w-xl md:max-w-2xl lg:max-w-3xl", children: [_jsxs("button", { id: "nav-tab-home", onClick: () => onTabChange('home'), className: "flex flex-col items-center justify-center min-w-[56px] focus:outline-hidden group", children: [_jsx("div", { className: `w-11 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${activeTab === 'home'
                             ? 'bg-[#E11D48] text-white shadow-xs'

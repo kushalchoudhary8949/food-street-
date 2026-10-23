@@ -1,11 +1,43 @@
+/**
+ * @file MenuItemModal.js
+ * @module components/MenuItemModal
+ * @description
+ * Interactive Dish Customization & Add-on Selection Modal for FoodZa.
+ * 
+ * Architectural Role:
+ * - Opened when a customer clicks "ADD" on a customizable dish card in `StoreDetailModal` or search results.
+ * - Allows selecting optional toppings, extra portions, and sides (`item.addons`).
+ * - Dietary Classification Safety:
+ *   - Dynamically re-evaluates veg/non-veg status: If a dish is nominally vegetarian but the customer selects
+ *     a non-vegetarian addon, `effectiveIsVeg` automatically flips to `false` (Non-Veg) to prevent dietary mislabeling.
+ * - Availability Enforcement:
+ *   - Checks `item.availableOnDays` against the current day of the week (e.g. Wednesday specials) and disables
+ *     the add button if today is not an active ordering day.
+ * - Dispatches the configured dish along with selected addons and quantity to `onAddToCart`.
+ * 
+ * @param {Object} props
+ * @param {Object} props.item - Dish data object (name, price, isVeg, addons, image, description).
+ * @param {Function} props.onClose - Dismisses the customization modal without adding to cart.
+ * @param {Function} props.onAddToCart - Callback injecting configured item into global cart state in `App.js`.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
 import { X, Plus, Minus, Check } from 'lucide-react';
+
 export const MenuItemModal = ({ item, onClose, onAddToCart, }) => {
+    // -------------------------------------------------------------
+    // Quantity & Add-on Selection State
+    // -------------------------------------------------------------
     const [quantity, setQuantity] = useState(1);
     const [selectedAddonIds, setSelectedAddonIds] = useState([]);
+
     if (!item)
         return null;
+
+    /**
+     * Toggles an addon on or off by its ID.
+     */
     const toggleAddon = (addonId) => {
         if (selectedAddonIds.includes(addonId)) {
             setSelectedAddonIds(selectedAddonIds.filter(id => id !== addonId));
@@ -14,12 +46,17 @@ export const MenuItemModal = ({ item, onClose, onAddToCart, }) => {
             setSelectedAddonIds([...selectedAddonIds, addonId]);
         }
     };
+
+    // Derive selected addon entities and calculate total line cost
     const selectedAddons = (item.addons || []).filter(a => selectedAddonIds.includes(a.id));
     const addonsTotal = selectedAddons.reduce((sum, a) => sum + a.price, 0);
     const totalPrice = (item.price + addonsTotal) * quantity;
+
+    // Day-of-week restriction check (e.g. Wednesday-only biryani)
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     const isAvailableToday = !item.availableOnDays || item.availableOnDays.length === 0 || item.availableOnDays.includes(today);
-    // If any selected addon is non-veg, the customised item becomes non-veg
+
+    // Dietary classification safety: If any chosen addon is non-veg, mark dish as non-veg
     const hasNonVegAddon = selectedAddons.some(a => a.isVeg === false);
     const effectiveIsVeg = item.isVeg && !hasNonVegAddon;
     const handleConfirm = () => {

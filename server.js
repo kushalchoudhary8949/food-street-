@@ -1,3 +1,26 @@
+/**
+ * @file server.js
+ * @module server
+ * @description
+ * Full-Stack Express Server & Vite Development / SSR Middleware for FoodZa.
+ * 
+ * Architectural Role:
+ * - Dual-Database Hybrid Architecture:
+ *   1. Supabase Cloud (Primary): When running in cloud / standard mode, API requests to `/api/*`
+ *      are dynamically proxied to the Supabase Edge Function (`food-street`) or PostgREST PostgreSQL database.
+ *   2. MongoDB (Optional Local/Enterprise Fallback): If `MONGODB_URI` environment variable is defined and
+ *      connected, Express serves local Mongoose REST endpoints for `/api/stores`, `/api/categories`, and `/api/orders`.
+ * - Development & Production Dual Mode:
+ *   - Development (`process.env.NODE_ENV !== 'production'`):
+ *     Attaches Vite dev server in middleware mode (`vite.middlewares`), enabling Hot Module Replacement (HMR)
+ *     and on-the-fly ESM transpilation.
+ *   - Production:
+ *     Serves static production assets from `./dist` with optimal HTTP cache headers (immutable long-term caching
+ *     for hashed bundle assets in `/assets/`, and `no-cache, must-revalidate` for `index.html` to guarantee instant deploys).
+ * - SPA Fallback Routing:
+ *   Wildcard `app.get('*')` routes unmatched requests back to `dist/index.html` for client-side routing.
+ */
+
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -6,6 +29,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 
+// -------------------------------------------------------------
+// Cloud Database Configuration (Supabase PostgreSQL & Edge Functions)
+// -------------------------------------------------------------
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
 const SUPABASE_EDGE_URL = `${SUPABASE_URL}/functions/v1/food-street`;
@@ -20,7 +46,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Seamless proxy for /api requests to Supabase Edge Function when MongoDB is not connected
+// -------------------------------------------------------------
+// Seamless API Proxy: Forward /api calls to Supabase Edge Function
+// Executes when local MongoDB is not connected, delegating persistence to cloud PostgreSQL.
+// -------------------------------------------------------------
 app.use('/api', async (req, res, next) => {
   if (mongoose.connection.readyState === 1) {
     return next();

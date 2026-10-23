@@ -1,4 +1,29 @@
-// Order window timing configuration and utility functions
+/**
+ * ============================================================================
+ * STORE OPERATING HOURS & ORDER TIMING ENGINE (`orderTiming.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * Determines whether stores are currently open to accept orders based on:
+ * 1. Database-configured schedule (`openTime`, `closeTime` in 24h format, e.g. "11:00", "23:00").
+ * 2. Overnight operating windows (e.g., open at 18:00 and close at 03:00 next morning).
+ * 3. Store-level manual overrides set by Admin:
+ *    - `open`: Force-open store immediately regardless of schedule.
+ *    - `closed`: Force-close store immediately regardless of schedule.
+ *    - `auto`: Follow schedule hours strictly.
+ * 4. Backward-compatible default timings for legacy outlets.
+ * 5. Formatting utilities: 12-hour AM/PM converters, schedule countdown labels,
+ *    and order window messages displayed to customers on dish cards.
+ * 
+ * RELATED MODULES:
+ * - `src/components/AdminTab.js`: Admin toggles manual overrides and edits store opening/closing times.
+ * - `src/components/StoreCard.js`: Displays "OPENS AT ...", "OPEN NOW", or "CLOSED".
+ * - `src/components/CartDrawer.js`: Validates that store is currently open before accepting an order.
+ * - `src/App.js`: Periodically refreshes `currentTime` to re-evaluate open/close statuses in real time.
+ * ============================================================================
+ */
+
+// Key store identifiers with specific business rules
 export const BIRIYANI_ZONE_STORE_ID = 'store-biriyani-zone';
 export const OPEN_STORE_ID = BIRIYANI_ZONE_STORE_ID;
 export const TUMMY_TREAT_STORE_ID = 'store-tummy-treat';

@@ -1,4 +1,23 @@
+/**
+ * @file CategoryBar.js
+ * @module components/CategoryBar
+ * @description
+ * Horizontal Category Carousel & Filter Bar for FoodZa.
+ * 
+ * Architectural Role:
+ * - Renders a sleek, horizontally scrollable row of visual circular category badges.
+ * - Allows quick filtering of the home feed:
+ *   - Clicking an unselected category filters the feed to restaurants and dishes matching that cuisine slug.
+ *   - Clicking an already-selected category clears the filter (`onSelectCategory(null)`).
+ * 
+ * @param {Object} props
+ * @param {Array<Object>} props.categories - Array of category objects (id, name, slug, image).
+ * @param {string|null} props.selectedCategory - Currently active category slug filter, or null if unfiltered.
+ * @param {Function} props.onSelectCategory - Callback toggling category filter in `App.js`.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+
 export const CategoryBar = ({ categories, selectedCategory, onSelectCategory, }) => {
     return (_jsx("div", { className: "w-full py-2", children: _jsx("div", { className: "flex items-center justify-between overflow-x-auto no-scrollbar px-4 space-x-3 sm:space-x-6 py-1", children: categories.map((cat) => {
                 const isSelected = selectedCategory === cat.slug;

@@ -1,10 +1,41 @@
+/**
+ * @file SearchTab.js
+ * @module components/SearchTab
+ * @description
+ * Omnisearch & Discovery View for FoodZa.
+ * 
+ * Architectural Role:
+ * - Provides cross-restaurant discovery for cuisines, dishes, and merchants.
+ * - Stores Visibility Filtering:
+ *   - Honors admin visibility toggle (`store.isVisible !== false`). Hidden stores and their dishes
+ *     are excluded from search results automatically.
+ * - Multi-Index Matching:
+ *   1. Matches merchants by name, cuisine tags, and menu items.
+ *   2. Extracts and displays specific matching dishes (`matchingDishes`) directly in search results,
+ *      allowing customers to tap a dish and customize it (`MenuItemModal`) without having to manually
+ *      find it inside the store menu.
+ * - Quick filter pills:
+ *   - Allows fast one-tap filtering by popular food categories (Burgers, Pizza, Biryani, Pure Veg).
+ * 
+ * @param {Object} props
+ * @param {Array<Object>} props.stores - Full list of store entities.
+ * @param {string} [props.initialQuery=''] - Optional initial search string (e.g. from header search bar).
+ * @param {Function} props.onSelectStore - Callback opening `StoreDetailModal` for a matched store.
+ * @param {Function} props.onSelectMenuItem - Callback opening `MenuItemModal` for a matched dish.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
 import { Search, Sparkles } from 'lucide-react';
 import { getStoreDiscount } from '../utils/discount';
+
 export const SearchTab = ({ stores, initialQuery = '', onSelectStore, onSelectMenuItem, }) => {
+    // -------------------------------------------------------------
+    // Search Query & Category Filter State
+    // -------------------------------------------------------------
     const [query, setQuery] = useState(initialQuery);
     const [selectedFilter, setSelectedFilter] = useState(null);
+
     const quickFilters = [
         { label: 'All', value: null },
         { label: 'Burgers', value: 'Burgers' },

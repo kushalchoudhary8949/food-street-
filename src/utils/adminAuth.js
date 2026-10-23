@@ -1,19 +1,51 @@
-// ─── Secure Admin Authentication Service ────────────────────────────────────
-// Salted SHA-256 with Cryptographic Session Signatures & Anti-Tamper Verification
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * ============================================================================
+ * SECURE ADMIN AUTHENTICATION SERVICE (`adminAuth.js`)
+ * ============================================================================
+ * 
+ * ROLE IN CODEBASE:
+ * This module provides high-security client-side authentication and session management
+ * for the FoodZa Admin Panel (`/src/components/AdminLogin.js` & `AdminTab.js`).
+ * 
+ * KEY RESPONSIBILITIES:
+ * 1. Cryptographic Hashing: Uses browser-native SubtleCrypto SHA-256 with distinct
+ *    salts (`ID_SALT`, `PWD_SALT`) to verify entered admin credentials.
+ * 2. Tamper-Proof Sessions: Generates signed session tokens (`timestamp.signature`)
+ *    where signature = SHA-256(timestamp + secret + passwordHash).
+ *    Any manual alteration in DevTools / LocalStorage fails signature verification.
+ * 3. Brute-Force & Rate-Limiting Protection:
+ *    - Implements an artificial timing jitter (300-500ms) to foil automated timing attacks.
+ *    - Tracks failed attempts in localStorage. 5 consecutive failed attempts trigger
+ *      an automatic 5-minute security lockout.
+ * 4. Session Persistence: Supports both "Remember Me" (persistent `localStorage`)
+ *    and single-session (`sessionStorage`) storage with a 7-day automatic expiry.
+ * 
+ * RELATED FILES:
+ * - `src/components/AdminLogin.js`: Login form rendering & lockout countdown display.
+ * - `src/App.js`: Validates session on mount & handles `#admin` route switching.
+ * - `src/components/AdminTab.js`: Admin portal operations requiring authenticated session.
+ * ============================================================================
+ */
 
+// Salts and secrets for hashing and HMAC-like signatures
 const ID_SALT = 'fd_id_salt_';
 const PWD_SALT = 'fd_pwd_salt_';
 const SESSION_SECRET = 'fd_sec_sig_984729184';
 
-// Authorized credentials hash signatures
+// Pre-computed authorized credentials hash signatures (admin credentials)
 const AUTH_ID_HASH = 'd66decc061c037952af17d0ecdc72b57393bfba0725ab06e837ab822dc36af11';
-
 const AUTH_PWD_HASH = 'b1944a4135baf733266141dbb7b4dce61152086196604819cc193b24ca29db52';
 
+// Local storage keys for session tokens and rate-limiting counters
 const SESSION_KEY = 'admin_session_token';
 const RATE_LIMIT_KEY = 'admin_auth_attempts';
 
+/**
+ * Computes a standard SHA-256 hex digest of a given string using Web Crypto API.
+ * 
+ * @param {string} text - The input plain text to hash.
+ * @returns {Promise<string>} Hexadecimal string representation of the 256-bit hash.
+ */
 async function sha256(text) {
   const enc = new TextEncoder();
   const buf = await crypto.subtle.digest('SHA-256', enc.encode(text));

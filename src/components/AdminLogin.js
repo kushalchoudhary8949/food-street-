@@ -1,9 +1,36 @@
+/**
+ * @file AdminLogin.js
+ * @module components/AdminLogin
+ * @description
+ * Secure Administrator Authentication Portal for FoodZa.
+ * 
+ * Architectural Role:
+ * - Renders a tamper-resistant login gateway gating access to the operations dashboard (`AdminTab`).
+ * - Integrates directly with `utils/adminAuth.js` to enforce:
+ *   1. SHA-256 salted password hashing verification (zero plaintext password leakage).
+ *   2. Client-side brute-force mitigation and lockout countdowns (`checkRateLimit`, `recordFailedAttempt`).
+ *   3. Session token issuance with cryptographic HMAC signatures (`createAdminSession`).
+ * 
+ * Component State & Flow:
+ * - `adminId` & `password`: Controlled credential input states.
+ * - `lockoutSecs`: Real-time countdown timer reflecting active brute-force lockouts.
+ * - `rememberMe`: Determines whether the session token persists across browser restarts (`localStorage` vs `sessionStorage`).
+ * - `handleSubmit`: Orchestrates rate-limit checks, verification, session issuance, and `onLoginSuccess` callback.
+ * 
+ * @param {Object} props
+ * @param {Function} props.onLoginSuccess - Callback invoked upon successful authentication to lift the admin gate in `App.js`.
+ * @param {Function} props.onBackToStore - Callback invoked to return to the public customer storefront.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { verifyCredentials, createAdminSession, checkRateLimit, recordFailedAttempt, resetRateLimit } from '../utils/adminAuth';
 
 export const AdminLogin = ({ onLoginSuccess, onBackToStore }) => {
+    // -------------------------------------------------------------
+    // Authentication State & Form Controls
+    // -------------------------------------------------------------
     const [adminId, setAdminId] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -12,7 +39,10 @@ export const AdminLogin = ({ onLoginSuccess, onBackToStore }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [lockoutSecs, setLockoutSecs] = useState(0);
 
-    // Rate-limiting check on mount and interval
+    // -------------------------------------------------------------
+    // Rate-Limiting & Lockout Countdown Interval
+    // Polls rate-limit state every 1s to update the lockout timer UI.
+    // -------------------------------------------------------------
     useEffect(() => {
         const check = () => {
             const { isLocked, remainingSeconds } = checkRateLimit();
@@ -23,10 +53,14 @@ export const AdminLogin = ({ onLoginSuccess, onBackToStore }) => {
         return () => clearInterval(interval);
     }, []);
 
+    /**
+     * Handles credential submission, rate-limit enforcement, and session generation.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage(null);
 
+        // Pre-flight check: reject attempt immediately if lockout period is currently active
         const rateStatus = checkRateLimit();
         if (rateStatus.isLocked) {
             setErrorMessage(`Access temporarily suspended due to multiple failed attempts. Please retry in ${rateStatus.remainingSeconds}s.`);
@@ -40,13 +74,16 @@ export const AdminLogin = ({ onLoginSuccess, onBackToStore }) => {
 
         setIsLoading(true);
         try {
+            // Hash and verify credentials against salted SHA-256 signatures in adminAuth.js
             const isValid = await verifyCredentials(adminId, password);
 
             if (isValid) {
+                // Successful authentication: clear failure count and issue signed session token
                 resetRateLimit();
                 await createAdminSession(rememberMe);
                 onLoginSuccess();
             } else {
+                // Failed authentication: increment attempt counter and re-check lockout threshold
                 recordFailedAttempt();
                 const afterStatus = checkRateLimit();
                 if (afterStatus.isLocked) {

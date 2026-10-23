@@ -1,19 +1,61 @@
+/**
+ * @file CartDrawer.js
+ * @module components/CartDrawer
+ * @description
+ * Slide-over Cart Drawer and Checkout Flow for FoodZa.
+ * 
+ * Architectural Role:
+ * - Provides the customer with a comprehensive summary of items currently added to their cart.
+ * - Groups cart items by merchant/store and applies store-specific discount rules via `utils/discount.js`.
+ * - Validates operational constraints prior to order placement:
+ *   1. Store operational hours / order timing window (`getOrderWindowStatus`).
+ *   2. Valid delivery destination selection (`currentAddress`).
+ *   3. Mandatory non-cancellation acknowledgement toggle.
+ *   4. Double-submission prevention via `isPlacing` lock.
+ * - Computes dynamic order financials:
+ *   - `itemTotal`: Sum of item base prices + selected addon modifications.
+ *   - `containerCharge`: Quantity-scaled packaging charge per merchant.
+ *   - `taxesAndPacking`: 5% GST and packaging fee.
+ *   - `deliveryFee`: Fixed platform delivery fee (₹20).
+ *   - `storeDiscount`: Automatically deducted store-level discounts if minimum order value (MOV) is satisfied.
+ *   - `selectedTip`: Optional gratuity for the delivery driver (₹0, ₹20, ₹30, ₹50, ₹100).
+ *   - `grandTotal`: Final payable amount.
+ * 
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Controls drawer visibility modal backdrop.
+ * @param {Function} props.onClose - Dismisses the cart drawer.
+ * @param {Array<Object>} props.cartItems - Array of cart item entities with nested store, item, and selectedAddons.
+ * @param {Object} props.currentAddress - Customer's currently selected hostel/room delivery address.
+ * @param {Function} props.onOpenLocationModal - Opens the address switcher modal.
+ * @param {Function} props.onUpdateQuantity - Callback modifying line-item quantity (+1 / -1 / remove).
+ * @param {Function} props.onClearCart - Empties all items from the active cart.
+ * @param {number} [props.containerChargePerItem=0] - Container packaging fee per unit item.
+ * @param {Function} props.onPlaceOrder - Callback executing order dispatch in `App.js`.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState } from 'react';
 import { X, Plus, Minus, ShoppingBag, ArrowRight, MapPin } from 'lucide-react';
 import { isOrderWindowOpen, getOrderWindowStatus } from '../utils/orderTiming';
 import { getStoreDiscount } from '../utils/discount';
+
 export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenLocationModal, onUpdateQuantity, onClearCart, containerChargePerItem = 0, onPlaceOrder, }) => {
+    // -------------------------------------------------------------
+    // Local Order Configuration State
+    // -------------------------------------------------------------
     const [selectedTip, setSelectedTip] = useState(20);
     const [deliveryNote, setDeliveryNote] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('upi');
     const [isCancellationConfirmed, setIsCancellationConfirmed] = useState(false);
     const [isPlacing, setIsPlacing] = useState(false);
     const currentStore = cartItems[0]?.store;
+
     if (!isOpen)
         return null;
 
-    // Calculate bill & store-level item totals for discount eligibility
+    // -------------------------------------------------------------
+    // Financial Breakdown & Store Discount Computations
+    // -------------------------------------------------------------
     const itemTotal = cartItems.reduce((sum, ci) => {
         const addonsCost = ci.selectedAddons.reduce((s, a) => s + a.price, 0);
         return sum + (ci.item.price + addonsCost) * ci.quantity;
@@ -42,26 +84,45 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
     });
 
     const grandTotal = Math.max(0, itemTotal + containerCharge + deliveryFee + taxesAndPacking + selectedTip - storeDiscount);
+
+    /**
+     * Executes client-side validation and initiates order dispatch.
+     * Validates:
+     * 1. Store operational timing window.
+     * 2. Active delivery address selection.
+     * 3. Non-cancellation agreement acknowledgement.
+     * 4. Double-click concurrency lock (`isPlacing`).
+     */
     const handleCheckout = () => {
         if (cartItems.length === 0)
             return;
+
+        // Validation 1: Ensure store is currently accepting orders based on its operating hours
         const windowStatus = getOrderWindowStatus(currentStore?.id, undefined, currentStore);
         if (!windowStatus.isOpen) {
             alert(windowStatus.message);
             return;
         }
+
+        // Validation 2: Ensure customer has specified a hostel room delivery address
         if (currentAddress.id === 'addr-none') {
             alert('Please add a delivery address before placing an order.');
             onOpenLocationModal();
             return;
         }
+
+        // Validation 3: Ensure customer explicitly accepted the order finality policy
         if (!isCancellationConfirmed) {
             alert('Please confirm that the order cannot be cancelled after it is placed.');
             return;
         }
+
+        // Validation 4: Double-submission prevention
         if (isPlacing) return;
         setIsPlacing(true);
+
         try {
+            // Dispatch payload up to App.js `handlePlaceOrder`
             onPlaceOrder({
                 tip: selectedTip,
                 discount: storeDiscount,
@@ -71,6 +132,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, currentAddress, onOpenL
                 cancellationConfirmed: isCancellationConfirmed,
             });
         } finally {
+            // Reset placing lock after brief window
             setTimeout(() => setIsPlacing(false), 2500);
         }
     };

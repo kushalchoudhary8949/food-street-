@@ -1,16 +1,53 @@
+/**
+ * @file StoreDetailModal.js
+ * @module components/StoreDetailModal
+ * @description
+ * Full-screen Interactive Restaurant Menu & Outlet Browser Modal for FoodZa.
+ * 
+ * Architectural Role:
+ * - Displays deep restaurant info (cover photo, delivery timing, distance, cuisine badges, active discount offers).
+ * - Dual-mode navigation:
+ *   1. Multi-Outlet Food Court Mode: If a store has an `outlets` array (e.g. food street hubs), it renders an outlet
+ *      selection directory first, allowing customers to pick a specific brand/stall.
+ *   2. Single Store Menu Mode: Directly displays menu categories, search, veg-only filter, and item cards.
+ * - Enforces store-level timing constraints (`getOrderWindowStatus`):
+ *   - Shows timing badges and disables item "ADD" buttons when the merchant is closed.
+ *   - Renders special ordering slot advisories for scheduled vendors (e.g., Graduate Biryani order windows).
+ * - Floating Cart Bar: Displays real-time store-specific subtotal and item counter at the bottom of the viewport.
+ * 
+ * @param {Object} props
+ * @param {Object} props.store - Target merchant entity containing items, outlets, categories, and discounts.
+ * @param {boolean} props.isOpen - Controls visibility of the modal.
+ * @param {Function} props.onClose - Dismisses the store detail view.
+ * @param {boolean} props.isFavorite - Whether the customer bookmarked this store.
+ * @param {Function} props.onToggleFavorite - Callback toggling bookmark state in `App.js`.
+ * @param {Array<Object>} props.cartItems - Global shopping bag items for counting line-items from this store.
+ * @param {Function} props.onOpenItemModal - Triggers addon customizer modal (`MenuItemModal`).
+ * @param {Function} props.onUpdateCartQuantity - Increments or decrements cart item count.
+ * @param {Function} props.onOpenCart - Opens checkout drawer (`CartDrawer`).
+ */
+
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Heart, Share2, Search, Plus, Minus, Clock, Store as StoreIcon, AlertTriangle } from 'lucide-react';
 import { GRADUATE_BIRYANI_ORDER_SLOTS } from '../utils/orderTiming';
 import { getOrderWindowStatus } from '../utils/orderTiming';
 import { getStoreDiscount } from '../utils/discount';
+
 export const StoreDetailModal = ({ store, isOpen, onClose, isFavorite, onToggleFavorite, cartItems, onOpenItemModal, onUpdateCartQuantity, onOpenCart, }) => {
+    // Determine whether this store represents a composite food court with multiple child stalls/outlets
     const hasOutlets = Boolean(store && store.outlets && store.outlets.length > 0);
+
+    // -------------------------------------------------------------
+    // Menu Filtering & Outlet Navigation State
+    // -------------------------------------------------------------
     const [selectedOutletId, setSelectedOutletId] = useState('all');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [menuSearch, setMenuSearch] = useState('');
     const [vegOnly, setVegOnly] = useState(false);
     const [showGraduateMenu, setShowGraduateMenu] = useState(false);
+
+    // Reset filters and outlet selection whenever modal opens or active store changes
     useEffect(() => {
         if (store) {
             if (store.outlets && store.outlets.length > 0) {
@@ -24,6 +61,7 @@ export const StoreDetailModal = ({ store, isOpen, onClose, isFavorite, onToggleF
             setShowGraduateMenu(false);
         }
     }, [store?.id, isOpen]);
+
     if (!isOpen || !store)
         return null;
     const orderWindowStatus = getOrderWindowStatus(store);

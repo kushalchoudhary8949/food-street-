@@ -1,5 +1,30 @@
+/**
+ * @file Header.js
+ * @module components/Header
+ * @description
+ * Sticky Global Navigation & Search Header for the FoodZa customer storefront.
+ * 
+ * Architectural Role:
+ * - Brand Presentation: Renders the "FoodZa" logotype with gradient styling.
+ * - Delivery Destination Indicator: Displays active location badge (e.g. "Hostel 4") and triggers `LocationModal` on click.
+ * - Header Cart Summary: Displays interactive bag icon with real-time item counter and subtotal, triggering `CartDrawer`.
+ * - Omnibox Search Bar: Captures search queries and transitions user focus to `SearchTab`.
+ * 
+ * @param {Object} props
+ * @param {Object} props.currentAddress - Active delivery address.
+ * @param {Function} props.onOpenLocationModal - Opens address switcher modal.
+ * @param {string} props.searchQuery - Current search input string.
+ * @param {Function} props.onSearchChange - Search text change handler.
+ * @param {Function} props.onSearchFocus - Handler transitioning app view to SearchTab on input focus.
+ * @param {Function} props.onAvatarClick - Profile click handler.
+ * @param {Function} props.onOpenCart - Opens checkout drawer.
+ * @param {number} [props.cartCount=0] - Total line item count in cart.
+ * @param {number} [props.cartTotal=0] - Total monetary value of items in cart.
+ */
+
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { MapPin, Search, ChevronDown, ShoppingBag } from 'lucide-react';
+
 export const Header = ({ currentAddress, onOpenLocationModal, searchQuery, onSearchChange, onSearchFocus, onAvatarClick, onOpenCart, cartCount = 0, cartTotal = 0, }) => {
     return (_jsxs("header", { className: "bg-white px-4 pt-3 pb-2 sticky top-0 z-30 shadow-xs border-b border-gray-100/80", children: [_jsxs("div", { className: "flex items-center justify-between pb-3", children: [_jsxs("div", { className: "flex items-center space-x-2.5", children: [_jsx("span", { className: "text-2xl font-black tracking-tighter bg-linear-to-r from-red-600 via-rose-600 to-amber-500 bg-clip-text text-transparent select-none", children: "FoodZa" }), _jsx("span", { className: "text-gray-300 font-light hidden xs:inline", children: "|" }), _jsxs("button", { id: "location-picker-btn", onClick: onOpenLocationModal, className: "flex items-center space-x-1 text-left group transition-all", children: [_jsx("div", { className: "text-red-600 transition-transform group-hover:scale-110", children: _jsx(MapPin, { className: "w-4 h-4 fill-red-600/10 stroke-red-600 stroke-[2.2]" }) }), _jsxs("div", { className: "flex items-center space-x-0.5", children: [_jsx("span", { className: "text-sm font-extrabold text-gray-900 tracking-tight group-hover:text-red-600 transition-colors", children: currentAddress.label }), _jsx(ChevronDown, { className: "w-3.5 h-3.5 text-gray-500 stroke-[2.5] opacity-70 group-hover:translate-y-0.5 transition-transform" })] })] })] }), _jsx("div", { className: "flex items-center space-x-2.5", children: _jsxs("button", { id: "header-cart-btn", onClick: onOpenCart, className: `relative flex items-center space-x-1.5 px-3 py-2 rounded-2xl border transition-all ${cartCount > 0
                                 ? 'bg-red-600 text-white border-red-600 shadow-md shadow-red-500/20 hover:bg-red-700 active:scale-95'

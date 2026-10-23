@@ -4,7 +4,7 @@ import {
   Plus, Trash2, Edit3, XCircle, Check, Power, Clock, Eye, EyeOff,
   Utensils, Store, Search, ChevronDown, ChevronUp, Lock, LogOut, RefreshCw,
   Image as ImageIcon, Tag, IndianRupee, FileText, Leaf, Star, ExternalLink,
-  Upload, Camera
+  Upload, Camera, FolderPlus
 } from 'lucide-react';
 import {
   fetchStoresFromDb, saveStoresToDb, fetchCategoriesFromDb
@@ -250,6 +250,9 @@ export function TummyTreatAdmin() {
   const [menuSearchQuery, setMenuSearchQuery] = useState('');
   const [menuCategoryFilter, setMenuCategoryFilter] = useState('All');
 
+  // Category management states
+  const [newCategoryName, setNewCategoryName] = useState('');
+
   // Operating hours state
   const [storeOpenTime, setStoreOpenTime] = useState('11:00');
   const [storeCloseTime, setStoreCloseTime] = useState('22:00');
@@ -460,6 +463,37 @@ export function TummyTreatAdmin() {
     showToast('🗑️ Item deleted from menu');
   };
 
+  // ─── Category CRUD ──────────────────────────────────────────────────
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!store || !newCategoryName.trim()) return;
+    const trimmed = newCategoryName.trim();
+    const currentCats = Array.isArray(store.menuCategories) ? store.menuCategories : [];
+    if (currentCats.some(c => c.toLowerCase() === trimmed.toLowerCase())) {
+      showToast('⚠️ Category already exists');
+      return;
+    }
+    const updatedCategories = [...currentCats, trimmed];
+    await saveStoreUpdate({ ...store, menuCategories: updatedCategories });
+    setNewCategoryName('');
+    showToast(`✅ Category "${trimmed}" added`);
+  };
+
+  const handleDeleteCategory = async (catName) => {
+    if (!store) return;
+    const currentItems = Array.isArray(store.items) ? store.items : [];
+    const itemsInCat = currentItems.filter(i => i.category === catName);
+    if (itemsInCat.length > 0) {
+      if (!confirm(`"${catName}" has ${itemsInCat.length} item(s). Delete category anyway? Items will keep their category label.`)) return;
+    } else {
+      if (!confirm(`Delete category "${catName}"?`)) return;
+    }
+    const currentCats = Array.isArray(store.menuCategories) ? store.menuCategories : [];
+    const updatedCategories = currentCats.filter(c => c !== catName);
+    await saveStoreUpdate({ ...store, menuCategories: updatedCategories });
+    showToast(`🗑️ Category "${catName}" deleted`);
+  };
+
   // Filtered menu items
   const filteredItems = (store?.items || []).filter(item => {
     if (menuCategoryFilter !== 'All' && item.category !== menuCategoryFilter) return false;
@@ -557,7 +591,7 @@ export function TummyTreatAdmin() {
           // Tab bar
           _jsx("div", {
             className: "flex border-b border-gray-200 bg-white overflow-x-auto no-scrollbar shadow-xs",
-            children: ['status', 'menu'].map(tab =>
+            children: ['status', 'menu', 'categories'].map(tab =>
               _jsx("button", {
                 onClick: () => setActiveTab(tab),
                 className: `flex-1 py-3 px-4 text-center font-bold text-xs uppercase tracking-wider border-b-2 whitespace-nowrap transition-colors ${
@@ -565,7 +599,7 @@ export function TummyTreatAdmin() {
                     ? 'border-orange-500 text-orange-600 bg-orange-50/50'
                     : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                 }`,
-                children: tab === 'status' ? '⚡ Store Status' : '🍽️ Menu Items'
+                children: tab === 'status' ? '⚡ Store Status' : tab === 'menu' ? '🍽️ Menu Items' : '🏷️ Categories'
               }, tab)
             )
           }),
@@ -937,12 +971,31 @@ export function TummyTreatAdmin() {
                                 _jsxs("div", {
                                   children: [
                                     _jsx("label", { className: "block font-bold mb-1", children: "Category" }),
-                                    _jsx("input", {
-                                      type: "text", value: itemForm.category,
-                                      onChange: e => setItemForm({ ...itemForm, category: e.target.value }),
-                                      className: "w-full p-2.5 border border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none",
-                                      placeholder: "e.g. Starters, Main Course"
-                                    })
+                                    (store?.menuCategories && store.menuCategories.length > 0)
+                                      ? _jsxs("select", {
+                                          value: itemForm.category,
+                                          onChange: e => setItemForm({ ...itemForm, category: e.target.value }),
+                                          className: "w-full p-2.5 border border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none bg-white text-xs font-medium",
+                                          required: true,
+                                          children: [
+                                            _jsx("option", { value: "", disabled: true, children: "-- Select Category --" }),
+                                            ...store.menuCategories.map(cat =>
+                                              _jsx("option", { value: cat, children: cat }, cat)
+                                            )
+                                          ]
+                                        })
+                                      : _jsxs("div", {
+                                          className: "text-xs text-gray-500 p-2.5 bg-amber-50 border border-amber-200 rounded-xl",
+                                          children: [
+                                            "No categories yet. ",
+                                            _jsx("button", {
+                                              type: "button",
+                                              onClick: () => setActiveTab('categories'),
+                                              className: "text-orange-600 font-bold underline hover:text-orange-700",
+                                              children: "Add categories first →"
+                                            })
+                                          ]
+                                        })
                                   ]
                                 })
                               ]
@@ -1119,6 +1172,102 @@ export function TummyTreatAdmin() {
                               ]
                             }, item.id)
                           )
+                        })
+                  ]
+                }),
+
+                // ═══ CATEGORIES TAB ═══
+                activeTab === 'categories' && store && _jsxs("div", {
+                  className: "space-y-4",
+                  children: [
+                    // Header
+                    _jsxs("div", {
+                      children: [
+                        _jsx("h3", { className: "font-extrabold text-sm text-gray-900", children: "Manage Categories" }),
+                        _jsxs("p", { className: "text-xs text-gray-500 mt-0.5", children: [
+                          menuCategories.filter(c => c !== 'All').length, " categories in your store"
+                        ] })
+                      ]
+                    }),
+
+                    // Add Category Form
+                    _jsxs("form", {
+                      onSubmit: handleAddCategory,
+                      className: "bg-white p-4 rounded-2xl border border-orange-200 shadow-xs space-y-3",
+                      children: [
+                        _jsxs("h4", {
+                          className: "font-extrabold text-xs text-gray-800 uppercase tracking-wider flex items-center gap-1.5",
+                          children: [_jsx(FolderPlus, { className: "w-3.5 h-3.5 text-orange-500" }), "Add New Category"]
+                        }),
+                        _jsxs("div", {
+                          className: "flex gap-2",
+                          children: [
+                            _jsx("input", {
+                              type: "text",
+                              value: newCategoryName,
+                              onChange: e => setNewCategoryName(e.target.value),
+                              placeholder: "e.g. Starters, Main Course, Beverages",
+                              className: "flex-1 p-2.5 border border-gray-200 rounded-xl text-xs font-medium focus:border-orange-500 focus:outline-none",
+                              required: true
+                            }),
+                            _jsxs("button", {
+                              type: "submit",
+                              disabled: !newCategoryName.trim(),
+                              className: "flex items-center gap-1.5 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all active:scale-95 disabled:opacity-50 shadow-xs shrink-0",
+                              children: [_jsx(Plus, { className: "w-3.5 h-3.5" }), "Add"]
+                            })
+                          ]
+                        })
+                      ]
+                    }),
+
+                    // Existing Categories List
+                    menuCategories.filter(c => c !== 'All').length === 0
+                      ? _jsx("div", {
+                          className: "text-center py-12 bg-white rounded-2xl border border-dashed border-gray-200",
+                          children: _jsxs("div", {
+                            className: "space-y-2",
+                            children: [
+                              _jsx(Tag, { className: "w-8 h-8 text-gray-300 mx-auto" }),
+                              _jsx("p", { className: "text-sm font-bold text-gray-400", children: "No categories yet" }),
+                              _jsx("p", { className: "text-xs text-gray-400", children: "Add your first category above to organize your menu" })
+                            ]
+                          })
+                        })
+                      : _jsx("div", {
+                          className: "space-y-2",
+                          children: menuCategories.filter(c => c !== 'All').map(cat => {
+                            const itemCount = (store.items || []).filter(i => i.category === cat).length;
+                            return _jsxs("div", {
+                              className: "bg-white p-3.5 rounded-xl border border-gray-100 shadow-xs flex items-center justify-between gap-3 hover:border-orange-100 transition-colors",
+                              children: [
+                                _jsxs("div", {
+                                  className: "flex items-center gap-3 flex-1 min-w-0",
+                                  children: [
+                                    _jsx("div", {
+                                      className: "w-9 h-9 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0",
+                                      children: _jsx(Tag, { className: "w-4 h-4 text-orange-500" })
+                                    }),
+                                    _jsxs("div", {
+                                      className: "min-w-0",
+                                      children: [
+                                        _jsx("p", { className: "font-bold text-xs text-gray-900 truncate", children: cat }),
+                                        _jsxs("p", { className: "text-[10px] text-gray-400 font-medium mt-0.5", children: [
+                                          itemCount, " item", itemCount !== 1 ? 's' : ''
+                                        ] })
+                                      ]
+                                    })
+                                  ]
+                                }),
+                                _jsx("button", {
+                                  onClick: () => handleDeleteCategory(cat),
+                                  className: "p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors shrink-0",
+                                  title: `Delete ${cat}`,
+                                  children: _jsx(Trash2, { className: "w-3.5 h-3.5" })
+                                })
+                              ]
+                            }, cat);
+                          })
                         })
                   ]
                 }),

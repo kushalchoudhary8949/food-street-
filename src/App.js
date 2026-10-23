@@ -65,40 +65,79 @@ import { verifyAdminSession, clearAdminSession } from './utils/adminAuth';
 const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 
+// -------------------------------------------------------------
+// Safe LocalStorage Helper with QuotaExceeded Protection
+// Prevents unhandled DOMException quota crashes when storing DB data
+// -------------------------------------------------------------
+export const safeStorage = {
+    getItem: (key) => {
+        try {
+            return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
+        } catch {
+            return null;
+        }
+    },
+    setItem: (key, value) => {
+        try {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(key, value);
+            }
+        } catch (e) {
+            console.warn(`[SafeStorage] Failed to set "${key}":`, e);
+            try {
+                // If quota exceeded, purge non-critical bloated caches and retry
+                localStorage.removeItem('food_street_orders');
+                localStorage.setItem(key, value);
+            } catch {
+                // Safely drop without crashing React
+            }
+        }
+    },
+    removeItem: (key) => {
+        try {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem(key);
+            }
+        } catch {}
+    }
+};
+
+// Proactively remove orders from client localStorage to permanently prevent quota exhaustion
+try {
+    localStorage.removeItem('food_street_orders');
+} catch {}
+
 export default function App() {
     // Load initial states from localStorage if available (invalidates on data version mismatch)
     const [stores, setStores] = useState(() => {
-        const savedVersion = typeof window !== 'undefined' ? localStorage.getItem('food_street_version') : null;
+        const savedVersion = safeStorage.getItem('food_street_version');
         if (savedVersion !== DATA_VERSION) {
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('food_street_version', DATA_VERSION);
-                localStorage.setItem('food_street_stores', JSON.stringify(STORES));
-                localStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
-            }
+            safeStorage.setItem('food_street_version', DATA_VERSION);
+            safeStorage.setItem('food_street_stores', JSON.stringify(STORES));
+            safeStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
             return STORES;
         }
-        const saved = localStorage.getItem('food_street_stores');
+        const saved = safeStorage.getItem('food_street_stores');
         return saved ? JSON.parse(saved) : STORES;
     });
     const [categories, setCategories] = useState(() => {
-        const savedVersion = typeof window !== 'undefined' ? localStorage.getItem('food_street_version') : null;
+        const savedVersion = safeStorage.getItem('food_street_version');
         if (savedVersion !== DATA_VERSION) {
             return CATEGORIES;
         }
-        const saved = localStorage.getItem('food_street_categories');
+        const saved = safeStorage.getItem('food_street_categories');
         return saved ? JSON.parse(saved) : CATEGORIES;
     });
-    const [orders, setOrders] = useState(() => {
-        const saved = localStorage.getItem('food_street_orders');
-        return saved ? JSON.parse(saved) : INITIAL_ORDERS;
-    });
+    // Orders are strictly fetched from and synchronized with Supabase DB (not stored in client localStorage)
+    const [orders, setOrders] = useState(() => INITIAL_ORDERS);
+
     // Ensure fresh stores and categories are loaded when version changes
     React.useEffect(() => {
-        const savedVersion = localStorage.getItem('food_street_version');
+        const savedVersion = safeStorage.getItem('food_street_version');
         if (savedVersion !== DATA_VERSION) {
-            localStorage.setItem('food_street_version', DATA_VERSION);
-            localStorage.setItem('food_street_stores', JSON.stringify(STORES));
-            localStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
+            safeStorage.setItem('food_street_version', DATA_VERSION);
+            safeStorage.setItem('food_street_stores', JSON.stringify(STORES));
+            safeStorage.setItem('food_street_categories', JSON.stringify(CATEGORIES));
             setStores(STORES);
             setCategories(CATEGORIES);
         }
@@ -128,30 +167,19 @@ export default function App() {
                 if (Array.isArray(dbCats) && dbCats.length > 0) {
                     setCategories(dbCats);
                 }
-                if (Array.isArray(dbOrders)) {
-                    if (dbOrders.length > 0) {
-                        setOrders((prevOrders) => {
-                            const orderMap = new Map();
-                            dbOrders.forEach(o => orderMap.set(o.id, o));
-                            // Retain any locally placed orders not yet in DB
-                            prevOrders.forEach(o => {
-                                if (!orderMap.has(o.id)) {
-                                    orderMap.set(o.id, o);
-                                    saveOrderToDb(o).catch(() => {});
-                                }
-                            });
-                            return Array.from(orderMap.values());
+                if (Array.isArray(dbOrders) && dbOrders.length > 0) {
+                    setOrders((prevOrders) => {
+                        const orderMap = new Map();
+                        dbOrders.forEach(o => orderMap.set(o.id, o));
+                        // Retain any locally placed orders not yet in DB
+                        prevOrders.forEach(o => {
+                            if (!orderMap.has(o.id)) {
+                                orderMap.set(o.id, o);
+                                saveOrderToDb(o).catch(() => {});
+                            }
                         });
-                    } else {
-                        // If DB currently has 0 orders, push existing local orders to Supabase
-                        const saved = localStorage.getItem('food_street_orders');
-                        const localOrders = saved ? JSON.parse(saved) : [];
-                        if (Array.isArray(localOrders) && localOrders.length > 0) {
-                            localOrders.forEach(order => {
-                                saveOrderToDb(order).catch(() => {});
-                            });
-                        }
-                    }
+                        return Array.from(orderMap.values());
+                    });
                 }
             } catch (err) {
                 console.warn('Initial cloud fetch notice:', err);
@@ -159,17 +187,15 @@ export default function App() {
         })();
         return () => { isMounted = false; };
     }, []);
-    // Save states to localStorage when they change
+    // Save stores and categories to localStorage when they change
     React.useEffect(() => {
-        localStorage.setItem('food_street_stores', JSON.stringify(stores));
+        safeStorage.setItem('food_street_stores', JSON.stringify(stores));
         setStoreStatusCache(stores);
     }, [stores]);
     React.useEffect(() => {
-        localStorage.setItem('food_street_categories', JSON.stringify(categories));
+        safeStorage.setItem('food_street_categories', JSON.stringify(categories));
     }, [categories]);
-    React.useEffect(() => {
-        localStorage.setItem('food_street_orders', JSON.stringify(orders));
-    }, [orders]);
+    // Note: Orders are NOT stored in localStorage to protect against browser storage quotas
     // Periodically sync orders from Supabase cloud in background
     React.useEffect(() => {
         let isMounted = true;
@@ -204,9 +230,6 @@ export default function App() {
             }
             if (e.key === 'food_street_categories' && e.newValue) {
                 setCategories(JSON.parse(e.newValue));
-            }
-            if (e.key === 'food_street_orders' && e.newValue) {
-                setOrders(JSON.parse(e.newValue));
             }
             if (e.key === ADDRESS_STORAGE_KEY && e.newValue) {
                 try {
@@ -252,8 +275,13 @@ export default function App() {
         window.location.pathname.startsWith('/tummy-treat') ||
         window.location.hash.startsWith('#/tummy-treat') ||
         window.location.hash === '#tummy-treat';
-    const isAdmin = currentPath.startsWith('/admin') ||
-        currentPath === '#/admin' ||
+    const isAdmin =
+        currentPath.startsWith('/admin') ||
+        currentPath.startsWith('#/admin') ||
+        currentPath === '#admin' ||
+        window.location.pathname.startsWith('/admin') ||
+        window.location.hash.startsWith('#/admin') ||
+        window.location.hash === '#admin' ||
         window.location.search.includes('admin=true');
     const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
     React.useEffect(() => {
@@ -533,13 +561,10 @@ export default function App() {
             cancellationConfirmed,
         };
 
-        // Instantly save to local state and localStorage
+        // Instantly save to local React state
         setOrders(prev => [newOrder, ...prev]);
         try {
-            const currentSaved = localStorage.getItem('food_street_orders');
-            const parsed = currentSaved ? JSON.parse(currentSaved) : [];
-            localStorage.setItem('food_street_orders', JSON.stringify([newOrder, ...parsed]));
-
+            // Keep customer order IDs for this browser session to display their placed orders
             const myIds = JSON.parse(localStorage.getItem('food_street_my_order_ids') || '[]');
             if (!myIds.includes(newOrder.id)) {
                 localStorage.setItem('food_street_my_order_ids', JSON.stringify([newOrder.id, ...myIds]));

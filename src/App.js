@@ -195,30 +195,6 @@ export default function App() {
     React.useEffect(() => {
         safeStorage.setItem('food_street_categories', JSON.stringify(categories));
     }, [categories]);
-    // Note: Orders are NOT stored in localStorage to protect against browser storage quotas
-    // Lightweight Realtime sync: Active only when viewing the Orders tab or in Admin mode
-    React.useEffect(() => {
-        if (activeTab !== 'orders' && !isAdmin) return;
-
-        const unsubscribe = subscribeToOrders((latestOrders) => {
-            if (Array.isArray(latestOrders) && latestOrders.length > 0) {
-                setOrders((prevOrders) => {
-                    const orderMap = new Map();
-                    latestOrders.forEach(o => orderMap.set(o.id, o));
-                    prevOrders.forEach(o => {
-                        if (!orderMap.has(o.id)) {
-                            orderMap.set(o.id, o);
-                        }
-                    });
-                    return Array.from(orderMap.values());
-                });
-            }
-        }, { limit: 30, fallbackIntervalMs: 60000 });
-
-        return () => {
-            if (unsubscribe) unsubscribe();
-        };
-    }, [activeTab, isAdmin]);
     // Sync state across open tabs in real-time
     React.useEffect(() => {
         const handleStorageChange = (e) => {
@@ -301,6 +277,30 @@ export default function App() {
         const intervalId = window.setInterval(refreshCurrentTime, 60_000);
         return () => window.clearInterval(intervalId);
     }, []);
+    // Note: Orders are NOT stored in localStorage to protect against browser storage quotas
+    // Lightweight Realtime sync: Active only when viewing the Orders tab or in Admin mode
+    React.useEffect(() => {
+        if (activeTab !== 'orders' && !isAdmin) return;
+
+        const unsubscribe = subscribeToOrders((latestOrders) => {
+            if (Array.isArray(latestOrders) && latestOrders.length > 0) {
+                setOrders((prevOrders) => {
+                    const orderMap = new Map();
+                    latestOrders.forEach(o => orderMap.set(o.id, o));
+                    prevOrders.forEach(o => {
+                        if (!orderMap.has(o.id)) {
+                            orderMap.set(o.id, o);
+                        }
+                    });
+                    return Array.from(orderMap.values());
+                });
+            }
+        }, { limit: 30, fallbackIntervalMs: 60000 });
+
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
+    }, [activeTab, isAdmin]);
     // Address state
     const [addresses, setAddresses] = useState(() => {
         if (typeof window === 'undefined')

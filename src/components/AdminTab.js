@@ -143,7 +143,7 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
     const refreshOrders = async () => {
         setIsRefreshingOrders(true);
         try {
-            const dbOrders = await fetchOrdersFromDb();
+            const dbOrders = await fetchOrdersFromDb({ limit: 50 });
             if (Array.isArray(dbOrders)) {
                 onUpdateOrders(dbOrders);
             }
@@ -169,26 +169,18 @@ export const AdminTab = ({ stores, categories, orders, onUpdateStores, onUpdateC
         }
         return order?.placedAt || 'Recently';
     };
-    // Live orders sync across all admin panel tabs (overview, orders, etc.)
+    // Live orders sync across all admin panel tabs using Supabase Realtime (WebSockets)
     React.useEffect(() => {
-        let isMounted = true;
-        const syncOrders = async () => {
-            try {
-                const dbOrders = await fetchOrdersFromDb();
-                if (isMounted && Array.isArray(dbOrders)) {
-                    onUpdateOrders(dbOrders);
-                }
-            } catch (e) {
-                console.warn('Orders live sync notice:', e);
+        const unsubscribe = subscribeToOrders((dbOrders) => {
+            if (Array.isArray(dbOrders)) {
+                onUpdateOrders(dbOrders);
             }
-        };
-        syncOrders();
-        const intervalId = setInterval(syncOrders, 2500);
+        }, { limit: 50, fallbackIntervalMs: 45000 });
+
         return () => {
-            isMounted = false;
-            clearInterval(intervalId);
+            if (unsubscribe) unsubscribe();
         };
-    }, []);
+    }, [onUpdateOrders]);
     const handleFetchFromPostgres = async () => {
         setIsFetchingDb(true);
         setCloudStatusMsg(null);

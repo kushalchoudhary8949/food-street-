@@ -58,7 +58,7 @@ import { AdminLogin } from './components/AdminLogin';
 import { TummyTreatAdmin } from './components/TummyTreatAdmin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
-import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb } from './services/api';
+import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb, subscribeToOrders } from './services/api';
 import { verifyAdminSession, clearAdminSession } from './utils/adminAuth';
 
 // Local storage keys for saved delivery addresses
@@ -148,7 +148,7 @@ export default function App() {
                 const [dbStores, dbCats, dbOrders] = await Promise.all([
                     fetchStoresFromDb(),
                     fetchCategoriesFromDb(),
-                    fetchOrdersFromDb(),
+                    fetchOrdersFromDb({ limit: 30 }),
                 ]);
                 if (!isMounted) return;
                 if (Array.isArray(dbStores) && dbStores.length > 0) {
@@ -196,32 +196,29 @@ export default function App() {
         safeStorage.setItem('food_street_categories', JSON.stringify(categories));
     }, [categories]);
     // Note: Orders are NOT stored in localStorage to protect against browser storage quotas
-    // Periodically sync orders from Supabase cloud in background
+    // Lightweight Realtime sync: Active only when viewing the Orders tab or in Admin mode
     React.useEffect(() => {
-        let isMounted = true;
-        const sync = async () => {
-            try {
-                const dbOrders = await fetchOrdersFromDb();
-                if (isMounted && Array.isArray(dbOrders) && dbOrders.length > 0) {
-                    setOrders(prevOrders => {
-                        const orderMap = new Map();
-                        dbOrders.forEach(o => orderMap.set(o.id, o));
-                        prevOrders.forEach(o => {
-                            if (!orderMap.has(o.id)) {
-                                orderMap.set(o.id, o);
-                            }
-                        });
-                        return Array.from(orderMap.values());
+        if (activeTab !== 'orders' && !isAdmin) return;
+
+        const unsubscribe = subscribeToOrders((latestOrders) => {
+            if (Array.isArray(latestOrders) && latestOrders.length > 0) {
+                setOrders((prevOrders) => {
+                    const orderMap = new Map();
+                    latestOrders.forEach(o => orderMap.set(o.id, o));
+                    prevOrders.forEach(o => {
+                        if (!orderMap.has(o.id)) {
+                            orderMap.set(o.id, o);
+                        }
                     });
-                }
-            } catch (e) {}
-        };
-        const intervalId = setInterval(sync, 4000);
+                    return Array.from(orderMap.values());
+                });
+            }
+        }, { limit: 30, fallbackIntervalMs: 60000 });
+
         return () => {
-            isMounted = false;
-            clearInterval(intervalId);
+            if (unsubscribe) unsubscribe();
         };
-    }, []);
+    }, [activeTab, isAdmin]);
     // Sync state across open tabs in real-time
     React.useEffect(() => {
         const handleStorageChange = (e) => {
@@ -532,7 +529,12 @@ export default function App() {
             roomNo: currentAddress.roomNo || '',
             hostel: currentAddress.hostelName || '',
             contact: currentAddress.phone || '',
-            store: { id: storeId, name: storeName, image: storeImage, deliveryTime: uniqueStores[0].deliveryTime },
+            store: {
+                id: storeId,
+                name: storeName,
+                image: (typeof storeImage === 'string' && !storeImage.startsWith('data:')) ? storeImage : '',
+                deliveryTime: uniqueStores[0].deliveryTime
+            },
             items: cartItemsForOrder.map(ci => ({
                 name: `${ci.item.name} (${ci.store.name})`,
                 quantity: ci.quantity,

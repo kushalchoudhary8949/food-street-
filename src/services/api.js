@@ -34,15 +34,32 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  'https://lmbfbwrkujsckptyvuvj.supabase.co';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+if (!SUPABASE_ANON_KEY) {
+  throw new Error('VITE_SUPABASE_ANON_KEY must be configured for this project.');
+}
+const SUPABASE_AUTH_HEADERS = {
+  apikey: SUPABASE_ANON_KEY,
+  Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+};
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  'https://hziznyfxxjdjbhvoacaj.supabase.co/functions/v1/food-street';
-
-const SUPABASE_URL = 'https://hziznyfxxjdjbhvoacaj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aXpueWZ4eGpkamJodm9hY2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNzk4MTIsImV4cCI6MjEwODc1NTgxMn0.6CfZjCp70EgifyWVh4r_eDpbueVGiljDgOsXzKgvOJk';
+  SUPABASE_URL + '/functions/v1/food-street';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function fetchFoodStreet(path, options = {}) {
+  return fetch(API_BASE + path, {
+    ...options,
+    headers: {
+      ...SUPABASE_AUTH_HEADERS,
+      ...(options.headers || {}),
+    },
+  });
+}
 
 /**
  * Normalizes an order record from Supabase into a consistent, strongly-typed frontend object.
@@ -118,7 +135,7 @@ function normalizeOrder(order) {
  */
 export async function fetchDatabaseStatus() {
   try {
-    const res = await fetch(`${API_BASE}/status`, {
+    const res = await fetchFoodStreet('/status', {
       headers: { Accept: 'application/json' },
     });
     const data = await res.json();
@@ -163,7 +180,7 @@ export async function fetchOrdersFromDb(options = {}) {
 
   // Strategy 1: Edge Function
   try {
-    const res = await fetch(`${API_BASE}/orders?limit=${limit}&_t=${Date.now()}`, {
+    const res = await fetchFoodStreet(`/orders?limit=${limit}&_t=${Date.now()}`, {
       headers: {
         Accept: 'application/json',
       },
@@ -212,7 +229,7 @@ export async function saveOrderToDb(rawOrder) {
   const order = sanitizeOrderForStorage(rawOrder);
   const grandTotalVal = Number(order.grandTotal ?? order.grand_total ?? order['grand Total'] ?? 0);
   try {
-    const res = await fetch(`${API_BASE}/orders`, {
+    const res = await fetchFoodStreet('/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...order, grandTotal: grandTotalVal, 'grand Total': grandTotalVal }),
@@ -266,7 +283,7 @@ export async function saveOrderToDb(rawOrder) {
  */
 export async function updateOrderStatusInDb(orderId, status) {
   try {
-    const res = await fetch(`${API_BASE}/orders`, {
+    const res = await fetchFoodStreet('/orders', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ orderId, status }),
@@ -284,8 +301,8 @@ export async function updateOrderStatusInDb(orderId, status) {
  */
 export async function deleteOrderFromDb(orderId) {
   try {
-    const res = await fetch(
-      `${API_BASE}/orders?orderId=${encodeURIComponent(orderId)}`,
+    const res = await fetchFoodStreet(
+      `/orders?orderId=${encodeURIComponent(orderId)}`,
       { method: 'DELETE' },
     );
     const data = await res.json();
@@ -368,7 +385,7 @@ export function subscribeToOrders(callback, options = {}) {
  */
 export async function fetchStoresFromDb() {
   try {
-    const res = await fetch(`${API_BASE}/stores`);
+    const res = await fetchFoodStreet('/stores');
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     return data.stores || [];
@@ -383,7 +400,7 @@ export async function fetchStoresFromDb() {
  */
 export async function saveStoresToDb(stores) {
   try {
-    const res = await fetch(`${API_BASE}/stores`, {
+    const res = await fetchFoodStreet('/stores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(stores),
@@ -401,8 +418,8 @@ export async function saveStoresToDb(stores) {
  */
 export async function deleteStoreFromDb(storeId) {
   try {
-    const res = await fetch(
-      `${API_BASE}/stores?storeId=${encodeURIComponent(storeId)}`,
+    const res = await fetchFoodStreet(
+      `/stores?storeId=${encodeURIComponent(storeId)}`,
       { method: 'DELETE' },
     );
     const data = await res.json();
@@ -418,7 +435,7 @@ export async function deleteStoreFromDb(storeId) {
  */
 export async function fetchCategoriesFromDb() {
   try {
-    const res = await fetch(`${API_BASE}/categories`);
+    const res = await fetchFoodStreet('/categories');
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     return data.categories || [];
@@ -433,7 +450,7 @@ export async function fetchCategoriesFromDb() {
  */
 export async function saveCategoriesToDb(categories) {
   try {
-    const res = await fetch(`${API_BASE}/categories`, {
+    const res = await fetchFoodStreet('/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(categories),
@@ -451,8 +468,8 @@ export async function saveCategoriesToDb(categories) {
  */
 export async function deleteCategoryFromDb(categoryId) {
   try {
-    const res = await fetch(
-      `${API_BASE}/categories?categoryId=${encodeURIComponent(categoryId)}`,
+    const res = await fetchFoodStreet(
+      `/categories?categoryId=${encodeURIComponent(categoryId)}`,
       { method: 'DELETE' },
     );
     const data = await res.json();
@@ -468,7 +485,7 @@ export async function deleteCategoryFromDb(categoryId) {
  */
 export async function seedDatabase(initialStores, initialCategories) {
   try {
-    const res = await fetch(`${API_BASE}/seed`, {
+    const res = await fetchFoodStreet('/seed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ stores: initialStores, categories: initialCategories }),
@@ -549,12 +566,13 @@ export function clearAuthSession() {
 function getAuthHeaders(extraHeaders = {}) {
   const token = getAccessToken();
   const headers = {
+    ...SUPABASE_AUTH_HEADERS,
     'Content-Type': 'application/json',
     Accept: 'application/json',
     ...extraHeaders,
   };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers['x-foodza-access-token'] = token;
   }
   return headers;
 }
@@ -592,7 +610,11 @@ export async function sendWhatsAppOtp(phone, name) {
   try {
     const res = await fetch('/api/v1/auth/whatsapp/send-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: {
+        ...SUPABASE_AUTH_HEADERS,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
       body: JSON.stringify({ phone, name }),
       credentials: 'include',
     });
@@ -614,7 +636,11 @@ export async function verifyWhatsAppOtp(phone, otp, name) {
   try {
     const res = await fetch('/api/v1/auth/whatsapp/verify-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: {
+        ...SUPABASE_AUTH_HEADERS,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
       body: JSON.stringify({ phone, otp, name }),
       credentials: 'include',
     });
@@ -636,7 +662,11 @@ export async function refreshCustomerSession() {
   try {
     const res = await fetch('/api/v1/auth/refresh', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: {
+        ...SUPABASE_AUTH_HEADERS,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
       credentials: 'include',
     });
     const data = await res.json();

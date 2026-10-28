@@ -161,6 +161,12 @@ test("valid OTP creates/retrieves only a FoodZa user and issues FoodZa session t
   assert.match(response.headers.getSetCookie().join(";"), /Secure/);
   assert.equal(records.otpRequests.length, 0);
 
+  const profileResponse = await handlers.getProfile(new Request("https://foodza.example/v1/users/me", {
+    headers: { "x-foodza-access-token": payload.accessToken },
+  }));
+  assert.equal(profileResponse.status, 200);
+  assert.equal((await profileResponse.json()).user.id, "foodza-user-1");
+
   const priorFoodZaUser = {
     id: "existing-foodza-user",
     phone: `+91${PHONE}`,
@@ -200,7 +206,7 @@ test("Vercel forwards same-origin API paths to the Food Street Edge Function", a
   const apiRewrite = config.rewrites.find((rewrite) => rewrite.source === "/api/(.*)");
   assert.equal(
     apiRewrite.destination,
-    "https://hziznyfxxjdjbhvoacaj.supabase.co/functions/v1/food-street/$1",
+    "https://lmbfbwrkujsckptyvuvj.supabase.co/functions/v1/food-street/$1",
   );
   assert.equal(apiRewrite.destination.endsWith("/$1"), true);
 });

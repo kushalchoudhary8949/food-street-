@@ -445,6 +445,11 @@ export async function getUserById(userId) {
  * @returns {string|null}
  */
 export function extractToken(req) {
+  const foodZaToken = req.headers['x-foodza-access-token'];
+  if (typeof foodZaToken === 'string' && foodZaToken.trim()) {
+    return foodZaToken.trim();
+  }
+
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (authHeader && typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
     return authHeader.slice(7).trim();

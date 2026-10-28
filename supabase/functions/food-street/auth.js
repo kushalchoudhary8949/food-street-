@@ -97,6 +97,8 @@ function getCookie(req, name) {
 }
 
 function getAccessTokenFromRequest(req) {
+  const foodZaToken = req.headers.get("x-foodza-access-token");
+  if (foodZaToken) return foodZaToken.trim();
   const authorization = req.headers.get("authorization") || "";
   if (authorization.startsWith("Bearer ")) return authorization.slice(7).trim();
   return getCookie(req, "foodza_access_token");

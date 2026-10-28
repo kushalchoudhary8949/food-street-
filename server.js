@@ -29,9 +29,12 @@ import { orderRouter } from './src/backend/routes/orderRoutes.js';
 // -------------------------------------------------------------
 // Cloud Database Configuration (Supabase PostgreSQL & Edge Functions)
 // -------------------------------------------------------------
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hziznyfxxjdjbhvoacaj.supabase.co';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aXpueWZ4eGpkamJodm9hY2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNzk4MTIsImV4cCI6MjEwODc1NTgxMn0.6CfZjCp70EgifyWVh4r_eDpbueVGiljDgOsXzKgvOJk';
-const SUPABASE_EDGE_URL = `${SUPABASE_URL}/functions/v1/food-street`;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://lmbfbwrkujsckptyvuvj.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+if (!SUPABASE_ANON_KEY) {
+  throw new Error('SUPABASE_ANON_KEY must be configured for this project.');
+}
+const SUPABASE_EDGE_URL = SUPABASE_URL + '/functions/v1/food-street';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

@@ -36,11 +36,11 @@ import { createClient } from '@supabase/supabase-js';
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  '/api';
+  'https://hziznyfxxjdjbhvoacaj.supabase.co/functions/v1/food-street';
 
-const SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
+const SUPABASE_URL = 'https://hziznyfxxjdjbhvoacaj.supabase.co';
 const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aXpueWZ4eGpkamJodm9hY2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNzk4MTIsImV4cCI6MjEwODc1NTgxMn0.6CfZjCp70EgifyWVh4r_eDpbueVGiljDgOsXzKgvOJk';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model stores {
+  id         String    @id @db.VarChar(255)
+  name       String?   @db.VarChar(255)
+  data       Json
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  updated_at DateTime? @default(now()) @db.Timestamptz()
+}
+
+model categories {
+  id         String    @id @db.VarChar(255)
+  name       String?   @db.VarChar(255)
+  data       Json
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  updated_at DateTime? @default(now()) @db.Timestamptz()
+}
+
+model users {
+  id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phone             String       @unique @db.VarChar(20)
+  name              String?      @db.VarChar(255)
+  role              String       @default("CUSTOMER") @db.VarChar(30)
+  is_phone_verified Boolean?     @default(false)
+  hostel_name       String?      @db.VarChar(255)
+  room_no           String?      @db.VarChar(50)
+  block             String?      @db.VarChar(50)
+  floor             String?      @db.VarChar(50)
+  landmark          String?      @db.VarChar(255)
+  created_at        DateTime?    @default(now()) @db.Timestamptz()
+  updated_at        DateTime?    @default(now()) @db.Timestamptz()
+  sessions          sessions[]
+  addresses         addresses[]
+  orders            orders[]
+
+  @@index([phone])
+  @@index([role])
+}
+
+model sessions {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String    @db.Uuid
+  refresh_token String    @unique @db.VarChar(255)
+  expires_at    DateTime  @db.Timestamptz()
+  revoked       Boolean?  @default(false)
+  ip_address    String?   @db.VarChar(45)
+  user_agent    String?   @db.Text
+  created_at    DateTime? @default(now()) @db.Timestamptz()
+  user          users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([refresh_token])
+}
+
+model otp_requests {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phone      String    @db.VarChar(20)
+  youpi_ref  String?   @db.VarChar(255)
+  status     String?   @default("PENDING") @db.VarChar(20)
+  attempts   Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  expires_at DateTime  @db.Timestamptz()
+
+  @@index([phone])
+  @@index([created_at(sort: Desc)])
+}
+
+model addresses {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String    @db.Uuid
+  label        String    @default("Hostel") @db.VarChar(50)
+  name         String?   @db.VarChar(255)
+  phone        String?   @db.VarChar(20)
+  hostel_name  String?   @db.VarChar(255)
+  room_no      String?   @db.VarChar(50)
+  block        String?   @db.VarChar(50)
+  floor        String?   @db.VarChar(50)
+  address_line String?   @db.Text
+  locality     String?   @default("Campus") @db.VarChar(255)
+  city         String?   @default("Campus") @db.VarChar(100)
+  instructions String?   @db.Text
+  is_default   Boolean?  @default(false)
+  created_at   DateTime? @default(now()) @db.Timestamptz()
+  updated_at   DateTime? @default(now()) @db.Timestamptz()
+  user         users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([user_id, is_default])
+}
+
+model orders {
+  id                    String    @id @db.VarChar(255)
+  order_number          String?   @db.VarChar(255)
+  user_id               String?   @db.Uuid
+  status                String?   @db.VarChar(50)
+  grand_total           Decimal?  @db.Decimal(10, 2)
+  customer_name         String?   @db.VarChar(255)
+  customer_phone        String?   @db.VarChar(20)
+  delivery_hostel       String?   @db.VarChar(255)
+  delivery_room_no      String?   @db.VarChar(50)
+  delivery_block        String?   @db.VarChar(50)
+  delivery_floor        String?   @db.VarChar(50)
+  delivery_landmark     String?   @db.VarChar(255)
+  delivery_address_line String?   @db.Text
+  delivery_instructions String?   @db.Text
+  delivery_snapshot     Json?
+  data                  Json
+  created_at            DateTime? @default(now()) @db.Timestamptz()
+  updated_at            DateTime? @default(now()) @db.Timestamptz()
+  user                  users?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at(sort: Desc)])
+}

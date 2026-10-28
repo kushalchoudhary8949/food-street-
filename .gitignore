@@ -5,4 +5,5 @@ dist/
 *.local
 .env
 .env.local
+data/customer_db.json
 generate_ph.py

@@ -6,11 +6,40 @@
 // Provides endpoints: /stores, /categories, /orders, /status, /seed
 // -------------------------------------------------
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  createFoodZaAuthHandlers,
+  createSupabaseFoodZaAuthRepository,
+  parseExpirySeconds,
+  stripFoodStreetFunctionPrefix,
+} from "./auth.js";
 
+const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+  supabaseUrl,
+  supabaseServiceRoleKey || Deno.env.get("SUPABASE_ANON_KEY") || "",
 );
+const authRepository = supabaseServiceRoleKey
+  ? createSupabaseFoodZaAuthRepository(createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  }))
+  : null;
+const authConfig = {
+  youpiApiUrl: Deno.env.get("YOUPI_OTP_API_URL") ?? "",
+  sharedSecret: Deno.env.get("FOODZA_OTP_API_SECRET") ?? "",
+  jwtAccessSecret: Deno.env.get("JWT_ACCESS_SECRET") ?? "",
+};
+const authHandlers = authRepository &&
+    authConfig.youpiApiUrl.startsWith("https://") &&
+    authConfig.sharedSecret &&
+    new TextEncoder().encode(authConfig.jwtAccessSecret).length >= 32
+  ? createFoodZaAuthHandlers({
+    repository: authRepository,
+    ...authConfig,
+    accessTokenTtlSeconds: parseExpirySeconds(Deno.env.get("JWT_ACCESS_EXPIRY") || "15m"),
+    secureCookies: supabaseUrl.startsWith("https://"),
+  })
+  : null;
 
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -300,9 +329,9 @@ async function handleSeed(body: any) {
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
-  // Strip the Edge Function prefix (/food-street) so route matching works
+  // Supabase gateways may preserve either the function path or only its name.
   const rawPath = url.pathname;
-  const path = rawPath.replace(/^\/food-street/, "") || "/";
+  const path = stripFoodStreetFunctionPrefix(rawPath);
   const method = req.method.toUpperCase();
 
   // CORS preflight
@@ -312,6 +341,47 @@ Deno.serve(async (req: Request) => {
 
   // Health
   if (path === "/status" && method === "GET") return handleStatus();
+
+  // Customer authentication. OTP state and WhatsApp credentials remain on YouPI;
+  // FoodZa accounts and refresh sessions are stored in FoodZa's own Supabase DB.
+  if (path.startsWith("/v1/auth/") || path === "/v1/users/me" || path.startsWith("/v1/addresses")) {
+    if (!authHandlers) {
+      return jsonResponse({ success: false, error: "FoodZa authentication service is not configured." }, 503);
+    }
+    try {
+      if (path === "/v1/auth/whatsapp/send-otp" && method === "POST") return await authHandlers.sendOtp(req);
+      if (path === "/v1/auth/whatsapp/verify-otp" && method === "POST") return await authHandlers.verifyOtp(req);
+      if (path === "/v1/auth/refresh" && method === "POST") return await authHandlers.refresh(req);
+      if (path === "/v1/auth/logout" && method === "POST") return await authHandlers.logout(req);
+      if (path === "/v1/users/me" && method === "GET") return await authHandlers.getProfile(req);
+      if (path === "/v1/users/me" && method === "PATCH") return await authHandlers.updateProfile(req);
+      if (path === "/v1/addresses" && method === "GET") return await authHandlers.getAddresses(req);
+      if (path === "/v1/addresses" && method === "POST") return await authHandlers.createAddress(req);
+
+      const addressMatch = /^\/v1\/addresses\/([^/]+)(\/default)?$/.exec(path);
+      if (addressMatch) {
+        let addressId: string;
+        try {
+          addressId = decodeURIComponent(addressMatch[1]);
+        } catch {
+          return jsonResponse({ success: false, error: "Invalid address ID." }, 400);
+        }
+        if (addressMatch[2] && method === "POST") {
+          return await authHandlers.setDefaultAddress(req, addressId);
+        }
+        if (!addressMatch[2] && method === "PATCH") {
+          return await authHandlers.updateAddress(req, addressId);
+        }
+        if (!addressMatch[2] && method === "DELETE") {
+          return await authHandlers.deleteAddress(req, addressId);
+        }
+      }
+      return jsonResponse({ success: false, error: "Method not allowed" }, 405);
+    } catch (error) {
+      console.error("[FoodZa Auth] Edge authentication request failed:", error);
+      return jsonResponse({ success: false, error: "Authentication service is temporarily unavailable." }, 500);
+    }
+  }
 
   // Seed
   if (path === "/seed" && method === "POST") {

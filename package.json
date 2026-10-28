@@ -9,10 +9,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "node --check server.js && find src -name '*.js' -print0 | xargs -0 -n1 node --check"
+    "lint": "node --check server.js && find src test supabase/functions/food-street -name '*.js' -print0 | xargs -0 -n1 node --check",
+    "test:auth": "node --test test/authentication.test.js supabase/functions/food-street/auth.test.js"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
+    "@prisma/client": "^7.10.1",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "@tailwindcss/vite": "^4.1.14",
@@ -20,9 +22,11 @@
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.546.0",
     "mongoose": "^8.18.0",
     "motion": "^12.23.24",
+    "pg": "^8.23.1",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "vite": "^6.2.3"
@@ -30,6 +34,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "prisma": "^8.0.0-rc.27",
     "tailwindcss": "^4.1.14",
     "vite": "^6.2.3"
   }

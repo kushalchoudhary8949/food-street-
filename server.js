@@ -4,21 +4,12 @@
  * @description
  * Full-Stack Express Server & Vite Development / SSR Middleware for FoodZa.
  * 
- * Architectural Role:
- * - Dual-Database Hybrid Architecture:
- *   1. Supabase Cloud (Primary): When running in cloud / standard mode, API requests to `/api/*`
- *      are dynamically proxied to the Supabase Edge Function (`food-street`) or PostgREST PostgreSQL database.
- *   2. MongoDB (Optional Local/Enterprise Fallback): If `MONGODB_URI` environment variable is defined and
- *      connected, Express serves local Mongoose REST endpoints for `/api/stores`, `/api/categories`, and `/api/orders`.
- * - Development & Production Dual Mode:
- *   - Development (`process.env.NODE_ENV !== 'production'`):
- *     Attaches Vite dev server in middleware mode (`vite.middlewares`), enabling Hot Module Replacement (HMR)
- *     and on-the-fly ESM transpilation.
- *   - Production:
- *     Serves static production assets from `./dist` with optimal HTTP cache headers (immutable long-term caching
- *     for hashed bundle assets in `/assets/`, and `no-cache, must-revalidate` for `index.html` to guarantee instant deploys).
- * - SPA Fallback Routing:
- *   Wildcard `app.get('*')` routes unmatched requests back to `dist/index.html` for client-side routing.
+ * Features:
+ * - PostgreSQL Native Persistence with Prisma schema compatibility
+ * - Customer WhatsApp OTP Authentication via YouPI Payment Gateway
+ * - Customer Profile and Delivery Address Management
+ * - Immutable Order Delivery Snapshots & Transactions
+ * - Backward compatibility with Supabase Cloud Edge Function and MongoDB
  */
 
 import 'dotenv/config';
@@ -28,6 +19,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
+
+import { testConnection, query } from './src/backend/db.js';
+import { authRouter } from './src/backend/routes/authRoutes.js';
+import { userRouter } from './src/backend/routes/userRoutes.js';
+import { addressRouter } from './src/backend/routes/addressRoutes.js';
+import { orderRouter } from './src/backend/routes/orderRoutes.js';
 
 // -------------------------------------------------------------
 // Cloud Database Configuration (Supabase PostgreSQL & Edge Functions)
@@ -43,18 +40,127 @@ const app = express();
 const port = Number(process.env.PORT || 4000);
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-app.use(express.json({ limit: '2mb' }));
+// Express Middleware: JSON, URL-Encoded, and Lightweight Cookie Parser
+app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// -------------------------------------------------------------
-// Seamless API Proxy: Forward /api calls to Supabase Edge Function
-// Executes when local MongoDB is not connected, delegating persistence to cloud PostgreSQL.
-// -------------------------------------------------------------
-app.use('/api', async (req, res, next) => {
-  if (mongoose.connection.readyState === 1) {
-    return next();
+app.use((req, res, next) => {
+  req.cookies = {};
+  if (req.headers.cookie) {
+    req.headers.cookie.split(';').forEach((cookie) => {
+      const parts = cookie.trim().split('=');
+      if (parts.length >= 2) {
+        req.cookies[parts[0]] = decodeURIComponent(parts.slice(1).join('='));
+      }
+    });
   }
+  next();
+});
 
+// -------------------------------------------------------------
+// API V1 Routes (PostgreSQL & YouPI WhatsApp Auth)
+// -------------------------------------------------------------
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/addresses', addressRouter);
+app.use('/api/v1/orders', orderRouter);
+
+// -------------------------------------------------------------
+// System Health and Diagnostic Status
+// -------------------------------------------------------------
+app.get('/api/status', async (req, res) => {
+  try {
+    const youpiApiUrl = process.env.YOUPI_OTP_API_URL ||
+      (isDevelopment ? process.env.YOUPI_API_URL || 'http://127.0.0.1:6100' : null);
+    const youpiSecretConfigured = Boolean(process.env.FOODZA_OTP_API_SECRET?.trim());
+    const [userCount, sessionCount, otpCount, addressCount, orderCount, storeCount, categoryCount] =
+      await Promise.all([
+        query('SELECT COUNT(*) as count FROM users').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM sessions').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM otp_requests').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM addresses').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM orders').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM stores').catch(() => ({ rows: [{ count: 0 }] })),
+        query('SELECT COUNT(*) as count FROM categories').catch(() => ({ rows: [{ count: 0 }] })),
+      ]);
+
+    return res.json({
+      success: true,
+      service: 'FoodZa Core Backend',
+      database: 'PostgreSQL',
+      counts: {
+        users: parseInt(userCount.rows[0].count, 10),
+        sessions: parseInt(sessionCount.rows[0].count, 10),
+        otpRequests: parseInt(otpCount.rows[0].count, 10),
+        addresses: parseInt(addressCount.rows[0].count, 10),
+        orders: parseInt(orderCount.rows[0].count, 10),
+        stores: parseInt(storeCount.rows[0].count, 10),
+        categories: parseInt(categoryCount.rows[0].count, 10),
+      },
+      youpiIntegration: {
+        configured: Boolean(youpiApiUrl && youpiSecretConfigured),
+        apiUrlPresent: Boolean(youpiApiUrl),
+        secretConfigured: youpiSecretConfigured,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Legacy `/api/orders` alias forwarding to `/api/v1/orders`
+app.use('/api/orders', orderRouter);
+
+// Legacy `/api/stores` & `/api/categories` handlers with PostgreSQL first, then Supabase fallback
+for (const resource of ['stores', 'categories']) {
+  app.get(`/api/${resource}`, async (req, res, next) => {
+    try {
+      const result = await query(`SELECT * FROM ${resource} ORDER BY id ASC`);
+      if (result.rows.length > 0) {
+        return res.json({
+          success: true,
+          [resource]: result.rows.map((r) => r.data),
+        });
+      }
+    } catch {
+      // Fall through to next middleware (Supabase proxy)
+    }
+    return next();
+  });
+
+  app.post(`/api/${resource}`, async (req, res, next) => {
+    try {
+      const body = req.body;
+      const records = Array.isArray(body) ? body : body?.[resource] || [body];
+      const validRecords = records.filter((r) => r?.id);
+
+      if (validRecords.length > 0) {
+        await Promise.all(
+          validRecords.map((r) =>
+            query(
+              `INSERT INTO ${resource} (id, name, data, updated_at)
+               VALUES ($1, $2, $3, NOW())
+               ON CONFLICT (id) DO UPDATE SET
+                 name = EXCLUDED.name,
+                 data = EXCLUDED.data,
+                 updated_at = NOW()`,
+              [String(r.id), r.name || '', JSON.stringify(r)]
+            )
+          )
+        );
+        return res.json({ success: true, count: validRecords.length });
+      }
+    } catch {
+      // Fall through to next middleware
+    }
+    return next();
+  });
+}
+
+// -------------------------------------------------------------
+// Fallback API Proxy: Forward unhandled /api calls to Supabase Edge Function
+// -------------------------------------------------------------
+app.use('/api', async (req, res) => {
   try {
     const targetUrl = new URL(`${SUPABASE_EDGE_URL}${req.url}`);
     const fetchOptions = {
@@ -79,179 +185,27 @@ app.use('/api', async (req, res, next) => {
   }
 });
 
-// MongoDB Schema & Models for fallback / local MongoDB development
-const documentSchema = new mongoose.Schema(
-  {
-    _id: { type: String, required: true },
-    name: { type: String, default: '' },
-    data: { type: mongoose.Schema.Types.Mixed, required: true },
-    orderNumber: String,
-    status: String,
-    grandTotal: Number,
-  },
-  { timestamps: true, versionKey: false },
-);
-
-const Store = mongoose.model('Store', documentSchema, 'stores');
-const Category = mongoose.model('Category', documentSchema, 'categories');
-const Order = mongoose.model('Order', documentSchema, 'orders');
-
-const getModel = (resource) => {
-  if (resource === 'stores') return Store;
-  if (resource === 'categories') return Category;
-  if (resource === 'orders') return Order;
-  return null;
-};
-
-const databaseRequired = (handler) => async (req, res, next) => {
-  if (mongoose.connection.readyState !== 1) {
-    return res.status(503).json({
-      success: false,
-      error: 'MongoDB is not connected. Set MONGODB_URI and restart the server.',
-    });
-  }
-  return handler(req, res, next);
-};
-
-app.get('/api/status', databaseRequired(async (_req, res) => {
-  const [stores, categories, orders] = await Promise.all([
-    Store.countDocuments(),
-    Category.countDocuments(),
-    Order.countDocuments(),
-  ]);
-
-  res.json({
-    success: true,
-    connected: true,
-    database: 'MongoDB',
-    counts: { stores, categories, orders },
-  });
-}));
-
-for (const resource of ['stores', 'categories']) {
-  const Model = getModel(resource);
-
-  app.get(`/api/${resource}`, databaseRequired(async (_req, res) => {
-    const records = await Model.find().sort({ _id: 1 }).lean();
-    res.json({ success: true, [resource]: records.map((record) => record.data) });
-  }));
-
-  app.post(`/api/${resource}`, databaseRequired(async (req, res) => {
-    const body = req.body;
-    const records = Array.isArray(body) ? body : body?.[resource] || [body];
-    const replace = req.query.replace === 'true' || body?.replace === true;
-    const validRecords = records.filter((record) => record?.id);
-
-    await Promise.all(validRecords.map((record) => Model.findByIdAndUpdate(
-      String(record.id),
-      { _id: String(record.id), name: record.name || '', data: record },
-      { upsert: true, setDefaultsOnInsert: true },
-    )));
-
-    if (replace && validRecords.length > 0) {
-      await Model.deleteMany({ _id: { $nin: validRecords.map((record) => String(record.id)) } });
-    }
-
-    res.json({ success: true, count: validRecords.length });
-  }));
-
-  app.delete(`/api/${resource}`, databaseRequired(async (req, res) => {
-    const id = req.query[resource === 'stores' ? 'storeId' : 'categoryId'] || req.body?.id;
-    if (!id) return res.status(400).json({ success: false, error: 'Missing record id' });
-
-    const result = await Model.deleteOne({ _id: String(id) });
-    res.json({ success: true, deletedCount: result.deletedCount });
-  }));
-}
-
-app.get('/api/orders', databaseRequired(async (_req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 }).lean();
-  res.json({ success: true, orders: orders.map((order) => order.data) });
-}));
-
-app.post('/api/orders', databaseRequired(async (req, res) => {
-  const order = req.body;
-  if (!order?.id) {
-    return res.status(400).json({ success: false, error: 'Invalid order data. Missing order id.' });
-  }
-
-  const orderData = {
-    ...order,
-    createdAtTimestamp: order.createdAtTimestamp || Date.now(),
-    updatedAtTimestamp: Date.now(),
-  };
-
-  await Order.findByIdAndUpdate(
-    String(order.id),
-    {
-      _id: String(order.id),
-      orderNumber: order.orderNumber || order.id,
-      status: order.status || 'placed',
-      grandTotal: Number(order.grandTotal || 0),
-      data: orderData,
-    },
-    { upsert: true, setDefaultsOnInsert: true },
-  );
-
-  res.json({ success: true, order: orderData });
-}));
-
-app.put('/api/orders', databaseRequired(async (req, res) => {
-  const { orderId, status } = req.body || {};
-  if (!orderId || !status) {
-    return res.status(400).json({ success: false, error: 'Missing orderId or status' });
-  }
-
-  const order = await Order.findById(String(orderId));
-  if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
-
-  order.status = status;
-  order.data = { ...order.data, status, updatedAtTimestamp: Date.now() };
-  await order.save();
-  res.json({ success: true });
-}));
-
-app.delete('/api/orders', databaseRequired(async (req, res) => {
-  const orderId = req.query.orderId || req.body?.orderId;
-  if (!orderId) return res.status(400).json({ success: false, error: 'Missing orderId' });
-
-  await Order.deleteOne({ _id: String(orderId) });
-  res.json({ success: true });
-}));
-
-app.post('/api/seed', databaseRequired(async (req, res) => {
-  const { stores = [], categories = [] } = req.body || {};
-  const saveMany = async (Model, records) => Promise.all(
-    records.filter((record) => record?.id).map((record) => Model.findByIdAndUpdate(
-      String(record.id),
-      { _id: String(record.id), name: record.name || '', data: record },
-      { upsert: true, setDefaultsOnInsert: true },
-    )),
-  );
-
-  await Promise.all([saveMany(Store, stores), saveMany(Category, categories)]);
-  res.json({
-    success: true,
-    message: `Successfully processed ${stores.length} stores and ${categories.length} categories into MongoDB.`,
-  });
-}));
-
+// -------------------------------------------------------------
+// Development (Vite Middleware) vs Production (Static Serve)
+// -------------------------------------------------------------
 if (isDevelopment) {
   const { createServer } = await import('vite');
   const vite = await createServer({ server: { middlewareMode: true }, appType: 'spa' });
   app.use(vite.middlewares);
 } else {
-  app.use(express.static(path.join(__dirname, 'dist'), {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith('.html') || filePath.endsWith('version.json')) {
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-      } else if (filePath.includes('/assets/')) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      }
-    },
-  }));
+  app.use(
+    express.static(path.join(__dirname, 'dist'), {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html') || filePath.endsWith('version.json')) {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
+          res.setHeader('Expires', '0');
+        } else if (filePath.includes('/assets/')) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      },
+    })
+  );
   app.get('*', (_req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
@@ -260,18 +214,16 @@ if (isDevelopment) {
   });
 }
 
-mongoose.connection.on('error', (error) => {
-  console.error('MongoDB connection error:', error.message);
-});
+// Test PostgreSQL on startup
+await testConnection();
 
 if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI)
+  mongoose
+    .connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB startup connection failed:', error.message));
-} else {
-  console.log('⚡ Connected to Supabase Cloud Backend (PostgreSQL & Edge Functions)');
 }
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Food Street server running on http://localhost:${port}`);
+  console.log(` FoodZa server running on http://localhost:${port}`);
 });

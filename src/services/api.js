@@ -36,7 +36,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  'https://pdteqhpihbgxcsyrxdgj.supabase.co/functions/v1/food-street';
+  '/api';
 
 const SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
 const SUPABASE_ANON_KEY =
@@ -478,5 +478,331 @@ export async function seedDatabase(initialStores, initialCategories) {
   } catch (error) {
     console.warn('API: Seed notice:', error);
     return false;
+  }
+}
+
+// ============================================================================
+// FOODZA V1 CUSTOMER AUTHENTICATION & PROFILE MANAGEMENT APIS
+// ============================================================================
+
+const TOKEN_KEY = 'foodza_access_token';
+const USER_KEY = 'foodza_customer_user';
+
+let currentAccessToken = typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;
+
+/**
+ * Get the current access token
+ */
+export function getAccessToken() {
+  if (!currentAccessToken && typeof window !== 'undefined') {
+    currentAccessToken = localStorage.getItem(TOKEN_KEY);
+  }
+  return currentAccessToken;
+}
+
+/**
+ * Save access token and cached user
+ */
+export function setAuthSession(token, user) {
+  currentAccessToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+    }
+    if (user) {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(USER_KEY);
+    }
+  }
+}
+
+/**
+ * Retrieve cached user if available
+ */
+export function getCachedUser() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clear authentication session
+ */
+export function clearAuthSession() {
+  currentAccessToken = null;
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  }
+}
+
+/**
+ * Build auth headers for fetch requests
+ */
+function getAuthHeaders(extraHeaders = {}) {
+  const token = getAccessToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...extraHeaders,
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+/**
+ * Authenticated API fetch helper with automatic 401 refresh token retry
+ */
+async function authFetch(url, options = {}) {
+  const opts = {
+    ...options,
+    headers: getAuthHeaders(options.headers || {}),
+    credentials: 'include',
+  };
+
+  let res = await fetch(url, opts);
+
+  // If unauthorized, attempt to rotate refresh token once
+  if (res.status === 401) {
+    const refreshed = await refreshCustomerSession();
+    if (refreshed?.success && refreshed?.accessToken) {
+      opts.headers = getAuthHeaders(options.headers || {});
+      res = await fetch(url, opts);
+    }
+  }
+
+  return res;
+}
+
+/**
+ * Send WhatsApp OTP via YouPI integration
+ * @param {string} phone - Indian mobile number (e.g. "9876543210" or "+919876543210")
+ * @param {string} [name] - Customer full name
+ */
+export async function sendWhatsAppOtp(phone, name) {
+  try {
+    const res = await fetch('/api/v1/auth/whatsapp/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ phone, name }),
+      credentials: 'include',
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: sendWhatsAppOtp failed:', error);
+    return { success: false, error: error.message || 'Network error sending WhatsApp code' };
+  }
+}
+
+/**
+ * Verify WhatsApp OTP code and establish authenticated session
+ * @param {string} phone
+ * @param {string} otp - 6-digit code
+ * @param {string} [name]
+ */
+export async function verifyWhatsAppOtp(phone, otp, name) {
+  try {
+    const res = await fetch('/api/v1/auth/whatsapp/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ phone, otp, name }),
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success && data.accessToken) {
+      setAuthSession(data.accessToken, data.user);
+    }
+    return data;
+  } catch (error) {
+    console.error('API: verifyWhatsAppOtp failed:', error);
+    return { success: false, error: error.message || 'Network error verifying WhatsApp code' };
+  }
+}
+
+/**
+ * Refresh customer authentication token
+ */
+export async function refreshCustomerSession() {
+  try {
+    const res = await fetch('/api/v1/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success && data.accessToken) {
+      setAuthSession(data.accessToken, data.user);
+    } else {
+      clearAuthSession();
+    }
+    return data;
+  } catch (error) {
+    clearAuthSession();
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Log out customer and revoke session on server
+ */
+export async function logoutCustomer() {
+  try {
+    await fetch('/api/v1/auth/logout', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      credentials: 'include',
+    });
+  } catch (err) {
+    console.warn('API: Logout notification failed:', err);
+  } finally {
+    clearAuthSession();
+  }
+  return { success: true };
+}
+
+/**
+ * Fetch authenticated customer's profile from PostgreSQL
+ */
+export async function fetchCustomerProfile() {
+  try {
+    const res = await authFetch('/api/v1/users/me');
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.success && data.user) {
+      setAuthSession(getAccessToken(), data.user);
+      return data.user;
+    }
+    return null;
+  } catch (error) {
+    console.warn('API: fetchCustomerProfile failed:', error);
+    return null;
+  }
+}
+
+/**
+ * Update authenticated customer's profile (name, hostel, room, block, floor, landmark)
+ */
+export async function updateCustomerProfile(profileData) {
+  try {
+    const res = await authFetch('/api/v1/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify(profileData),
+    });
+    const data = await res.json();
+    if (data.success && data.user) {
+      setAuthSession(getAccessToken(), data.user);
+    }
+    return data;
+  } catch (error) {
+    console.error('API: updateCustomerProfile failed:', error);
+    return { success: false, error: error.message || 'Failed to update profile' };
+  }
+}
+
+/**
+ * Fetch all saved delivery addresses for the authenticated customer
+ */
+export async function fetchCustomerAddresses() {
+  try {
+    const res = await authFetch('/api/v1/addresses');
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.addresses || [];
+  } catch (error) {
+    console.warn('API: fetchCustomerAddresses failed:', error);
+    return [];
+  }
+}
+
+/**
+ * Create a new delivery address for the authenticated customer
+ */
+export async function createCustomerAddress(addressData) {
+  try {
+    const res = await authFetch('/api/v1/addresses', {
+      method: 'POST',
+      body: JSON.stringify(addressData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: createCustomerAddress failed:', error);
+    return { success: false, error: error.message || 'Failed to create address' };
+  }
+}
+
+/**
+ * Update an existing delivery address
+ */
+export async function updateCustomerAddress(addressId, addressData) {
+  try {
+    const res = await authFetch(`/api/v1/addresses/${encodeURIComponent(addressId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(addressData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: updateCustomerAddress failed:', error);
+    return { success: false, error: error.message || 'Failed to update address' };
+  }
+}
+
+/**
+ * Delete a saved delivery address
+ */
+export async function deleteCustomerAddress(addressId) {
+  try {
+    const res = await authFetch(`/api/v1/addresses/${encodeURIComponent(addressId)}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: deleteCustomerAddress failed:', error);
+    return { success: false, error: error.message || 'Failed to delete address' };
+  }
+}
+
+/**
+ * Set an address as the default delivery address
+ */
+export async function setDefaultCustomerAddress(addressId) {
+  try {
+    const res = await authFetch(`/api/v1/addresses/${encodeURIComponent(addressId)}/default`, {
+      method: 'POST',
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: setDefaultCustomerAddress failed:', error);
+    return { success: false, error: error.message || 'Failed to set default address' };
+  }
+}
+
+/**
+ * Place a customer order with authenticated session and snapshot persistence
+ */
+export async function placeCustomerOrder(orderPayload) {
+  try {
+    const res = await authFetch('/api/v1/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderPayload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('API: placeCustomerOrder failed:', error);
+    return { success: false, error: error.message || 'Failed to persist order' };
   }
 }

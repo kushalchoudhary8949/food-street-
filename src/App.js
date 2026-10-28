@@ -49,6 +49,7 @@ import { StoreDetailModal } from './components/StoreDetailModal';
 import { MenuItemModal } from './components/MenuItemModal';
 import { CartDrawer } from './components/CartDrawer';
 import { LocationModal } from './components/LocationModal';
+import { CustomerAuthModal } from './components/CustomerAuthModal';
 import { BottomNav } from './components/BottomNav';
 import { SearchTab } from './components/SearchTab';
 import { OrdersTab } from './components/OrdersTab';
@@ -58,7 +59,26 @@ import { AdminLogin } from './components/AdminLogin';
 import { TummyTreatAdmin } from './components/TummyTreatAdmin';
 import { sendOrderToWhatsApp } from './utils/whatsapp';
 import { CATEGORIES, STORES, INITIAL_ADDRESSES, INITIAL_ORDERS, DATA_VERSION } from './data/mockData';
-import { fetchStoresFromDb, fetchCategoriesFromDb, fetchOrdersFromDb, saveStoresToDb, saveCategoriesToDb, saveOrderToDb, subscribeToOrders } from './services/api';
+import {
+  fetchStoresFromDb,
+  fetchCategoriesFromDb,
+  fetchOrdersFromDb,
+  saveStoresToDb,
+  saveCategoriesToDb,
+  saveOrderToDb,
+  subscribeToOrders,
+  fetchCustomerProfile,
+  updateCustomerProfile,
+  fetchCustomerAddresses,
+  createCustomerAddress,
+  updateCustomerAddress,
+  deleteCustomerAddress,
+  setDefaultCustomerAddress,
+  logoutCustomer,
+  placeCustomerOrder,
+  getCachedUser,
+  getAccessToken,
+} from './services/api';
 import { verifyAdminSession, clearAdminSession } from './utils/adminAuth';
 
 // Local storage keys for saved delivery addresses
@@ -301,6 +321,10 @@ export default function App() {
             if (unsubscribe) unsubscribe();
         };
     }, [activeTab, isAdmin]);
+    // Customer Authentication & WhatsApp OTP State
+    const [currentUser, setCurrentUser] = useState(() => getCachedUser());
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
     // Address state
     const [addresses, setAddresses] = useState(() => {
         if (typeof window === 'undefined')
@@ -334,6 +358,210 @@ export default function App() {
         return fallback;
     });
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+
+    // On Mount: Auto-verify customer session and load saved delivery addresses from PostgreSQL
+    React.useEffect(() => {
+        let isCurrent = true;
+        (async () => {
+            try {
+                const profile = await fetchCustomerProfile();
+                if (profile && isCurrent) {
+                    setCurrentUser(profile);
+                    const dbAddresses = await fetchCustomerAddresses();
+                    if (Array.isArray(dbAddresses) && dbAddresses.length > 0 && isCurrent) {
+                        const mapped = dbAddresses.map((a) => ({
+                            id: a.id,
+                            label: a.label || 'Hostel',
+                            name: a.name || profile.name || '',
+                            phone: a.phone || profile.phone || '',
+                            hostelName: a.hostel_name || '',
+                            hostel_name: a.hostel_name || '',
+                            roomNo: a.room_no || '',
+                            room_no: a.room_no || '',
+                            block: a.block || '',
+                            floor: a.floor || '',
+                            addressLine: a.address_line || '',
+                            address_line: a.address_line || '',
+                            instructions: a.instructions || '',
+                            isDefault: Boolean(a.is_default),
+                            is_default: Boolean(a.is_default),
+                        }));
+                        setAddresses(mapped);
+                        const def = mapped.find((a) => a.isDefault) || mapped[0];
+                        if (def) setCurrentAddress(def);
+                    }
+                }
+            } catch (err) {
+                console.warn('[FoodZa Auth] Auto session sync notice:', err);
+            }
+        })();
+        return () => { isCurrent = false; };
+    }, []);
+
+    // Handlers for Authentication & Customer Profile
+    const handleAuthSuccess = async (user) => {
+        setCurrentUser(user);
+        showToast(`🎉 Verified as ${user.name || user.phone}`);
+        try {
+            const dbAddresses = await fetchCustomerAddresses();
+            if (Array.isArray(dbAddresses) && dbAddresses.length > 0) {
+                const mapped = dbAddresses.map((a) => ({
+                    id: a.id,
+                    label: a.label || 'Hostel',
+                    name: a.name || user.name || '',
+                    phone: a.phone || user.phone || '',
+                    hostelName: a.hostel_name || '',
+                    hostel_name: a.hostel_name || '',
+                    roomNo: a.room_no || '',
+                    room_no: a.room_no || '',
+                    block: a.block || '',
+                    floor: a.floor || '',
+                    addressLine: a.address_line || '',
+                    address_line: a.address_line || '',
+                    instructions: a.instructions || '',
+                    isDefault: Boolean(a.is_default),
+                    is_default: Boolean(a.is_default),
+                }));
+                setAddresses(mapped);
+                const def = mapped.find((a) => a.isDefault) || mapped[0];
+                if (def) setCurrentAddress(def);
+            } else if (user.hostelName || user.roomNo) {
+                const initialUserAddr = {
+                    id: `addr-${Date.now()}`,
+                    label: 'Hostel',
+                    name: user.name || '',
+                    phone: user.phone || '',
+                    hostelName: user.hostelName || '',
+                    hostel_name: user.hostelName || '',
+                    roomNo: user.roomNo || '',
+                    room_no: user.roomNo || '',
+                    block: user.block || '',
+                    floor: user.floor || '',
+                    addressLine: user.landmark || [user.hostelName, user.roomNo ? `Room ${user.roomNo}` : null].filter(Boolean).join(', '),
+                    address_line: user.landmark || [user.hostelName, user.roomNo ? `Room ${user.roomNo}` : null].filter(Boolean).join(', '),
+                    locality: 'Campus',
+                    city: 'Campus',
+                    isDefault: true,
+                    is_default: true,
+                };
+                createCustomerAddress(initialUserAddr).catch(() => {});
+                setAddresses([initialUserAddr]);
+                setCurrentAddress(initialUserAddr);
+            }
+        } catch (e) {
+            console.error('Failed to load user addresses:', e);
+        }
+    };
+
+    const handleUpdateProfile = async (profileData) => {
+        const res = await updateCustomerProfile(profileData);
+        if (res && res.success && res.user) {
+            setCurrentUser(res.user);
+            showToast('✅ Profile updated in database');
+            if (currentAddress && (currentAddress.isDefault || currentAddress.is_default)) {
+                setCurrentAddress((prev) => ({
+                    ...prev,
+                    name: res.user.name || prev.name,
+                    hostelName: res.user.hostelName || prev.hostelName,
+                    hostel_name: res.user.hostelName || prev.hostel_name,
+                    roomNo: res.user.roomNo || prev.roomNo,
+                    room_no: res.user.roomNo || prev.room_no,
+                    block: res.user.block || prev.block,
+                    floor: res.user.floor || prev.floor,
+                }));
+            }
+        }
+        return res;
+    };
+
+    const handleLogout = async () => {
+        await logoutCustomer();
+        setCurrentUser(null);
+        setAddresses(INITIAL_ADDRESSES);
+        setCurrentAddress(INITIAL_ADDRESSES[0]);
+        showToast('Logged out successfully');
+    };
+
+    const handleAddAddress = async (newAddr) => {
+        setAddresses((prev) => [newAddr, ...prev]);
+        if (currentUser) {
+            try {
+                const res = await createCustomerAddress(newAddr);
+                if (res?.success && res?.address) {
+                    const saved = {
+                        ...newAddr,
+                        id: res.address.id,
+                        hostelName: res.address.hostel_name || newAddr.hostelName,
+                        hostel_name: res.address.hostel_name || newAddr.hostel_name,
+                        roomNo: res.address.room_no || newAddr.roomNo,
+                        room_no: res.address.room_no || newAddr.room_no,
+                    };
+                    setAddresses((prev) => prev.map((a) => (a.id === newAddr.id ? saved : a)));
+                    if (currentAddress.id === newAddr.id) {
+                        setCurrentAddress(saved);
+                    }
+                }
+            } catch (err) {
+                console.warn('Backend address create failed:', err);
+            }
+        }
+        showToast('Delivery address saved');
+    };
+
+    const handleUpdateAddress = async (updatedAddr) => {
+        setAddresses((prev) => prev.map((a) => (a.id === updatedAddr.id ? updatedAddr : a)));
+        if (currentAddress.id === updatedAddr.id) {
+            setCurrentAddress(updatedAddr);
+        }
+        if (currentUser) {
+            try {
+                await updateCustomerAddress(updatedAddr.id, updatedAddr);
+            } catch (err) {
+                console.warn('Backend address update failed:', err);
+            }
+        }
+        showToast('Address updated');
+    };
+
+    const handleDeleteAddress = async (addressId) => {
+        const remaining = addresses.filter((a) => a.id !== addressId);
+        if (remaining.length === 0) return;
+        setAddresses(remaining);
+        if (currentAddress.id === addressId) {
+            setCurrentAddress(remaining[0]);
+        }
+        if (currentUser) {
+            try {
+                await deleteCustomerAddress(addressId);
+            } catch (err) {
+                console.warn('Backend address delete failed:', err);
+            }
+        }
+        showToast('Address removed');
+    };
+
+    const handleSetDefaultAddress = async (addressId) => {
+        setAddresses((prev) =>
+            prev.map((a) => ({
+                ...a,
+                isDefault: a.id === addressId,
+                is_default: a.id === addressId,
+            }))
+        );
+        const target = addresses.find((a) => a.id === addressId);
+        if (target) {
+            setCurrentAddress({ ...target, isDefault: true, is_default: true });
+        }
+        if (currentUser) {
+            try {
+                await setDefaultCustomerAddress(addressId);
+            } catch (err) {
+                console.warn('Backend set default address failed:', err);
+            }
+        }
+        showToast('Default delivery address updated');
+    };
+
     React.useEffect(() => {
         localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(addresses));
     }, [addresses]);
@@ -477,6 +705,12 @@ export default function App() {
     const buildAndPlaceOrder = async (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
         if (cartItemsForOrder.length === 0)
             return;
+        // Require customer authentication before placing an order
+        if (!currentUser || !getAccessToken()) {
+            setIsAuthModalOpen(true);
+            showToast('⚠️ Please sign in with WhatsApp before placing your order.');
+            return;
+        }
         const targetStore = cartItemsForOrder[0]?.store;
         const liveStore = stores.find(s => s.id === targetStore?.id);
         if (liveStore && liveStore.isVisible === false) {
@@ -513,22 +747,39 @@ export default function App() {
             : uniqueStores.map(s => s.name).join(' & ');
         const storeImage = uniqueStores[0].image;
         const storeId = uniqueStores.map(s => s.id).join('_');
+        const deliveryHostel = currentAddress.hostelName || currentAddress.hostel_name || currentUser?.hostelName || currentUser?.hostel_name || '';
+        const deliveryRoomNo = currentAddress.roomNo || currentAddress.room_no || currentUser?.roomNo || currentUser?.room_no || '';
+        const deliveryBlock = currentAddress.block || currentUser?.block || '';
+        const deliveryFloor = currentAddress.floor || currentUser?.floor || '';
+        const deliveryLandmark = currentAddress.locality || currentUser?.landmark || '';
+        const deliveryName = currentAddress.name || currentUser?.name || 'Valued Customer';
+        const deliveryContact = currentAddress.phone || currentUser?.phone || '';
+
         const formattedAddress = [
-            currentAddress.name ? `Name: ${currentAddress.name}` : null,
-            currentAddress.roomNo ? `Room ${currentAddress.roomNo}` : null,
-            currentAddress.hostelName,
-            currentAddress.block,
-            currentAddress.addressLine,
-            currentAddress.locality,
-            currentAddress.city,
+            deliveryName ? `Name: ${deliveryName}` : null,
+            deliveryRoomNo ? `Room ${deliveryRoomNo}` : null,
+            deliveryHostel,
+            deliveryBlock ? `Block ${deliveryBlock}` : null,
+            deliveryFloor ? `Floor ${deliveryFloor}` : null,
+            currentAddress.addressLine || currentAddress.address_line,
+            deliveryLandmark,
         ].filter(Boolean).join(', ');
+
         const newOrder = {
             id: `ord-${Date.now()}`,
             orderNumber: `#FD-${Math.floor(10000 + Math.random() * 90000)}`,
-            name: currentAddress.name || '',
-            roomNo: currentAddress.roomNo || '',
-            hostel: currentAddress.hostelName || '',
-            contact: currentAddress.phone || '',
+            userId: currentUser ? currentUser.id : null,
+            addressId: currentAddress.id,
+            name: deliveryName,
+            roomNo: deliveryRoomNo,
+            hostel: deliveryHostel,
+            block: deliveryBlock,
+            floor: deliveryFloor,
+            landmark: deliveryLandmark,
+            contact: deliveryContact,
+            customerPhone: deliveryContact,
+            deliveryAddress: formattedAddress,
+            deliveryInstructions: instructions || currentAddress.instructions || '',
             store: {
                 id: storeId,
                 name: storeName,
@@ -553,8 +804,6 @@ export default function App() {
             placedAt: 'Just now',
             created_at: new Date().toISOString(),
             estimatedDeliveryTime: 'In ~20 mins',
-            deliveryAddress: formattedAddress,
-            customerPhone: currentAddress.phone,
             driverName: 'Alex Mercer',
             driverPhone: '8549908385',
             driverRating: 4.9,
@@ -578,14 +827,15 @@ export default function App() {
         setIsStoreModalOpen(false);
         setActiveTab('orders');
 
-        // Persist to live Supabase database FIRST so admin panel immediately tracks it
+        // Persist to FoodZa PostgreSQL database with immutable delivery snapshot
         try {
             await Promise.race([
-                saveOrderToDb(newOrder),
-                new Promise(resolve => setTimeout(resolve, 1500))
+                placeCustomerOrder(newOrder),
+                new Promise(resolve => setTimeout(resolve, 2000))
             ]);
+            saveOrderToDb(newOrder).catch(() => {});
         } catch (err) {
-            console.error('Failed to save order to Supabase:', err);
+            console.error('Failed to save order to PostgreSQL:', err);
         }
 
         // Direct to WhatsApp with official order receipt & order ID
@@ -735,13 +985,13 @@ export default function App() {
                         window.location.hash = '';
                         window.history.pushState(null, '', '/');
                         setCurrentPath('/');
-                    } }))) : (_jsxs(_Fragment, { children: [activeTab === 'home' && (_jsxs("div", { className: "flex-1 pb-24", children: [_jsx(Header, { currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), searchQuery: searchQuery, onSearchChange: setSearchQuery, onSearchFocus: () => { }, onAvatarClick: () => setActiveTab('profile'), onOpenCart: () => setIsCartOpen(true), cartCount: totalCartCount, cartTotal: cartPrice }), _jsx("div", { className: "mt-1", children: _jsx(CategoryBar, { categories: categories, selectedCategory: selectedCategory, onSelectCategory: handleSelectCategory }) }), selectedCategory && (_jsxs("div", { className: "px-4 mt-4 flex items-center justify-between", children: [_jsxs("h2", { className: "text-base font-extrabold text-gray-900 tracking-tight", children: [selectedCategory.toUpperCase(), " SPOTS"] }), _jsx("button", { onClick: () => setSelectedCategory(null), className: "text-xs font-bold text-red-600 hover:text-red-700 underline", children: "Clear filter" })] })), _jsxs("div", { className: "px-4 mt-3 space-y-4", children: [filteredStores.map((store) => (_jsx(StoreCard, { store: store, isFavorite: favorites.includes(store.id), onToggleFavorite: (e) => handleToggleFavorite(e, store.id), onClick: () => handleOpenStore(store) }, store.id))), filteredStores.length === 0 && (_jsxs("div", { className: "text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200", children: [_jsx("p", { className: "text-sm font-bold text-gray-500", children: "No restaurants match your search" }), _jsx("button", { onClick: () => {
+                    } }))) : (_jsxs(_Fragment, { children: [activeTab === 'home' && (_jsxs("div", { className: "flex-1 pb-24", children: [_jsx(Header, { currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), searchQuery: searchQuery, onSearchChange: setSearchQuery, onSearchFocus: () => { }, onAvatarClick: () => setActiveTab('profile'), onOpenCart: () => setIsCartOpen(true), cartCount: totalCartCount, cartTotal: cartPrice, currentUser: currentUser }), _jsx("div", { className: "mt-1", children: _jsx(CategoryBar, { categories: categories, selectedCategory: selectedCategory, onSelectCategory: handleSelectCategory }) }), selectedCategory && (_jsxs("div", { className: "px-4 mt-4 flex items-center justify-between", children: [_jsxs("h2", { className: "text-base font-extrabold text-gray-900 tracking-tight", children: [selectedCategory.toUpperCase(), " SPOTS"] }), _jsx("button", { onClick: () => setSelectedCategory(null), className: "text-xs font-bold text-red-600 hover:text-red-700 underline", children: "Clear filter" })] })), _jsxs("div", { className: "px-4 mt-3 space-y-4", children: [filteredStores.map((store) => (_jsx(StoreCard, { store: store, isFavorite: favorites.includes(store.id), onToggleFavorite: (e) => handleToggleFavorite(e, store.id), onClick: () => handleOpenStore(store) }, store.id))), filteredStores.length === 0 && (_jsxs("div", { className: "text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200", children: [_jsx("p", { className: "text-sm font-bold text-gray-500", children: "No restaurants match your search" }), _jsx("button", { onClick: () => {
                                                         setSelectedCategory(null);
                                                         setSearchQuery('');
                                                     }, className: "mt-2 text-xs font-bold text-red-600 hover:underline", children: "Reset all filters" })] }))] })] })), activeTab === 'search' && (_jsx("div", { className: "flex-1", children: _jsx(SearchTab, { stores: stores.filter(s => s.isVisible !== false), initialQuery: searchQuery, onSelectStore: handleOpenStore, onSelectMenuItem: (item, store) => {
                                      setCustomizingItemStore(store);
                                      setCustomizingItem(item);
-                                 } }) })), activeTab === 'orders' && (_jsx("div", { className: "flex-1", children: _jsx(OrdersTab, { orders: customerOrders, stores: stores, pendingOrders: pendingOrders, onCompleteOrder: handleCompleteOrder, onExploreFood: () => setActiveTab('home'), onSendPendingOrder: handleSendPendingOrder }) })), activeTab === 'profile' && (_jsx("div", { className: "flex-1", children: _jsx(ProfileTab, { currentAddress: currentAddress, addresses: addresses, onOpenLocationModal: () => setIsLocationModalOpen(true), favoritesCount: favorites.length, onViewFavorites: () => setActiveTab('home') }) })), cartItems.length > 0 && activeTab !== 'orders' && !isStoreModalOpen && (_jsx("div", { className: "fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200", children: _jsx("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2", children: _jsxs("button", { id: "floating-cart-btn", onClick: () => setIsCartOpen(true), className: "w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all", children: [_jsxs("div", { className: "flex items-center gap-2.5 min-w-0 leading-none", children: [_jsxs("span", { className: "inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0", children: [totalCartCount, " ", totalCartCount === 1 ? 'ITEM' : 'ITEMS'] }), _jsxs("span", { className: "text-sm font-extrabold text-white leading-none", children: ["\u20B9", cartPrice.toFixed(0)] })] }), _jsx("span", { className: "text-xs font-black uppercase tracking-wider whitespace-nowrap", children: "View Cart \u2192" })] }) }) })), _jsx(BottomNav, { activeTab: activeTab, onTabChange: (tab) => {
+                                 } }) })), activeTab === 'orders' && (_jsx("div", { className: "flex-1", children: _jsx(OrdersTab, { orders: customerOrders, stores: stores, pendingOrders: pendingOrders, onCompleteOrder: handleCompleteOrder, onExploreFood: () => setActiveTab('home'), onSendPendingOrder: handleSendPendingOrder }) })), activeTab === 'profile' && (_jsx("div", { className: "flex-1", children: _jsx(ProfileTab, { currentUser: currentUser, currentAddress: currentAddress, addresses: addresses, onOpenLocationModal: () => setIsLocationModalOpen(true), onOpenAuthModal: () => setIsAuthModalOpen(true), onUpdateProfile: handleUpdateProfile, onLogout: handleLogout, favoritesCount: favorites.length, onViewFavorites: () => setActiveTab('home') }) })), cartItems.length > 0 && activeTab !== 'orders' && !isStoreModalOpen && (_jsx("div", { className: "fixed inset-x-0 bottom-18 z-30 flex justify-center px-4 animate-in slide-in-from-bottom duration-200", children: _jsx("div", { className: "w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col gap-2", children: _jsxs("button", { id: "floating-cart-btn", onClick: () => setIsCartOpen(true), className: "w-full min-h-[48px] py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold flex items-center justify-between gap-3 shadow-xl active:scale-98 transition-all", children: [_jsxs("div", { className: "flex items-center gap-2.5 min-w-0 leading-none", children: [_jsxs("span", { className: "inline-flex items-center justify-center h-6 px-2 bg-white/20 text-white text-[10px] font-black rounded-lg shrink-0", children: [totalCartCount, " ", totalCartCount === 1 ? 'ITEM' : 'ITEMS'] }), _jsxs("span", { className: "text-sm font-extrabold text-white leading-none", children: ["\u20B9", cartPrice.toFixed(0)] })] }), _jsx("span", { className: "text-xs font-black uppercase tracking-wider whitespace-nowrap", children: "View Cart \u2192" })] }) }) })), _jsx(BottomNav, { activeTab: activeTab, onTabChange: (tab) => {
                                 setActiveTab(tab);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                             }, activeOrdersCount: activeOrdersCount, cartItemsCount: totalCartCount, onOpenCart: () => setIsCartOpen(true), showAdmin: false }), _jsx(StoreDetailModal, { store: selectedStore, isOpen: isStoreModalOpen, onClose: () => setIsStoreModalOpen(false), isFavorite: selectedStore ? favorites.includes(selectedStore.id) : false, onToggleFavorite: (storeId) => handleToggleFavorite(undefined, storeId), cartItems: cartItems, onOpenItemModal: (item) => {
@@ -750,14 +1000,5 @@ export default function App() {
                             }, onUpdateCartQuantity: handleUpdateCartQuantity, onOpenCart: () => setIsCartOpen(true) }), _jsx(MenuItemModal, { item: customizingItem, onClose: () => {
                                 setCustomizingItem(null);
                                 setCustomizingItemStore(null);
-                            }, onAddToCart: handleAddToCart }), _jsx(CartDrawer, { isOpen: isCartOpen, onClose: () => setIsCartOpen(false), cartItems: cartItems, currentAddress: currentAddress, onOpenLocationModal: () => setIsLocationModalOpen(true), onUpdateQuantity: handleUpdateCartQuantity, onClearCart: () => setCartItems([]), containerChargePerItem: containerChargePerItem, onPlaceOrder: handlePlaceOrder }), _jsx(LocationModal, { isOpen: isLocationModalOpen, onClose: () => setIsLocationModalOpen(false), addresses: addresses, currentAddress: currentAddress, onSelectAddress: (addr) => setCurrentAddress(addr), onAddAddress: (newAddr) => setAddresses((prev) => [newAddr, ...prev]), onDeleteAddress: (addressId) => {
-                                const remaining = addresses.filter(a => a.id !== addressId);
-                                if (remaining.length === 0)
-                                    return;
-                                setAddresses(remaining);
-                                if (currentAddress.id === addressId) {
-                                    setCurrentAddress(remaining[0]);
-                                }
-                                showToast('Address removed');
-                            } })] }))] }) }));
+                            }, onAddToCart: handleAddToCart }), _jsx(CartDrawer, { isOpen: isCartOpen, onClose: () => setIsCartOpen(false), cartItems: cartItems, currentAddress: currentAddress, currentUser: currentUser, onOpenLocationModal: () => setIsLocationModalOpen(true), onOpenAuthModal: () => setIsAuthModalOpen(true), onUpdateQuantity: handleUpdateCartQuantity, onClearCart: () => setCartItems([]), containerChargePerItem: containerChargePerItem, onPlaceOrder: handlePlaceOrder }), _jsx(LocationModal, { isOpen: isLocationModalOpen, onClose: () => setIsLocationModalOpen(false), addresses: addresses, currentAddress: currentAddress, currentUser: currentUser, onSelectAddress: (addr) => setCurrentAddress(addr), onAddAddress: handleAddAddress, onUpdateAddress: handleUpdateAddress, onDeleteAddress: handleDeleteAddress, onSetDefaultAddress: handleSetDefaultAddress }), _jsx(CustomerAuthModal, { isOpen: isAuthModalOpen, onClose: () => setIsAuthModalOpen(false), onAuthSuccess: handleAuthSuccess })] }))] }) }));
 }

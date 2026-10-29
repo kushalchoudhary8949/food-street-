@@ -34,13 +34,14 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+const DEFAULT_SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
+
 const SUPABASE_URL =
-  import.meta.env.VITE_SUPABASE_URL ||
-  'https://lmbfbwrkujsckptyvuvj.supabase.co';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-if (!SUPABASE_ANON_KEY) {
-  throw new Error('VITE_SUPABASE_ANON_KEY must be configured for this project.');
-}
+  import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const SUPABASE_ANON_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
 const SUPABASE_AUTH_HEADERS = {
   apikey: SUPABASE_ANON_KEY,
   Authorization: 'Bearer ' + SUPABASE_ANON_KEY,

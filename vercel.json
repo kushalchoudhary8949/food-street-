@@ -21,7 +21,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://lmbfbwrkujsckptyvuvj.supabase.co/functions/v1/food-street/$1"
+      "destination": "https://pdteqhpihbgxcsyrxdgj.supabase.co/functions/v1/food-street/$1"
     },
     {
       "source": "/(.*)",

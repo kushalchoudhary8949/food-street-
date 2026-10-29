@@ -82,14 +82,6 @@ export const CartDrawer = ({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
-    // Validation 0: Require customer authentication before placing an order
-    if (!currentUser) {
-      if (onOpenAuthModal) {
-        onOpenAuthModal();
-      }
-      return;
-    }
-
     // Validation 1: Store operating window
     const windowStatus = getOrderWindowStatus(currentStore?.id, undefined, currentStore);
     if (!windowStatus.isOpen) {
@@ -670,14 +662,10 @@ export const CartDrawer = ({
                 onClick: handleCheckout,
                 disabled:
                   isPlacing ||
-                  (!currentUser
-                    ? false
-                    : !isCancellationConfirmed ||
-                      !getOrderWindowStatus(currentStore?.id, undefined, currentStore).isOpen),
+                  !isCancellationConfirmed ||
+                  !getOrderWindowStatus(currentStore?.id, undefined, currentStore).isOpen,
                 className:
-                  !currentUser
-                    ? 'w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-emerald-500/20 active:scale-98 transition-all'
-                    : 'w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600',
+                  'w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-base flex items-center justify-between shadow-lg shadow-red-500/20 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600',
                 children: [
                   _jsxs('div', {
                     className: 'text-left',
@@ -693,11 +681,7 @@ export const CartDrawer = ({
                     className: 'flex items-center space-x-2',
                     children: [
                       _jsx('span', {
-                        children: !currentUser
-                          ? 'Sign In to Place Order'
-                          : isPlacing
-                          ? 'Placing Order...'
-                          : 'Place Order',
+                        children: isPlacing ? 'Placing Order...' : 'Place Order',
                       }),
                       _jsx(ArrowRight, { className: 'w-5 h-5' }),
                     ],

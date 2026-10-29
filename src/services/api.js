@@ -139,7 +139,15 @@ export async function fetchDatabaseStatus() {
     const res = await fetchFoodStreet('/status', {
       headers: { Accept: 'application/json' },
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        connected: false,
+        database: 'Supabase (Postgres)',
+        error: data.message || `Server responded with HTTP ${res.status}`,
+      };
+    }
     return data;
   } catch (error) {
     return {

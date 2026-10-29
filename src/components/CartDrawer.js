@@ -286,7 +286,7 @@ export const CartDrawer = ({
                               _jsx(MessageSquare, { className: 'w-4 h-4 text-emerald-600 shrink-0' }),
                               _jsx('span', {
                                 className: 'font-semibold',
-                                children: 'Sign in with WhatsApp for saved addresses & order updates.',
+                                children: 'Optional: Sign in with WhatsApp for saved addresses & updates.',
                               }),
                             ],
                           }),

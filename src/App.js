@@ -705,12 +705,6 @@ export default function App() {
     const buildAndPlaceOrder = async (cartItemsForOrder, clearCart, closeCart, { tip, discount, couponCode, instructions, paymentMethod, cancellationConfirmed }, containerChargePerItem = 0) => {
         if (cartItemsForOrder.length === 0)
             return;
-        // Require customer authentication before placing an order
-        if (!currentUser || !getAccessToken()) {
-            setIsAuthModalOpen(true);
-            showToast('⚠️ Please sign in with WhatsApp before placing your order.');
-            return;
-        }
         const targetStore = cartItemsForOrder[0]?.store;
         const liveStore = stores.find(s => s.id === targetStore?.id);
         if (liveStore && liveStore.isVisible === false) {

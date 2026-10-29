@@ -284,6 +284,13 @@ export const CustomerAuthModal = ({
                       }),
                     ],
                   }),
+                  _jsx('button', {
+                    type: 'button',
+                    onClick: onClose,
+                    className:
+                      'w-full py-2.5 text-xs font-bold text-gray-500 hover:text-gray-800 transition-colors text-center block',
+                    children: 'Skip & Continue as Guest →',
+                  }),
                 ],
               }),
 
@@ -383,6 +390,13 @@ export const CustomerAuthModal = ({
                         children: countdown > 0 ? `Resend code in ${countdown}s` : 'Resend WhatsApp Code',
                       }),
                     ],
+                  }),
+                  _jsx('button', {
+                    type: 'button',
+                    onClick: onClose,
+                    className:
+                      'w-full py-2.5 text-xs font-bold text-gray-500 hover:text-gray-800 transition-colors text-center block pt-2 border-t border-gray-100',
+                    children: 'Skip & Continue as Guest →',
                   }),
                 ],
               }),

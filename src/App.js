@@ -262,12 +262,14 @@ export default function App() {
         };
     }, []);
     const isTummyTreat =
-        currentPath.startsWith('/tummy-treat') ||
-        currentPath.startsWith('#/tummy-treat') ||
-        currentPath === '#tummy-treat' ||
-        window.location.pathname.startsWith('/tummy-treat') ||
-        window.location.hash.startsWith('#/tummy-treat') ||
-        window.location.hash === '#tummy-treat';
+        currentPath.includes('tummy-treat') ||
+        currentPath.includes('tummytreat') ||
+        window.location.pathname.includes('tummy-treat') ||
+        window.location.pathname.includes('tummytreat') ||
+        window.location.hash.includes('tummy-treat') ||
+        window.location.hash.includes('tummytreat') ||
+        window.location.search.includes('tummy-treat') ||
+        window.location.search.includes('tummytreat');
     const isAdmin =
         currentPath.startsWith('/admin') ||
         currentPath.startsWith('#/admin') ||

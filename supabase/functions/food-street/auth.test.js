@@ -206,7 +206,7 @@ test("Vercel forwards same-origin API paths to the Food Street Edge Function", a
   const apiRewrite = config.rewrites.find((rewrite) => rewrite.source === "/api/(.*)");
   assert.equal(
     apiRewrite.destination,
-    "https://pdteqhpihbgxcsyrxdgj.supabase.co/functions/v1/food-street/$1",
+    "https://jwgvsszeojlpcfcmnqme.supabase.co/functions/v1/food-street/$1",
   );
   assert.equal(apiRewrite.destination.endsWith("/$1"), true);
 });

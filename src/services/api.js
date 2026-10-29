@@ -34,9 +34,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const DEFAULT_SUPABASE_URL = 'https://pdteqhpihbgxcsyrxdgj.supabase.co';
+const DEFAULT_SUPABASE_URL = 'https://jwgvsszeojlpcfcmnqme.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkdGVxaHBpaGJneGNzeXJ4ZGdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNDk3MzUsImV4cCI6MjEwNzYyNTczNX0.rHBIJMJyvHHPWO5Zh5awwBthVXyNFIj5GuBrJoi4Zhw';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3Z3Zzc3plb2pscGNmY21ucW1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyNzA3NDksImV4cCI6MjEwODg0Njc0OX0.dy0lwMp6u-WZ2STUPT8yFMdbvHjsFJL1T8J5CQfTo1U';
 
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;

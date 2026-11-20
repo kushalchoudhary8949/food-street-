@@ -8,6 +8,7 @@ import kfcMenuCsv from '../csv files/kfc_menu(2).csv?raw';
 import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
+import bbkMenuCsv from '../csv files/Updated_biryani_by_kilo_menu.csv?raw';
 export const DATA_VERSION = 'food_street_v4_store_discounts_control_2026_10_17';
 const deduplicateMenuItems = (items) => {
     const seenNames = new Set();
@@ -175,6 +176,106 @@ const createTummyTreatMenu = () => {
             category: getValue(row, 'category'),
         })));
     });
+    return { categories, items };
+};
+const createBbkMenu = () => {
+    const rows = bbkMenuCsv.trim().split(/\r?\n/).map(parseCsvRow);
+    const [header, ...menuRows] = rows;
+    const columnIndex = new Map(header.map((col, idx) => [col.trim(), idx]));
+    const getValue = (row, col) => row[columnIndex.get(col) ?? -1] ?? '';
+
+    const imageMap = {
+        'Veg Hyderabadi Biryani': '/images/Biriyani by kilo/Veg Hyderabadi Biriyani.jpg',
+        'Soya Chaap Biryani': '/images/Biriyani by kilo/Soya Chaap Biriyani.jpg',
+        'Paneer Hyderabadi Biryani': '/images/Biriyani by kilo/Paneer Hyderabadi Biriyani.jpg',
+        'Chicken Tangri Biryani': '/images/Biriyani by kilo/chicken hyd half kg 4 pc.jpg',
+        'Chicken Boneless Biryani': '/images/Biriyani by kilo/Chicken Boneless Biriyani.jpg',
+        'Veg Galouti Kebab': '/images/Biriyani by kilo/Veg Galouti Kebab.jpg',
+        'Soya Chaap Tikka': '/images/Biriyani by kilo/BBK00168 Soya Malai Chaap Tikka.jpg',
+        'Paneer Tikka': '/images/Biriyani by kilo/Paneer Tikka.jpg',
+        'Chicken Galouti Kebab': '/images/Biriyani by kilo/Chicken Giloti Kebab.jpg',
+        'Chicken Seekh Kebab': '/images/Biriyani by kilo/Chicken Seekh Kebab.jpg',
+        'Chicken Tikka': '/images/Biriyani by kilo/Chicken Tikka.jpg',
+        'Mutton Galouti Kebab': '/images/Biriyani by kilo/New Non-Veg Kebab Platter Listing 500x500.jpg',
+        'Dal Makhani Rice Bowl': '/images/Goila butter chicken/Dal Makhani Rice Bowl.jpeg',
+        'Butter Paneer Rice Bowl': '/images/Goila butter chicken/Butter Paneer Rice Bowl.jpeg',
+        'Chicken Tikka Masala Rice Bowl': '/images/Goila butter chicken/Chicken Tikka Masala Rice Bowl.jpeg',
+        'Butter Chicken Rice Bowl': '/images/Goila butter chicken/Goila Butter Chicken Rice Bowl.jpeg',
+        'Butter Paneer with Paratha': '/images/Biriyani by kilo/butter_paneer_with_flavoured_rice_2_paratha.jpg',
+        'Soya Chaap Masala with Paratha': '/images/Biriyani by kilo/BBK00167 Tandoori Soya Chaap.jpg',
+        'Butter Chicken Boneless with Paratha': '/images/Biriyani by kilo/Butter Chicken Boneless with Flavoured Rice  or 2 Paratha.jpg',
+        'Mutton Nihari with Paratha': '/images/Biriyani by kilo/Mutton Nihari with Flavoured Rice or  2 Paratha.jpg',
+        'Soya Chaap Roll': '/images/Goila butter chicken/malai_soya_roll.jpeg',
+        'Paneer Tikka Roll': '/images/Biriyani by kilo/Paneer Tikka Roll.jpg',
+        'Chicken Seekh Roll': '/images/Biriyani by kilo/Chicken Seekh Roll.jpg',
+        'Chicken Tikka Roll': '/images/Biriyani by kilo/Chicken Tikka Roll.jpg',
+        'Family Feast - Big Biryani': '/images/Biriyani by kilo/malamaal biryani.jpg',
+        'Family Feast - Paneer Biryani': '/images/Biriyani by kilo/paneer biryani 1 kg.jpg',
+        'Family Feast - Tangri Biryani': '/images/Biriyani by kilo/chicken hyd 1 kg.jpg',
+        'Family Feast - Chicken Biryani': '/images/Biriyani by kilo/chicken hyd 1 kg-1.jpg',
+        'Veg Hyderabadi Biryani + Veg Galouti Kebab': '/images/Biriyani by kilo/veg_biryani_veg_galouti.jpg',
+        'Soya Chaap Biryani + Paneer Tikka': '/images/Biriyani by kilo/Paneer Hyderabadi Dum Biryani Combo (1) new.jpg',
+        'Chicken Boneless Biryani + Chicken Galouti Kebab': '/images/Biriyani by kilo/chicken_boneless_biryani_chicken_galouti.jpg',
+        'Chicken Tangri Biryani + Chicken Seekh Kebab': '/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_kebab.jpg',
+        'Veg Hyderabadi Biryani + Paneer Tikka Roll': '/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll.jpg',
+        'Chicken Tangri Biryani + Chicken Seekh Roll': '/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll.jpg',
+        'Chicken Boneless Biryani + Chicken Tikka Roll': '/images/Biriyani by kilo/Chicken Hyderabadi Dum Biryani Combo.jpg',
+        'Gulab Jamun': '/images/Biriyani by kilo/Gulab Jamun.jpg',
+        'Gulab Jamun with Rabri': '/images/Biriyani by kilo/Gulab Jamun with Rabri_.jpg.jpg',
+        'Kulhad Phirni': '/images/Biriyani by kilo/Phirni.jpg',
+        'Soft Beverages': '/images/Biriyani by kilo/soft_beverages.jpg',
+        'Packaged Drinking Water': '/images/Biriyani by kilo/packaged_drinking_water.jpg',
+        'Tea': '/images/vengo/chai_plain_ginger_masala.jpg',
+        'Imli Adraki Lemonade': '/images/Biriyani by kilo/Imli Adraki Lemonade.jpg',
+        'Masala Chhachh': '/images/Goila butter chicken/Butter Milk.jpeg',
+        'Sweet Lassi': '/images/Goila butter chicken/Sweet Lassi.jpeg',
+        'Mint Chutney': '/images/Biriyani by kilo/Mint Chutney.jpg',
+        'Raita': '/images/Biriyani by kilo/Raita.jpg',
+        'Salan': '/images/Biriyani by kilo/Salan.jpg',
+        'Paratha': '/images/Biriyani by kilo/Paratha.jpg',
+        'Rice': '/images/Biriyani by kilo/Rice.jpg',
+    };
+
+    const bestsellers = new Set([
+        'Veg Hyderabadi Biryani',
+        'Chicken Boneless Biryani',
+        'Chicken Tangri Biryani',
+        'Veg Galouti Kebab',
+        'Chicken Tikka',
+        'Butter Chicken Rice Bowl',
+        'Paneer Tikka Roll',
+        'Chicken Tikka Roll',
+        'Kulhad Phirni',
+    ]);
+
+    const categories = Array.from(new Set(menuRows.map((r) => getValue(r, 'category')).filter(Boolean)));
+
+    const items = menuRows.map((row, index) => {
+        const name = getValue(row, 'item_name');
+        const rawPrice = getValue(row, 'price_inr');
+        let price = Number.parseFloat(rawPrice);
+        if (isNaN(price)) {
+            if (name === 'Soft Beverages') price = 40;
+            else if (name === 'Packaged Drinking Water') price = 20;
+            else price = 40;
+        }
+        const category = getValue(row, 'category');
+        const foodType = getValue(row, 'food_type');
+        const notes = getValue(row, 'notes');
+
+        return {
+            id: `bbk-${index + 1}`,
+            storeId: 'store-bbk',
+            name,
+            price,
+            description: notes || `Authentic ${name} prepared fresh with royal heritage recipe and aromatic spices.`,
+            image: imageMap[name] || '/images/storeImage/biryani_by_kilo_logo.jpg',
+            isVeg: foodType === 'Veg',
+            category,
+            isBestseller: bestsellers.has(name),
+        };
+    });
+
     return { categories, items };
 };
 export const CATEGORIES = [
@@ -5481,473 +5582,6 @@ export const RAW_STORES = [
         ]
     },
     {
-        id: 'store-bbk',
-        name: 'Biryani By Kilo',
-        rating: 4.7,
-        reviewsCount: 3410,
-        deliveryTime: '45-50 mins',
-        deliveryFee: 20,
-        distance: '2.8 km',
-        image: '/images/storeImage/biryani by kilooo.jpeg',
-        cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Chicken', 'Desserts'],
-        tags: ['Biryani', 'Mughlai', 'Kebabs', 'Chicken', 'Desserts'],
-        menuCategories: [
-            "Biriyani",
-            "Kebab",
-            "Quick Meals",
-            "Rolls",
-            "Meal for Two",
-            "Biryani Combos",
-            "Roll Combos",
-            "Dessert",
-            "Beverages",
-            "Add Ons",
-            "Extras"
-        ],
-        items: [
-            {
-                "id": "bbk-1",
-                "storeId": "store-bbk",
-                "name": "Veg Hyderabadi Biriyani",
-                "price": 219,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-                "image": "/images/Biriyani by kilo/veg_hyderabadi_biriyani.jpg",
-                "isVeg": true,
-                "category": "Biriyani"
-            },
-            {
-                "id": "bbk-2",
-                "storeId": "store-bbk",
-                "name": "Paneer Hyderabadi Biriyani",
-                "price": 279,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-                "image": "/images/Biriyani by kilo/paneer_hyderabadi_biriyani.jpg",
-                "isVeg": true,
-                "category": "Biriyani"
-            },
-            {
-                "id": "bbk-3",
-                "storeId": "store-bbk",
-                "name": "Soya Chaap Biriyani",
-                "price": 289,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-                "image": "/images/Biriyani by kilo/soya_chaap_biriyani.jpg",
-                "isVeg": true,
-                "category": "Biriyani"
-            },
-            {
-                "id": "bbk-4",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biriyani",
-                "price": 309,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biriyani.jpg",
-                "isVeg": false,
-                "category": "Biriyani"
-            },
-            {
-                "id": "bbk-5",
-                "storeId": "store-bbk",
-                "name": "Chicken Tikka Biriyani",
-                "price": 369,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe. Contains 350gm biryani.",
-                "image": "/images/Biriyani by kilo/chicken_tikka_biriyani.jpg",
-                "isVeg": false,
-                "category": "Biriyani"
-            },
-            {
-                "id": "bbk-6",
-                "storeId": "store-bbk",
-                "name": "Veg Galouti Kebab",
-                "price": 199,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/veg_galouti_kebab.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-7",
-                "storeId": "store-bbk",
-                "name": "Hara Bhara Kebab",
-                "price": 199,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/hara_bhara_kebab.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-8",
-                "storeId": "store-bbk",
-                "name": "Corn Cheese Stick",
-                "price": 249,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/corn_cheese_stick.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-9",
-                "storeId": "store-bbk",
-                "name": "Dahi Ke Kebab",
-                "price": 289,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/dahi_ke_kebab.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-10",
-                "storeId": "store-bbk",
-                "name": "Paneer 65 with Paratha",
-                "price": 289,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/paneer_65_with_paratha.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-11",
-                "storeId": "store-bbk",
-                "name": "Paneer Tikka",
-                "price": 309,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/paneer_tikka.jpg",
-                "isVeg": true,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-12",
-                "storeId": "store-bbk",
-                "name": "Chicken Giloti Kebab",
-                "price": 259,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_giloti_kebab.jpg",
-                "isVeg": false,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-13",
-                "storeId": "store-bbk",
-                "name": "Chicken Seekh Kebab",
-                "price": 259,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_seekh_kebab.jpg",
-                "isVeg": false,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-14",
-                "storeId": "store-bbk",
-                "name": "Chicken Tikka",
-                "price": 309,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_tikka.jpg",
-                "isVeg": false,
-                "category": "Kebab"
-            },
-            {
-                "id": "bbk-15",
-                "storeId": "store-bbk",
-                "name": "Dal Makhani with Flavoured Rice / 2 Paratha",
-                "price": 289,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/dal_makhani_with_flavoured_rice_2_paratha.jpg",
-                "isVeg": true,
-                "category": "Quick Meals"
-            },
-            {
-                "id": "bbk-16",
-                "storeId": "store-bbk",
-                "name": "Butter Paneer with Flavoured Rice / 2 Paratha",
-                "price": 309,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/butter_paneer_with_flavoured_rice_2_paratha.jpg",
-                "isVeg": true,
-                "category": "Quick Meals"
-            },
-            {
-                "id": "bbk-17",
-                "storeId": "store-bbk",
-                "name": "Butter Chicken Boneless with Flavoured Rice / 2 Paratha",
-                "price": 339,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/butter_chicken_boneless_with_flavoured_rice_2_paratha.jpg",
-                "isVeg": false,
-                "category": "Quick Meals"
-            },
-            {
-                "id": "bbk-18",
-                "storeId": "store-bbk",
-                "name": "Mutton Nihari with Flavoured Rice / 2 Paratha",
-                "price": 409,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/mutton_nihari_with_flavoured_rice_2_paratha.jpg",
-                "isVeg": false,
-                "category": "Quick Meals"
-            },
-            {
-                "id": "bbk-19",
-                "storeId": "store-bbk",
-                "name": "Paneer Tikka Roll",
-                "price": 209,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/paneer_tikka_roll.jpg",
-                "isVeg": true,
-                "category": "Rolls"
-            },
-            {
-                "id": "bbk-20",
-                "storeId": "store-bbk",
-                "name": "Chicken Seekh Roll",
-                "price": 189,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_seekh_roll.jpg",
-                "isVeg": false,
-                "category": "Rolls"
-            },
-            {
-                "id": "bbk-21",
-                "storeId": "store-bbk",
-                "name": "Chicken Tikka Roll",
-                "price": 209,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_tikka_roll.jpg",
-                "isVeg": false,
-                "category": "Rolls"
-            },
-            {
-                "id": "bbk-22",
-                "storeId": "store-bbk",
-                "name": "Veg Biryani + Paneer Tikka Roll + Phirni + Any 2 Beverages",
-                "price": 589,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll_phirni_any_2_beverages.jpg",
-                "isVeg": true,
-                "category": "Meal for Two"
-            },
-            {
-                "id": "bbk-23",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biryani + Chicken Seekh Roll + Phirni + Any 2 Beverages",
-                "price": 609,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll_phirni_any_2_beverages.jpg",
-                "isVeg": false,
-                "category": "Meal for Two"
-            },
-            {
-                "id": "bbk-24",
-                "storeId": "store-bbk",
-                "name": "Veg Biryani + Any 1 Beverage",
-                "price": 269,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/veg_biryani_any_1_beverage.jpg",
-                "isVeg": true,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-25",
-                "storeId": "store-bbk",
-                "name": "Veg Biryani + Veg Galouti",
-                "price": 279,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/veg_biryani_veg_galouti.jpg",
-                "isVeg": true,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-26",
-                "storeId": "store-bbk",
-                "name": "Veg Biryani + Paneer Tikka Roll",
-                "price": 399,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/veg_biryani_paneer_tikka_roll.jpg",
-                "isVeg": true,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-27",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biryani + Any 1 Beverage",
-                "price": 359,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biryani_any_1_beverage.jpg",
-                "isVeg": false,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-28",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biryani + Chicken Galouti",
-                "price": 359,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_galouti.jpg",
-                "isVeg": false,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-29",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biryani + Chicken Seekh Kebab",
-                "price": 359,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_kebab.jpg",
-                "isVeg": false,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-30",
-                "storeId": "store-bbk",
-                "name": "Chicken Boneless Biryani + Chicken Seekh Roll",
-                "price": 409,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_boneless_biryani_chicken_seekh_roll.jpg",
-                "isVeg": false,
-                "category": "Biryani Combos"
-            },
-            {
-                "id": "bbk-31",
-                "storeId": "store-bbk",
-                "name": "Paneer Tikka Roll + Any 1 Beverage",
-                "price": 239,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/paneer_tikka_roll_any_1_beverage.jpg",
-                "isVeg": true,
-                "category": "Roll Combos"
-            },
-            {
-                "id": "bbk-32",
-                "storeId": "store-bbk",
-                "name": "Chicken Tikka Roll + Any 1 Beverage",
-                "price": 239,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/chicken_tikka_roll_any_1_beverage.jpg",
-                "isVeg": false,
-                "category": "Roll Combos"
-            },
-            {
-                "id": "bbk-33",
-                "storeId": "store-bbk",
-                "name": "Gulab Jamun",
-                "price": 59,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/gulab_jamun.jpg",
-                "isVeg": true,
-                "category": "Dessert"
-            },
-            {
-                "id": "bbk-34",
-                "storeId": "store-bbk",
-                "name": "Phirni",
-                "price": 109,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/phirni.jpg",
-                "isVeg": true,
-                "category": "Dessert"
-            },
-            {
-                "id": "bbk-35",
-                "storeId": "store-bbk",
-                "name": "Imli Adraki Lemonade",
-                "price": 89,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
-                "isVeg": true,
-                "category": "Beverages"
-            },
-            {
-                "id": "bbk-36",
-                "storeId": "store-bbk",
-                "name": "Packaged Drinking Water",
-                "price": 30,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/packaged_drinking_water.jpg",
-                "isVeg": true,
-                "category": "Beverages"
-            },
-            {
-                "id": "bbk-37",
-                "storeId": "store-bbk",
-                "name": "Soft Beverages",
-                "price": 70,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/soft_beverages.jpg",
-                "isVeg": true,
-                "category": "Beverages"
-            },
-            {
-                "id": "bbk-38",
-                "storeId": "store-bbk",
-                "name": "Imli Adraki Lemonade",
-                "price": 69,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/imli_adraki_lemonade.jpg",
-                "isVeg": true,
-                "category": "Add Ons"
-            },
-            {
-                "id": "bbk-39",
-                "storeId": "store-bbk",
-                "name": "Phirni",
-                "price": 89,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/phirni.jpg",
-                "isVeg": true,
-                "category": "Add Ons"
-            },
-            {
-                "id": "bbk-40",
-                "storeId": "store-bbk",
-                "name": "Mint Chutney",
-                "price": 29,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/mint_chutney.jpg",
-                "isVeg": true,
-                "category": "Extras"
-            },
-            {
-                "id": "bbk-41",
-                "storeId": "store-bbk",
-                "name": "Raita",
-                "price": 59,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/raita.jpg",
-                "isVeg": true,
-                "category": "Extras"
-            },
-            {
-                "id": "bbk-42",
-                "storeId": "store-bbk",
-                "name": "Salan",
-                "price": 59,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/salan.jpg",
-                "isVeg": true,
-                "category": "Extras"
-            },
-            {
-                "id": "bbk-43",
-                "storeId": "store-bbk",
-                "name": "Paratha",
-                "price": 69,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/paratha.jpg",
-                "isVeg": true,
-                "category": "Extras"
-            },
-            {
-                "id": "bbk-44",
-                "storeId": "store-bbk",
-                "name": "Rice",
-                "price": 109,
-                "description": "Authentic delicacy prepared with premium ingredients and traditional royal recipe.",
-                "image": "/images/Biriyani by kilo/rice.jpg",
-                "isVeg": true,
-                "category": "Extras"
-            }
-        ]
-    },
-    {
         id: 'store-goila',
         name: 'Goila Butter Chicken',
         rating: 4.6,
@@ -6791,6 +6425,31 @@ const tummyTreatStore = {
     menuCategories: tummyTreatMenu.categories,
     items: tummyTreatMenu.items
 };
+const bbkMenu = createBbkMenu();
+const bbkStore = {
+    id: 'store-bbk',
+    name: 'Biryani By Kilo',
+    rating: 4.8,
+    reviewsCount: 3410,
+    deliveryTime: '40-50 mins',
+    deliveryFee: 20,
+    distance: '2.5 km',
+    image: '/images/storeImage/biryani_by_kilo_logo.jpg',
+    bannerImage: '/images/Biriyani by kilo/Veg Hyderabadi Dum Biryani new.jpg',
+    cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Curries', 'Desserts'],
+    tags: ['Biryani', 'Dum Biryani', 'Mughlai', 'Kebabs', 'Bestseller'],
+    openTime: '11:00',
+    closeTime: '23:00',
+    isOpen: true,
+    isVisible: true,
+    discountActive: true,
+    discountAmount: 50,
+    minOrderValue: 299,
+    discountOffer: 'Flat ₹50 OFF',
+    outlets: [],
+    menuCategories: bbkMenu.categories,
+    items: bbkMenu.items,
+};
 const foodCourtOutlets = [
     ...RAW_STORES.filter(s => !['store-biriyani-zone', 'store-bbk', 'store-goila'].includes(s.id)),
 ];
@@ -6799,6 +6458,7 @@ foodCourtOutlets.splice(vaangoIndex + 1, 0, tummyTreatStore);
 foodCourtOutlets.push(biteAddaStore);
 export const STORES = [
     biriyaniZoneStore,
+    bbkStore,
     ...foodCourtOutlets,
     ssvStore,
     jawaHutStore,

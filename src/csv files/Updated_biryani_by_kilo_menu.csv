@@ -1,0 +1,52 @@
+item_name,price_inr,category,food_type,item_type,add_on_only,notes
+Veg Hyderabadi Biryani,269,Biryani,Veg,Regular,No,
+Soya Chaap Biryani,289,Biryani,Veg,Regular,No,
+Paneer Hyderabadi Biryani,329,Biryani,Veg,Regular,No,
+Chicken Tangri Biryani,329,Biryani,Non-Veg,Regular,No,
+Chicken Boneless Biryani,349,Biryani,Non-Veg,Regular,No,
+Veg Galouti Kebab,199,Kebabs,Veg,Regular,No,
+Soya Chaap Tikka,199,Kebabs,Veg,Regular,No,
+Paneer Tikka,329,Kebabs,Veg,Regular,No,
+Chicken Galouti Kebab,269,Kebabs,Non-Veg,Regular,No,
+Chicken Seekh Kebab,299,Kebabs,Non-Veg,Regular,No,
+Chicken Tikka,349,Kebabs,Non-Veg,Regular,No,
+Mutton Galouti Kebab,499,Kebabs,Non-Veg,Regular,No,
+Dal Makhani Rice Bowl,249,Rice Bowl,Veg,Regular,No,
+Butter Paneer Rice Bowl,269,Rice Bowl,Veg,Regular,No,
+Chicken Tikka Masala Rice Bowl,269,Rice Bowl,Non-Veg,Regular,No,
+Butter Chicken Rice Bowl,279,Rice Bowl,Non-Veg,Regular,No,
+Butter Paneer with Paratha,299,Curry Meal,Veg,Regular,No,
+Soya Chaap Masala with Paratha,299,Curry Meal,Veg,Regular,No,
+Butter Chicken Boneless with Paratha,329,Curry Meal,Non-Veg,Regular,No,
+Mutton Nihari with Paratha,499,Curry Meal,Non-Veg,Regular,No,
+Soya Chaap Roll,189,Rolls,Veg,Regular,No,
+Paneer Tikka Roll,249,Rolls,Veg,Regular,No,
+Chicken Seekh Roll,199,Rolls,Non-Veg,Regular,No,
+Chicken Tikka Roll,249,Rolls,Non-Veg,Regular,No,
+Family Feast - Big Biryani,899,Family Feast,Veg,Combo,No,Menu lists Big Biryani variant
+Family Feast - Paneer Biryani,949,Family Feast,Veg,Combo,No,
+Family Feast - Tangri Biryani,999,Family Feast,Non-Veg,Combo,No,
+Family Feast - Chicken Biryani,999,Family Feast,Non-Veg,Combo,No,
+Veg Hyderabadi Biryani + Veg Galouti Kebab,389,Biryani & Kebab Combo,Veg,Combo,No,
+Soya Chaap Biryani + Paneer Tikka,419,Biryani & Kebab Combo,Veg,Combo,No,
+Chicken Boneless Biryani + Chicken Galouti Kebab,429,Biryani & Kebab Combo,Non-Veg,Combo,No,
+Chicken Tangri Biryani + Chicken Seekh Kebab,449,Biryani & Kebab Combo,Non-Veg,Combo,No,
+Veg Hyderabadi Biryani + Paneer Tikka Roll,449,Biryani & Roll Combo,Veg,Combo,No,Price partly affected by glare; verify against original menu.
+Chicken Tangri Biryani + Chicken Seekh Roll,469,Biryani & Roll Combo,Non-Veg,Combo,No,Price partly affected by glare; verify against original menu.
+Chicken Boneless Biryani + Chicken Tikka Roll,479,Biryani & Roll Combo,Non-Veg,Combo,No,Price partly affected by glare; verify against original menu.
+Gulab Jamun,49,Desserts,Veg,Regular,No,Menu shows ₹49/₹99; size/quantity options are not fully legible.
+Gulab Jamun with Rabri,99,Desserts,Veg,Regular,No,Menu shows ₹99/₹189; size/quantity options are not fully legible.
+Kulhad Phirni,99,Desserts,Veg,Regular,No,
+Soft Beverages,MRP,Beverages,Veg,Regular,No,Price as per MRP
+Packaged Drinking Water,MRP,Beverages,Veg,Regular,No,Price as per MRP
+Tea,69,Beverages,Veg,Regular,No,Menu lists ₹69
+Imli Adraki Lemonade,89,Beverages,Veg,Regular,No,
+Masala Chhachh,99,Beverages,Veg,Regular,No,
+Sweet Lassi,119,Beverages,Veg,Regular,No,
+Imli Adraki Lemonade,79,Add-ons,Veg,Add-on,Yes,Menu states valid only as add-on with any main product.
+Kulhad Phirni,89,Add-ons,Veg,Add-on,Yes,Menu states valid only as add-on with any main product.
+Mint Chutney,19,Extras,Veg,Add-on,Yes,
+Raita,49,Extras,Veg,Add-on,Yes,
+Salan,49,Extras,Veg,Add-on,Yes,
+Paratha,59,Extras,Veg,Add-on,Yes,
+Rice,99,Extras,Veg,Add-on,Yes,

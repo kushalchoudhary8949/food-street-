@@ -9,7 +9,7 @@ import pizzaHutMenuCsv from '../csv files/pizza_hut_spicy_wasabi_menu.csv?raw';
 import vaangoMenuCsv from '../csv files/Vaango_Menu_Items.csv?raw';
 import baskinRobbinsMenuCsv from '../csv files/Baskin_Robbins_Celebration_Cakes_Menu.csv?raw';
 import bbkMenuCsv from '../csv files/Updated_biryani_by_kilo_menu.csv?raw';
-export const DATA_VERSION = 'food_street_v5_bbk_banner_update_2026_11_20';
+export const DATA_VERSION = 'food_street_v6_bbk_maroon_banner_2026_11_20';
 const deduplicateMenuItems = (items) => {
     const seenNames = new Set();
     return items.filter((item) => {
@@ -6434,8 +6434,8 @@ const bbkStore = {
     deliveryTime: '40-50 mins',
     deliveryFee: 20,
     distance: '2.5 km',
-    image: '/images/storeImage/biryani by kilooo.jpeg',
-    bannerImage: '/images/storeImage/biryani by kilooo.jpeg',
+    image: '/images/storeImage/biryani_by_kilo_logo.jpg',
+    bannerImage: '/images/storeImage/biryani_by_kilo_banner.jpg',
     cuisines: ['Biryani', 'Authentic Dum Biryani', 'Mughlai', 'Kebabs', 'North Indian', 'Curries', 'Desserts'],
     tags: ['Biryani', 'Dum Biryani', 'Mughlai', 'Kebabs', 'Bestseller'],
     openTime: '11:00',

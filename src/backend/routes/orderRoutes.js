@@ -318,9 +318,10 @@ orderRouter.get('/', optionalAuth, async (req, res) => {
       orders,
     });
   } catch (error) {
-    // If local DB is unavailable (ECONNREFUSED), return empty list gracefully
-    // so the frontend falls back to Supabase / localStorage without flooding logs
-    if (error.code === 'ECONNREFUSED') {
+    // Silently return empty list when no DB is configured or auth fails —
+    // the frontend falls back to Supabase Cloud without spamming the console
+    const SILENT_CODES = new Set(['ECONNREFUSED', '28P01', '3D000', 'ENOTFOUND', 'ETIMEDOUT']);
+    if (SILENT_CODES.has(error.code)) {
       return res.status(200).json({ success: true, orders: [] });
     }
     console.error('[List Orders Error]', error);

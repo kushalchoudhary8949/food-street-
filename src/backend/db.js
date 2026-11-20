@@ -33,6 +33,9 @@ pool.on('error', (err) => {
  * @param {any[]} [params]
  * @returns {Promise<pg.QueryResult>}
  */
+// PG error codes that mean "no DB available" — routes fall through to Supabase silently
+const SILENT_PG_CODES = new Set(['ECONNREFUSED', '28P01', '3D000', 'ENOTFOUND', 'ETIMEDOUT']);
+
 export async function query(text, params) {
   if (!connectionString) {
     throw Object.assign(new Error('No database configured'), { code: 'ECONNREFUSED' });
@@ -46,8 +49,8 @@ export async function query(text, params) {
     }
     return res;
   } catch (err) {
-    // Suppress noisy ECONNREFUSED spam — routes handle these gracefully
-    if (err.code !== 'ECONNREFUSED') {
+    // Suppress connection / auth errors — routes fall through to Supabase gracefully
+    if (!SILENT_PG_CODES.has(err.code)) {
       console.error(`[SQL Error] in query: ${text.slice(0, 120)}:`, err.message);
     }
     throw err;
@@ -75,7 +78,11 @@ export async function testConnection() {
     console.log(` Connected to PostgreSQL Database [${res.rows[0].db_name}] at ${res.rows[0].current_time}`);
     return true;
   } catch (err) {
-    console.error(' Failed to connect to PostgreSQL database:', err.message);
+    if (!SILENT_PG_CODES.has(err.code)) {
+      console.error(' Failed to connect to PostgreSQL database:', err.message);
+    } else {
+      console.log(' No local PostgreSQL — using Supabase Cloud only.');
+    }
     return false;
   }
 }

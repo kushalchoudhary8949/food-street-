@@ -14,13 +14,13 @@ const { Pool } = pg;
 const connectionString =
   process.env.DATABASE_URL ||
   process.env.POSTGRES_URL ||
-  'postgresql://kushal@127.0.0.1:5432/food_connect';
+  null; // No local fallback — avoids ECONNREFUSED spam when no local DB is running
 
 export const pool = new Pool({
-  connectionString,
-  max: 20,
+  connectionString: connectionString || undefined,
+  max: connectionString ? 20 : 0,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 2000,
 });
 
 pool.on('error', (err) => {
@@ -34,6 +34,9 @@ pool.on('error', (err) => {
  * @returns {Promise<pg.QueryResult>}
  */
 export async function query(text, params) {
+  if (!connectionString) {
+    throw Object.assign(new Error('No database configured'), { code: 'ECONNREFUSED' });
+  }
   const start = Date.now();
   try {
     const res = await pool.query(text, params);
@@ -43,7 +46,10 @@ export async function query(text, params) {
     }
     return res;
   } catch (err) {
-    console.error(`[SQL Error] in query: ${text.slice(0, 120)}:`, err.message);
+    // Suppress noisy ECONNREFUSED spam — routes handle these gracefully
+    if (err.code !== 'ECONNREFUSED') {
+      console.error(`[SQL Error] in query: ${text.slice(0, 120)}:`, err.message);
+    }
     throw err;
   }
 }
@@ -60,6 +66,10 @@ export async function getClient() {
  * Test database connectivity on startup
  */
 export async function testConnection() {
+  if (!connectionString) {
+    console.log(' No local PostgreSQL configured — using Supabase Cloud only.');
+    return false;
+  }
   try {
     const res = await pool.query('SELECT NOW() as current_time, current_database() as db_name');
     console.log(` Connected to PostgreSQL Database [${res.rows[0].db_name}] at ${res.rows[0].current_time}`);

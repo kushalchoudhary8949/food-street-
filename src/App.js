@@ -86,41 +86,9 @@ const ADDRESS_STORAGE_KEY = 'food_street_addresses';
 const CURRENT_ADDRESS_STORAGE_KEY = 'food_street_current_address';
 
 // -------------------------------------------------------------
-// Safe LocalStorage Helper with QuotaExceeded Protection
-// Prevents unhandled DOMException quota crashes when storing DB data
+// Safe LocalStorage Helper — imported from utils to allow Vite HMR Fast Refresh
 // -------------------------------------------------------------
-export const safeStorage = {
-    getItem: (key) => {
-        try {
-            return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
-        } catch {
-            return null;
-        }
-    },
-    setItem: (key, value) => {
-        try {
-            if (typeof window !== 'undefined') {
-                localStorage.setItem(key, value);
-            }
-        } catch (e) {
-            console.warn(`[SafeStorage] Failed to set "${key}":`, e);
-            try {
-                // If quota exceeded, purge non-critical bloated caches and retry
-                localStorage.removeItem('food_street_orders');
-                localStorage.setItem(key, value);
-            } catch {
-                // Safely drop without crashing React
-            }
-        }
-    },
-    removeItem: (key) => {
-        try {
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem(key);
-            }
-        } catch {}
-    }
-};
+import { safeStorage } from './utils/safeStorage.js';
 
 // Proactively remove orders from client localStorage to permanently prevent quota exhaustion
 try {

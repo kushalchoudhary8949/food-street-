@@ -167,18 +167,18 @@ for (const resource of ['stores', 'categories']) {
 app.use('/api', async (req, res) => {
   try {
     const targetUrl = new URL(`${SUPABASE_EDGE_URL}${req.url}`);
-    const fetchOptions = {
+    const response = await fetch(targetUrl.toString(), {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': req.headers.authorization || ('Bearer ' + SUPABASE_ANON_KEY),
       },
-    };
-    if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body && Object.keys(req.body).length > 0) {
-      fetchOptions.body = JSON.stringify(req.body);
-    }
-
-    const response = await fetch(targetUrl.toString(), fetchOptions);
+      ...(Boolean(['POST', 'PUT', 'PATCH'].includes(req.method) && req.body && Object.keys(req.body).length > 0)
+        ? { body: JSON.stringify(req.body) }
+        : {}),
+    });
     const data = await response.json();
     return res.status(response.status).json(data);
   } catch (err) {
